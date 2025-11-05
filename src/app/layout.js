@@ -6,9 +6,9 @@ import Footer from '../components/layout/Footer';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata = {
-  title: 'IPO Tracker - AI-Powered Stock Market Analysis',
-  description: 'Get AI-powered predictions, real-time IPO data, stock analysis, and market news. Make smarter investment decisions with our intelligent platform.',
-  keywords: 'IPO, stock market, AI analysis, predictions, mutual funds, Indian stock market',
+  title: 'FINNOTIA - AI-Powered Market Analysis & News',
+  description: 'Get real-time stock analysis, market news, mutual fund insights, and AI-powered predictions. Download FINNOTIA today for smarter investing.',
+  keywords: 'stock market, AI analysis, financial news, mutual funds, market analysis, Indian stock market',
 };
 
 export default function RootLayout({ children }) {

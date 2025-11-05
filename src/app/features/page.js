@@ -1,77 +1,77 @@
 'use client';
-import { Brain, TrendingUp, Bell, BarChart3, Shield, Zap, Smartphone, Globe, Lock, Cpu } from 'lucide-react';
+import { Brain, TrendingUp, Bell, BarChart3, Shield, Zap, Smartphone, Globe, Lock, Newspaper } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const allFeatures = [
   {
     icon: Brain,
-    title: 'AI-Powered Predictions',
-    description: 'Our advanced machine learning algorithms analyze thousands of data points to provide highly accurate IPO predictions. Get insights on listing gains, GMP, and subscription trends.',
-    benefits: ['95% prediction accuracy', 'Real-time analysis', 'Historical data comparison'],
-    color: 'from-purple-500 to-pink-500',
+    title: 'AI IPO Predictions',
+    description: 'Predict IPO listing gains, GMP trends, and subscription patterns with advanced ML algorithms. Get 95% accurate predictions on IPO performance before listing.',
+    benefits: ['95% accuracy', 'GMP forecasts', 'Subscription trends'],
+    color: 'from-emerald-500 to-teal-500',
   },
   {
     icon: TrendingUp,
-    title: 'Real-Time Market Data',
-    description: 'Access live stock prices, IPO subscription status, and market movements updated every second. Never miss a trading opportunity with instant data feeds.',
-    benefits: ['Live price updates', 'Instant notifications', 'Market sentiment analysis'],
-    color: 'from-blue-500 to-cyan-500',
+    title: 'Stock Market Analysis',
+    description: 'Deep technical analysis of stocks with live prices, charts, indicators, and AI-powered trading signals for profitable decision-making.',
+    benefits: ['Live prices', 'Technical analysis', 'Trading signals'],
+    color: 'from-teal-500 to-cyan-500',
   },
   {
-    icon: Bell,
-    title: 'Smart Alert System',
-    description: 'Configure custom alerts for IPO openings, closings, allotment status, and price targets. Stay informed without constantly checking the app.',
-    benefits: ['Customizable alerts', 'Multi-channel notifications', 'Priority alerts for premium users'],
-    color: 'from-orange-500 to-red-500',
+    icon: Newspaper,
+    title: 'Real-Time Market News',
+    description: 'Breaking financial news, IPO announcements, market updates, and sector insights curated specifically for Indian stock market investors.',
+    benefits: ['Breaking news', 'IPO updates', 'Sector insights'],
+    color: 'from-cyan-500 to-blue-500',
   },
   {
     icon: BarChart3,
-    title: 'Portfolio Tracking',
-    description: 'Monitor your investments in one place with comprehensive portfolio analytics. Track performance, dividends, and generate tax reports automatically.',
-    benefits: ['Multi-portfolio support', 'Performance analytics', 'Tax reporting'],
-    color: 'from-green-500 to-emerald-500',
+    title: 'Mutual Fund Insights',
+    description: 'Complete mutual fund analysis with NAV tracking, performance metrics, sector allocation, and smart fund recommendations based on goals.',
+    benefits: ['NAV tracking', 'Performance metrics', 'Fund recommendations'],
+    color: 'from-emerald-500 to-green-500',
+  },
+  {
+    icon: Bell,
+    title: 'Smart IPO Alerts',
+    description: 'Instant notifications for IPO openings, closings, allotment results, and GMP updates. Never miss an IPO opportunity again.',
+    benefits: ['IPO alerts', 'GMP updates', 'Allotment notifications'],
+    color: 'from-orange-500 to-red-500',
   },
   {
     icon: Shield,
     title: 'Bank-Level Security',
-    description: 'Your data is protected with 256-bit encryption and multi-factor authentication. We never share your personal information with third parties.',
-    benefits: ['Data encryption', 'Two-factor authentication', 'Privacy guaranteed'],
+    description: 'Your investment data protected with 256-bit encryption and advanced security. Your privacy and data security is our top priority.',
+    benefits: ['Data encryption', 'Privacy protected', 'Secure authentication'],
     color: 'from-indigo-500 to-purple-500',
-  },
-  {
-    icon: Zap,
-    title: 'Lightning Performance',
-    description: 'Experience blazing-fast load times and smooth interactions. Our optimized infrastructure ensures you get information in milliseconds.',
-    benefits: ['Sub-second loading', 'Optimized for mobile', 'Offline mode available'],
-    color: 'from-yellow-500 to-orange-500',
   },
   {
     icon: Smartphone,
     title: 'Mobile Apps',
-    description: 'Native iOS and Android apps with full feature parity. Trade and monitor your investments on the go with our intuitive mobile interface.',
-    benefits: ['iOS & Android apps', 'Biometric login', 'Push notifications'],
+    description: 'Native Android app with all features, offline capability, and biometric login. Trade and track IPOs anytime, anywhere.',
+    benefits: ['Offline mode', 'Biometric login', 'Push notifications'],
     color: 'from-pink-500 to-rose-500',
   },
   {
     icon: Globe,
-    title: 'Market Coverage',
-    description: 'Comprehensive coverage of NSE, BSE, and global markets. Get insights on Indian IPOs and track international market trends.',
-    benefits: ['All major exchanges', 'Global market data', '24/7 coverage'],
+    title: '24/7 Market Coverage',
+    description: 'Complete coverage of NSE, BSE IPO calendars, and mutual funds. Live data updated every second for real-time accuracy.',
+    benefits: ['Live data', 'All exchanges', 'IPO calendar'],
     color: 'from-cyan-500 to-blue-500',
   },
   {
-    icon: Lock,
-    title: 'API Access',
-    description: 'Enterprise users get API access to integrate our data into their own applications. Build custom solutions with our comprehensive API.',
-    benefits: ['RESTful API', 'WebSocket support', 'Detailed documentation'],
-    color: 'from-violet-500 to-purple-500',
+    icon: Zap,
+    title: 'Lightning Performance',
+    description: 'Blazing fast load times and smooth interactions. Get market data and IPO predictions in milliseconds.',
+    benefits: ['Sub-second loading', 'Smooth UI', 'Optimized mobile'],
+    color: 'from-yellow-500 to-orange-500',
   },
   {
-    icon: Cpu,
+    icon: Lock,
     title: 'Advanced Analytics',
-    description: 'Deep dive into market trends with our advanced analytics tools. Get insights from technical indicators, volume analysis, and more.',
-    benefits: ['Technical indicators', 'Chart patterns', 'Backtesting tools'],
-    color: 'from-emerald-500 to-green-500',
+    description: 'Professional trading tools including technical indicators, volume analysis, moving averages, and IPO trend analysis.',
+    benefits: ['Technical indicators', 'Volume analysis', 'IPO trends'],
+    color: 'from-violet-500 to-purple-500',
   },
 ];
 
@@ -84,7 +84,7 @@ export default function FeaturesPage() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="inline-block px-4 py-2 bg-blue-100 text-blue-600 rounded-full text-sm font-semibold mb-4"
+            className="inline-block px-4 py-2 bg-emerald-100 text-emerald-600 rounded-full text-sm font-semibold mb-4"
           >
             All Features
           </motion.div>
@@ -94,7 +94,7 @@ export default function FeaturesPage() {
             transition={{ delay: 0.1 }}
             className="text-4xl sm:text-5xl lg:text-6xl font-black text-gray-900 mb-6"
           >
-            Everything You Need to <span className="gradient-text">Invest Smarter</span>
+            Everything You Need to <span className="bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">Invest Smart</span>
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -102,7 +102,7 @@ export default function FeaturesPage() {
             transition={{ delay: 0.2 }}
             className="text-xl text-gray-600 max-w-3xl mx-auto"
           >
-            Discover all the powerful features that make IPO Tracker the most comprehensive stock market analysis platform in India.
+            Discover all the powerful features that make FINNOTIA the most comprehensive market analysis platform for Indian investors.
           </motion.p>
         </div>
 
@@ -138,7 +138,7 @@ export default function FeaturesPage() {
                 <ul className="space-y-2">
                   {feature.benefits.map((benefit, i) => (
                     <li key={i} className="flex items-center gap-2 text-gray-700">
-                      <div className="w-1.5 h-1.5 bg-blue-600 rounded-full" />
+                      <div className="w-1.5 h-1.5 bg-emerald-600 rounded-full" />
                       <span>{benefit}</span>
                     </li>
                   ))}
@@ -159,13 +159,15 @@ export default function FeaturesPage() {
             Ready to Experience All These Features?
           </h2>
           <p className="text-xl text-gray-600 mb-8">
-            Start your free trial today. No credit card required.
+            Download FINNOTIA from Google Play Store today and start making smarter investment decisions.
           </p>
           <a
-            href="/signup"
-            className="inline-block bg-gradient-to-r from-blue-600 to-purple-600 text-white px-10 py-4 rounded-xl font-bold text-lg hover:shadow-2xl hover:scale-105 transition-all duration-300"
+            href="https://play.google.com/store/apps/details?id=com.finnotia"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block bg-gradient-to-r from-emerald-600 to-teal-600 text-white px-10 py-4 rounded-xl font-bold text-lg hover:shadow-2xl hover:scale-105 transition-all duration-300"
           >
-            Get Started Free
+            Download App
           </a>
         </motion.div>
       </div>

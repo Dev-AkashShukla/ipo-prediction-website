@@ -1,7 +1,7 @@
-// Application constants
+// Application constants for FINNOTIA
 
-export const APP_NAME = 'IPO Tracker';
-export const APP_DESCRIPTION = 'AI-Powered Stock Market Analysis Platform';
+export const APP_NAME = 'FINNOTIA';
+export const APP_DESCRIPTION = 'AI-Powered IPO Predictions & Market Analysis';
 
 export const SOCIAL_LINKS = {
   facebook: 'https://facebook.com',
@@ -11,41 +11,24 @@ export const SOCIAL_LINKS = {
 };
 
 export const CONTACT_INFO = {
-  email: 'support@ipotracker.com',
+  email: 'support@finnotia.com',
+  email2: 'contact@finnotia.com',
   phone: '+91 98765 43210',
   address: 'Mumbai, Maharashtra, India',
 };
 
 export const FEATURES = [
-  'AI-Powered Predictions',
-  'Real-Time Analysis',
+  'AI-Powered IPO Predictions',
+  'Stock Market Analysis',
+  'Real-Time Market News',
+  'Mutual Fund Insights',
+  'GMP Tracking',
   'Smart Alerts',
-  'Portfolio Tracking',
-  'Market News',
-  'Expert Insights',
 ];
 
-export const PRICING_PLANS = {
-  free: {
-    name: 'Free',
-    price: 0,
-    features: ['Basic IPO tracking', 'Market news', 'Email alerts'],
-  },
-  pro: {
-    name: 'Pro',
-    price: 999,
-    features: ['AI predictions', 'Real-time data', 'Priority support'],
-  },
-  enterprise: {
-    name: 'Enterprise',
-    price: 2999,
-    features: ['API access', 'Custom integrations', '24/7 support'],
-  },
-};
-
 export const API_ENDPOINTS = {
-  ipos: '/api/ipos',
-  stocks: '/api/stocks',
   news: '/api/news',
-  predictions: '/api/predictions',
+  stocks: '/api/stocks',
+  mutual_funds: '/api/mutual-funds',
+  analysis: '/api/analysis',
 };

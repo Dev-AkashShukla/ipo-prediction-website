@@ -1,49 +1,49 @@
 'use client';
 import { motion } from 'framer-motion';
-import { Brain, TrendingUp, Bell, BarChart3, Shield, Zap } from 'lucide-react';
+import { Brain, TrendingUp, Newspaper, BarChart3, Shield, Zap } from 'lucide-react';
 
 const features = [
   {
     icon: Brain,
-    title: 'AI-Powered Predictions',
-    description: 'Advanced machine learning algorithms analyze market data to provide accurate IPO predictions with 95% accuracy rate.',
+    title: 'AI-Powered IPO Predictions',
+    description: 'Advanced machine learning algorithms predict IPO listing gains, GMP trends, and subscription patterns with 95% accuracy.',
     color: 'from-purple-500 to-pink-500',
   },
   {
     icon: TrendingUp,
     title: 'Real-Time Stock Analysis',
-    description: 'Get live market data, technical analysis, and AI-generated insights for stocks and IPOs updated every second.',
+    description: 'Live stock prices, technical analysis, performance charts, and AI-generated insights for individual stocks.',
+    color: 'from-emerald-500 to-teal-500',
+  },
+  {
+    icon: Newspaper,
+    title: 'Breaking Market News',
+    description: 'Latest financial news, market updates, and industry insights curated for Indian stock market investors.',
     color: 'from-blue-500 to-cyan-500',
   },
   {
-    icon: Bell,
-    title: 'Smart Alerts',
-    description: 'Never miss an opportunity with instant notifications for IPO launches, price movements, and breaking news.',
-    color: 'from-orange-500 to-red-500',
-  },
-  {
     icon: BarChart3,
-    title: 'Comprehensive Dashboard',
-    description: 'Track your portfolio, view market trends, and analyze historical data all in one beautiful, intuitive interface.',
-    color: 'from-green-500 to-emerald-500',
+    title: 'Mutual Fund Analysis',
+    description: 'Comprehensive mutual fund insights with NAV tracking, performance comparison, and personalized recommendations.',
+    color: 'from-orange-500 to-red-500',
   },
   {
     icon: Shield,
     title: 'Secure & Private',
-    description: 'Bank-level encryption ensures your data and investments are protected. We never sell your information.',
+    description: 'Bank-level encryption ensures your data and preferences are protected. Your privacy is our top priority.',
     color: 'from-indigo-500 to-purple-500',
   },
   {
     icon: Zap,
-    title: 'Lightning Fast',
-    description: 'Optimized performance delivers market data and analysis in milliseconds, giving you the speed advantage.',
+    title: 'Instant Alerts',
+    description: 'Smart alerts for IPO openings, stock movements, GMP updates, and news. Never miss important opportunities.',
     color: 'from-yellow-500 to-orange-500',
   },
 ];
 
 export default function FeaturesSection() {
   return (
-    <section className="py-16 sm:py-24 bg-white">
+    <section id="features" className="py-12 sm:py-16 bg-white">
       <div className="container mx-auto px-4">
         {/* Section Header */}
         <motion.div
@@ -51,21 +51,21 @@ export default function FeaturesSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          className="text-center mb-10"
         >
-          <span className="inline-block px-4 py-2 bg-blue-100 text-blue-600 rounded-full text-sm font-semibold mb-4">
+          <span className="inline-block px-3 py-1 bg-emerald-100 text-emerald-600 rounded-full text-xs font-semibold mb-3">
             Features
           </span>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-gray-900 mb-6">
-            Everything You Need to <span className="gradient-text">Succeed</span>
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-3">
+            Everything You Need to <span className="bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">Invest Smart</span>
           </h2>
-          <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto">
-            Powerful tools and intelligent insights designed to help you make smarter investment decisions.
+          <p className="text-sm sm:text-base text-gray-600 max-w-2xl mx-auto">
+            Powerful AI-driven tools and real-time insights designed to help you make smarter financial decisions.
           </p>
         </motion.div>
 
         {/* Features Grid */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {features.map((feature, index) => {
             const Icon = feature.icon;
             return (
@@ -75,23 +75,23 @@ export default function FeaturesSection() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
-                whileHover={{ y: -10 }}
-                className="group relative bg-white border-2 border-gray-100 rounded-2xl p-6 hover:border-transparent hover:shadow-2xl transition-all duration-300"
+                whileHover={{ y: -5 }}
+                className="group relative bg-white border-2 border-gray-100 rounded-xl p-5 hover:border-transparent hover:shadow-lg transition-all duration-300"
               >
                 {/* Gradient Border on Hover */}
-                <div className={`absolute inset-0 bg-gradient-to-br ${feature.color} opacity-0 group-hover:opacity-100 rounded-2xl transition-opacity duration-300 -z-10`} />
-                <div className="absolute inset-0.5 bg-white rounded-2xl -z-10" />
+                <div className={`absolute inset-0 bg-gradient-to-br ${feature.color} opacity-0 group-hover:opacity-100 rounded-xl transition-opacity duration-300 -z-10`} />
+                <div className="absolute inset-0.5 bg-white rounded-xl -z-10" />
 
                 {/* Icon */}
-                <div className={`w-14 h-14 bg-gradient-to-br ${feature.color} rounded-xl flex items-center justify-center mb-5 transform group-hover:scale-110 group-hover:rotate-3 transition-all duration-300`}>
-                  <Icon className="w-7 h-7 text-white" />
+                <div className={`w-12 h-12 bg-gradient-to-br ${feature.color} rounded-lg flex items-center justify-center mb-4 transform group-hover:scale-110 group-hover:rotate-3 transition-all duration-300`}>
+                  <Icon className="w-6 h-6 text-white" />
                 </div>
 
                 {/* Content */}
-                <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-3">
+                <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-2">
                   {feature.title}
                 </h3>
-                <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
+                <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">
                   {feature.description}
                 </p>
               </motion.div>

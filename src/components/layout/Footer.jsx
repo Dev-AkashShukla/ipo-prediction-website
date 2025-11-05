@@ -1,24 +1,20 @@
 'use client';
 import Link from 'next/link';
-import { TrendingUp, Mail, Phone, MapPin, Facebook, Twitter, Linkedin, Instagram } from 'lucide-react';
+import { TrendingUp, Mail, Facebook, Twitter, Linkedin, Instagram } from 'lucide-react';
 
 const footerLinks = {
   product: [
-    { name: 'Features', href: '/features' },
-    { name: 'Pricing', href: '/pricing' },
-    { name: 'API', href: '/api' },
-    { name: 'Changelog', href: '/changelog' },
+    { name: 'Features', href: '#features' },
+    { name: 'How It Works', href: '#how' },
+    { name: 'Download App', href: 'https://play.google.com/store/apps/details?id=com.finnotia' },
   ],
   company: [
     { name: 'About Us', href: '/about' },
-    { name: 'Careers', href: '/careers' },
-    { name: 'Contact', href: '/contact' },
-    { name: 'Blog', href: '/blog' },
+    { name: 'Contact Us', href: '/contact' },
   ],
   legal: [
     { name: 'Privacy Policy', href: '/privacy' },
     { name: 'Terms of Service', href: '/terms' },
-    { name: 'Cookie Policy', href: '/cookies' },
     { name: 'Disclaimer', href: '/disclaimer' },
   ],
 };
@@ -32,51 +28,47 @@ const socialLinks = [
 
 export default function Footer() {
   return (
-    <footer className="bg-gray-900 text-white pt-16 pb-8">
+    <footer id="contact" className="bg-gray-900 text-white pt-12 pb-6">
       <div className="container mx-auto px-4">
         {/* Main Footer Content */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
           {/* Company Info */}
-          <div className="lg:col-span-2">
-            <Link href="/" className="flex items-center gap-2 mb-4 group">
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center">
-                <TrendingUp className="w-6 h-6 text-white" />
+          <div>
+            <Link href="/" className="flex items-center gap-2 mb-3 group">
+              <div className="w-8 h-8 bg-gradient-to-br from-emerald-600 to-teal-600 rounded-lg flex items-center justify-center">
+                <TrendingUp className="w-5 h-5 text-white" />
               </div>
-              <span className="text-xl font-black">
-                IPO<span className="text-blue-400">Tracker</span>
-              </span>
+              <span className="text-lg font-bold">FINNOTIA</span>
             </Link>
-            <p className="text-gray-400 mb-6 leading-relaxed">
-              AI-powered stock market analysis platform helping investors make smarter decisions with real-time data, predictions, and insights.
+            <p className="text-xs text-gray-400 mb-4 leading-relaxed">
+              AI-powered IPO predictions and stock market analysis platform. Make smarter investment decisions with real-time data and intelligent insights.
             </p>
-            <div className="space-y-3">
-              <div className="flex items-center gap-3 text-gray-400">
-                <Mail className="w-5 h-5 text-blue-400" />
-                <span>support@ipotracker.com</span>
+            <div className="space-y-2">
+              <div className="flex items-center gap-2 text-gray-400 text-xs">
+                <Mail className="w-4 h-4 text-emerald-400" />
+                <span>support@finnotia.com</span>
               </div>
-              <div className="flex items-center gap-3 text-gray-400">
-                <Phone className="w-5 h-5 text-blue-400" />
-                <span>+91 98765 43210</span>
-              </div>
-              <div className="flex items-center gap-3 text-gray-400">
-                <MapPin className="w-5 h-5 text-blue-400" />
-                <span>Mumbai, Maharashtra, India</span>
+              <div className="flex items-center gap-2 text-gray-400 text-xs">
+                <Mail className="w-4 h-4 text-emerald-400" />
+                <span>contact@finnotia.com</span>
               </div>
             </div>
           </div>
 
           {/* Product Links */}
           <div>
-            <h3 className="text-lg font-bold mb-4">Product</h3>
-            <ul className="space-y-3">
+            <h3 className="text-sm font-bold mb-3">Product</h3>
+            <ul className="space-y-2">
               {footerLinks.product.map((link) => (
                 <li key={link.name}>
-                  <Link
+                  <a
                     href={link.href}
-                    className="text-gray-400 hover:text-white transition-colors duration-200"
+                    target={link.href.startsWith('http') ? '_blank' : '_self'}
+                    rel={link.href.startsWith('http') ? 'noopener noreferrer' : ''}
+                    className="text-xs text-gray-400 hover:text-white transition-colors duration-200"
                   >
                     {link.name}
-                  </Link>
+                  </a>
                 </li>
               ))}
             </ul>
@@ -84,13 +76,13 @@ export default function Footer() {
 
           {/* Company Links */}
           <div>
-            <h3 className="text-lg font-bold mb-4">Company</h3>
-            <ul className="space-y-3">
+            <h3 className="text-sm font-bold mb-3">Company</h3>
+            <ul className="space-y-2">
               {footerLinks.company.map((link) => (
                 <li key={link.name}>
                   <Link
                     href={link.href}
-                    className="text-gray-400 hover:text-white transition-colors duration-200"
+                    className="text-xs text-gray-400 hover:text-white transition-colors duration-200"
                   >
                     {link.name}
                   </Link>
@@ -101,13 +93,13 @@ export default function Footer() {
 
           {/* Legal Links */}
           <div>
-            <h3 className="text-lg font-bold mb-4">Legal</h3>
-            <ul className="space-y-3">
+            <h3 className="text-sm font-bold mb-3">Legal</h3>
+            <ul className="space-y-2">
               {footerLinks.legal.map((link) => (
                 <li key={link.name}>
                   <Link
                     href={link.href}
-                    className="text-gray-400 hover:text-white transition-colors duration-200"
+                    className="text-xs text-gray-400 hover:text-white transition-colors duration-200"
                   >
                     {link.name}
                   </Link>
@@ -118,15 +110,15 @@ export default function Footer() {
         </div>
 
         {/* Divider */}
-        <div className="border-t border-gray-800 pt-8">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="border-t border-gray-800 pt-6">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             {/* Copyright */}
-            <p className="text-gray-400 text-sm">
-              © {new Date().getFullYear()} IPO Tracker. All rights reserved.
+            <p className="text-gray-400 text-xs">
+              © {new Date().getFullYear()} FINNOTIA. All rights reserved.
             </p>
 
             {/* Social Links */}
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
               {socialLinks.map((social) => {
                 const Icon = social.icon;
                 return (
@@ -136,9 +128,9 @@ export default function Footer() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={social.label}
-                    className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center text-gray-400 hover:bg-blue-600 hover:text-white transition-all duration-300"
+                    className="w-8 h-8 bg-gray-800 rounded-lg flex items-center justify-center text-gray-400 hover:bg-emerald-600 hover:text-white transition-all duration-300"
                   >
-                    <Icon className="w-5 h-5" />
+                    <Icon className="w-4 h-4" />
                   </a>
                 );
               })}

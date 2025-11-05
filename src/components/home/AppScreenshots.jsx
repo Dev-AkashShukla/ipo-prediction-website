@@ -52,7 +52,8 @@ export default function AppScreenshots() {
         </motion.div>
 
         {/* Screenshots Grid */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+        {/* Screenshots Grid */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 max-w-4xl mx-auto">
           {screenshots.map((screen, index) => {
             const Icon = screen.icon;
             return (
@@ -66,35 +67,35 @@ export default function AppScreenshots() {
                 className="relative group"
               >
                 {/* Phone Frame */}
-                <div className="relative bg-gray-900 rounded-2xl p-2 shadow-xl">
+                <div className="relative bg-gray-900 rounded-xl sm:rounded-2xl p-1.5 sm:p-2 shadow-xl max-w-[160px] sm:max-w-none mx-auto">
                   {/* Notch */}
-                  <div className="absolute top-2 left-1/2 -translate-x-1/2 w-16 h-4 bg-gray-900 rounded-b-lg z-10" />
+                  <div className="absolute top-1.5 sm:top-2 left-1/2 -translate-x-1/2 w-10 sm:w-16 h-3 sm:h-4 bg-gray-900 rounded-b-lg z-10" />
                   
                   {/* Screen */}
-                  <div className={`relative bg-gradient-to-br ${screen.color} rounded-xl aspect-[9/19] overflow-hidden`}>
+                  <div className={`relative bg-gradient-to-br ${screen.color} rounded-lg sm:rounded-xl aspect-[9/19] overflow-hidden`}>
                     {/* Content */}
-                    <div className="absolute inset-0 flex flex-col items-center justify-center p-4">
-                      <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center mb-3">
-                        <Icon className="w-6 h-6 text-white" />
+                    <div className="absolute inset-0 flex flex-col items-center justify-center p-2 sm:p-4">
+                      <div className="w-8 h-8 sm:w-12 sm:h-12 bg-white/20 backdrop-blur-sm rounded-lg sm:rounded-xl flex items-center justify-center mb-2 sm:mb-3">
+                        <Icon className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
                       </div>
-                      <div className="space-y-2 w-full">
-                        <div className="h-2 bg-white/30 rounded-full" />
-                        <div className="h-2 bg-white/20 rounded-full w-3/4" />
-                        <div className="h-2 bg-white/20 rounded-full w-1/2" />
+                      <div className="space-y-1 sm:space-y-2 w-full">
+                        <div className="h-1.5 sm:h-2 bg-white/30 rounded-full" />
+                        <div className="h-1.5 sm:h-2 bg-white/20 rounded-full w-3/4" />
+                        <div className="h-1.5 sm:h-2 bg-white/20 rounded-full w-1/2" />
                       </div>
                     </div>
 
                     {/* Phone Icon */}
-                    <div className="absolute top-3 right-3">
-                      <Smartphone className="w-4 h-4 text-white/50" />
+                    <div className="absolute top-2 sm:top-3 right-2 sm:right-3">
+                      <Smartphone className="w-3 h-3 sm:w-4 sm:h-4 text-white/50" />
                     </div>
                   </div>
                 </div>
 
                 {/* Title */}
-                <div className="text-center mt-3">
-                  <h3 className="text-sm sm:text-base font-bold text-gray-900 mb-1">{screen.title}</h3>
-                  <p className="text-xs text-gray-600">{screen.description}</p>
+                <div className="text-center mt-2 sm:mt-3">
+                  <h3 className="text-xs sm:text-base font-bold text-gray-900 mb-0.5 sm:mb-1">{screen.title}</h3>
+                  <p className="text-[10px] sm:text-xs text-gray-600">{screen.description}</p>
                 </div>
               </motion.div>
             );

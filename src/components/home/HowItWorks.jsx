@@ -7,13 +7,13 @@ const steps = [
     icon: Download,
     title: 'Download App',
     description: 'Get FINNOTIA from Google Play Store. Available for all Android devices.',
-    color: 'from-emerald-500 to-teal-500',
+    color: 'from-[#4A90E2] to-[#2E5CB8]',
   },
   {
     icon: Smartphone,
     title: 'Setup Account',
     description: 'Quick one-time setup to personalize your experience and preferences.',
-    color: 'from-teal-500 to-cyan-500',
+    color: 'from-[#2E5CB8] to-[#3B82F6]',
   },
   {
     icon: TrendingUp,
@@ -31,28 +31,28 @@ const steps = [
 
 export default function HowItWorks() {
   return (
-    <section id="how" className="py-12 sm:py-16 bg-gray-50">
+    <section id="how" className="py-8 sm:py-12 bg-gray-50">
       <div className="container mx-auto px-4">
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-10"
+          className="text-center mb-6 sm:mb-8"
         >
-          <span className="inline-block px-3 py-1 bg-teal-100 text-teal-600 rounded-full text-xs font-semibold mb-3">
+          <span className="inline-block px-3 py-1 bg-blue-100 text-[#2E5CB8] rounded-full text-xs font-semibold mb-2 sm:mb-3">
             Getting Started
           </span>
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-3">
-            Start in <span className="bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">4 Simple Steps</span>
+          <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-2 sm:mb-3">
+            Start in <span className="bg-gradient-to-r from-[#4A90E2] to-[#1E3A8A] bg-clip-text text-transparent">4 Simple Steps</span>
           </h2>
-          <p className="text-sm sm:text-base text-gray-600 max-w-2xl mx-auto">
+          <p className="text-xs sm:text-sm lg:text-base text-gray-600 max-w-2xl mx-auto">
             Getting started is easy. Download the app and begin your smart investing journey today.
           </p>
         </motion.div>
 
         {/* Steps */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 max-w-6xl mx-auto">
           {steps.map((step, index) => {
             const Icon = step.icon;
             return (
@@ -70,19 +70,19 @@ export default function HowItWorks() {
                 )}
 
                 {/* Card */}
-                <div className="relative bg-white rounded-xl p-5 shadow-md hover:shadow-lg transition-shadow duration-300 z-10">
+                <div className="relative bg-white rounded-xl p-3 sm:p-4 lg:p-5 shadow-md hover:shadow-lg transition-shadow duration-300 z-10">
                   {/* Step Number */}
-                  <div className="absolute -top-3 -left-3 w-10 h-10 bg-gradient-to-br from-emerald-600 to-teal-600 text-white rounded-lg flex items-center justify-center text-lg font-bold shadow-md">
+                  <div className="absolute -top-2 -left-2 sm:-top-3 sm:-left-3 w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-[#4A90E2] to-[#2E5CB8] text-white rounded-lg flex items-center justify-center text-base sm:text-lg font-bold shadow-md">
                     {index + 1}
                   </div>
 
                   {/* Icon */}
-                  <div className={`w-12 h-12 bg-gradient-to-br ${step.color} rounded-lg flex items-center justify-center mb-4 mx-auto`}>
-                    <Icon className="w-6 h-6 text-white" />
+                  <div className={`w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br ${step.color} rounded-lg flex items-center justify-center mb-3 sm:mb-4 mx-auto`}>
+                    <Icon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                   </div>
 
                   {/* Content */}
-                  <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-2 text-center">
+                  <h3 className="text-sm sm:text-base lg:text-lg font-bold text-gray-900 mb-1.5 sm:mb-2 text-center">
                     {step.title}
                   </h3>
                   <p className="text-xs sm:text-sm text-gray-600 text-center leading-relaxed">

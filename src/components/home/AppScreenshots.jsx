@@ -7,13 +7,13 @@ const screenshots = [
     title: 'Live Dashboard',
     description: 'Real-time market overview',
     icon: BarChart3,
-    color: 'from-emerald-500 to-teal-500',
+    color: 'from-[#4A90E2] to-[#2E5CB8]',
   },
   {
     title: 'Stock Analysis',
     description: 'AI-powered stock insights',
     icon: TrendingUp,
-    color: 'from-teal-500 to-cyan-500',
+    color: 'from-[#2E5CB8] to-[#3B82F6]',
   },
   {
     title: 'Market Alerts',
@@ -25,7 +25,7 @@ const screenshots = [
     title: 'News Feed',
     description: 'Latest market news',
     icon: Newspaper,
-    color: 'from-emerald-500 to-green-500',
+    color: 'from-[#4A90E2] to-[#1E3A8A]',
   },
 ];
 
@@ -40,18 +40,17 @@ export default function AppScreenshots() {
           viewport={{ once: true }}
           className="text-center mb-10"
         >
-          <span className="inline-block px-3 py-1 bg-emerald-100 text-emerald-600 rounded-full text-xs font-semibold mb-3">
+          <span className="inline-block px-3 py-1 bg-blue-100 text-[#2E5CB8] rounded-full text-xs font-semibold mb-3">
             App Preview
           </span>
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-3">
-            Beautiful & <span className="bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">Intuitive Design</span>
+            Beautiful & <span className="bg-gradient-to-r from-[#4A90E2] to-[#1E3A8A] bg-clip-text text-transparent">Intuitive Design</span>
           </h2>
           <p className="text-sm sm:text-base text-gray-600 max-w-2xl mx-auto">
             Experience a modern, user-friendly interface designed for both beginners and professionals.
           </p>
         </motion.div>
 
-        {/* Screenshots Grid */}
         {/* Screenshots Grid */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 max-w-4xl mx-auto">
           {screenshots.map((screen, index) => {
@@ -101,7 +100,6 @@ export default function AppScreenshots() {
             );
           })}
         </div>
-      
       </div>
     </section>
   );

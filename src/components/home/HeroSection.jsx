@@ -92,7 +92,7 @@ export default function HeroSection() {
           </motion.div>
 
           {/* Stats */}
-          <motion.div
+          {/* <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6, duration: 0.8 }}
@@ -110,7 +110,7 @@ export default function HeroSection() {
               <div className="text-lg sm:text-xl lg:text-2xl font-bold text-[#3B82F6]">99%</div>
               <div className="text-xs text-gray-600">Uptime</div>
             </div>
-          </motion.div>
+          </motion.div> */}
         </div>
       </div>
 

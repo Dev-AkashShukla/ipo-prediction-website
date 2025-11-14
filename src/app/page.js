@@ -12,7 +12,7 @@ export default function HomePage() {
       <FeaturesSection />
       <HowItWorks />
       <AppScreenshots />
-      <StatsSection />
+      {/* <StatsSection /> */}
       <CTASection />
     </>
   );

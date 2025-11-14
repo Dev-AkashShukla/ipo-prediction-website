@@ -1,6 +1,10 @@
 'use client';
 import { Brain, TrendingUp, Bell, BarChart3, Shield, Zap, Smartphone, Globe, Lock, Newspaper } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { seoConfig, pageMetadata } from '../../lib/seo-metadata';
+
+// This metadata would go in a separate metadata file for client components
+// Or use Next.js 14's generateMetadata for server components
 
 const allFeatures = [
   {
@@ -77,100 +81,119 @@ const allFeatures = [
 
 export default function FeaturesPage() {
   return (
-    <div className="min-h-screen bg-white pt-24 pb-16">
-      <div className="container mx-auto px-4">
-        {/* Header */}
-        <div className="text-center mb-16">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="inline-block px-4 py-2 bg-emerald-100 text-emerald-600 rounded-full text-sm font-semibold mb-4"
+    <>
+      {/* SEO: Add structured data for features */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'ItemList',
+            itemListElement: allFeatures.map((feature, index) => ({
+              '@type': 'ListItem',
+              position: index + 1,
+              name: feature.title,
+              description: feature.description,
+            })),
+          }),
+        }}
+      />
+
+      <div className="min-h-screen bg-white pt-24 pb-16">
+        <div className="container mx-auto px-4">
+          {/* Header with SEO-friendly content */}
+          <header className="text-center mb-16">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="inline-block px-4 py-2 bg-emerald-100 text-emerald-600 rounded-full text-sm font-semibold mb-4"
+            >
+              All Features
+            </motion.div>
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="text-4xl sm:text-5xl lg:text-6xl font-black text-gray-900 mb-6"
+            >
+              Everything You Need to <span className="bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">Invest Smart</span>
+            </motion.h1>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="text-xl text-gray-600 max-w-3xl mx-auto"
+            >
+              Discover all the powerful features that make FINNOTIA the most comprehensive IPO prediction and market analysis platform for Indian investors.
+            </motion.p>
+          </header>
+
+          {/* Features Grid with semantic HTML */}
+          <section className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+            {allFeatures.map((feature, index) => {
+              const Icon = feature.icon;
+              return (
+                <motion.article
+                  key={index}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: index * 0.05 }}
+                  className="bg-white border-2 border-gray-100 rounded-2xl p-8 hover:border-transparent hover:shadow-2xl transition-all duration-300 group"
+                >
+                  {/* Icon */}
+                  <div className={`w-16 h-16 bg-gradient-to-br ${feature.color} rounded-2xl flex items-center justify-center mb-6 transform group-hover:scale-110 group-hover:rotate-3 transition-all duration-300`}>
+                    <Icon className="w-8 h-8 text-white" />
+                  </div>
+
+                  {/* Title */}
+                  <h2 className="text-2xl font-bold text-gray-900 mb-4">
+                    {feature.title}
+                  </h2>
+
+                  {/* Description */}
+                  <p className="text-gray-600 mb-6 leading-relaxed">
+                    {feature.description}
+                  </p>
+
+                  {/* Benefits */}
+                  <ul className="space-y-2">
+                    {feature.benefits.map((benefit, i) => (
+                      <li key={i} className="flex items-center gap-2 text-gray-700">
+                        <div className="w-1.5 h-1.5 bg-emerald-600 rounded-full" />
+                        <span>{benefit}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </motion.article>
+              );
+            })}
+          </section>
+
+          {/* CTA Section */}
+          <motion.section
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mt-16"
           >
-            All Features
-          </motion.div>
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="text-4xl sm:text-5xl lg:text-6xl font-black text-gray-900 mb-6"
-          >
-            Everything You Need to <span className="bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">Invest Smart</span>
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="text-xl text-gray-600 max-w-3xl mx-auto"
-          >
-            Discover all the powerful features that make FINNOTIA the most comprehensive market analysis platform for Indian investors.
-          </motion.p>
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+              Ready to Experience All These Features?
+            </h2>
+            <p className="text-xl text-gray-600 mb-8">
+              Download FINNOTIA from Google Play Store today and start making smarter IPO investment decisions.
+            </p>
+            <a
+              href="https://play.google.com/store/apps/details?id=com.finnotia"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block bg-gradient-to-r from-emerald-600 to-teal-600 text-white px-10 py-4 rounded-xl font-bold text-lg hover:shadow-2xl hover:scale-105 transition-all duration-300"
+            >
+              Download App
+            </a>
+          </motion.section>
         </div>
-
-        {/* Features Grid */}
-        <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
-          {allFeatures.map((feature, index) => {
-            const Icon = feature.icon;
-            return (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: index * 0.05 }}
-                className="bg-white border-2 border-gray-100 rounded-2xl p-8 hover:border-transparent hover:shadow-2xl transition-all duration-300 group"
-              >
-                {/* Icon */}
-                <div className={`w-16 h-16 bg-gradient-to-br ${feature.color} rounded-2xl flex items-center justify-center mb-6 transform group-hover:scale-110 group-hover:rotate-3 transition-all duration-300`}>
-                  <Icon className="w-8 h-8 text-white" />
-                </div>
-
-                {/* Title */}
-                <h3 className="text-2xl font-bold text-gray-900 mb-4">
-                  {feature.title}
-                </h3>
-
-                {/* Description */}
-                <p className="text-gray-600 mb-6 leading-relaxed">
-                  {feature.description}
-                </p>
-
-                {/* Benefits */}
-                <ul className="space-y-2">
-                  {feature.benefits.map((benefit, i) => (
-                    <li key={i} className="flex items-center gap-2 text-gray-700">
-                      <div className="w-1.5 h-1.5 bg-emerald-600 rounded-full" />
-                      <span>{benefit}</span>
-                    </li>
-                  ))}
-                </ul>
-              </motion.div>
-            );
-          })}
-        </div>
-
-        {/* CTA */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mt-16"
-        >
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">
-            Ready to Experience All These Features?
-          </h2>
-          <p className="text-xl text-gray-600 mb-8">
-            Download FINNOTIA from Google Play Store today and start making smarter investment decisions.
-          </p>
-          <a
-            href="https://play.google.com/store/apps/details?id=com.finnotia"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-block bg-gradient-to-r from-emerald-600 to-teal-600 text-white px-10 py-4 rounded-xl font-bold text-lg hover:shadow-2xl hover:scale-105 transition-all duration-300"
-          >
-            Download App
-          </a>
-        </motion.div>
       </div>
-    </div>
+    </>
   );
 }

@@ -161,12 +161,12 @@ export default function ContactPage() {
                   <div className="min-w-0 flex-1">
                     <h3 className="text-xs font-bold text-gray-900 mb-1">Email Us</h3>
                     <div className="space-y-0.5">
-                      <a 
+                      {/* <a 
                         href="mailto:support@finnotia.com" 
                         className="block text-xs sm:text-sm text-gray-600 hover:text-[#4A90E2] transition-colors truncate"
                       >
                         support@finnotia.com
-                      </a>
+                      </a> */}
                       <a 
                         href="mailto:contact@finnotia.com" 
                         className="block text-xs sm:text-sm text-gray-600 hover:text-[#4A90E2] transition-colors truncate"

@@ -369,10 +369,10 @@ export default function TermsConditions() {
                   Questions about these Terms? Contact us:
                 </p>
                 <div className="space-y-1 text-xs">
-                  <p>
+                  {/* <p>
                     <strong>Email:</strong>{' '}
                     <a href="mailto:legal@finnotia.com" className="underline">legal@finnotia.com</a>
-                  </p>
+                  </p> */}
                   <p>
                     <strong>Support:</strong>{' '}
                     <a href="mailto:support@finnotia.com" className="underline">support@finnotia.com</a>

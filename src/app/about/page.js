@@ -24,7 +24,15 @@ export const metadata = {
 };
 
 export default function AboutPage() {
-  // Structured data for About page
+  // Data extracted for cleaner rendering
+  const offerings = [
+    "AI-powered IPO predictions with 95% accuracy on listing gains",
+    "Real-time stock market analysis and technical indicators",
+    "Breaking financial news and IPO announcements",
+    "Comprehensive mutual fund analysis and recommendations",
+    "Smart alerts for IPO openings, GMP updates, and market movements"
+  ];
+
   const aboutJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'AboutPage',
@@ -40,79 +48,82 @@ export default function AboutPage() {
 
   return (
     <>
-      {/* Structured Data */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(aboutJsonLd) }}
       />
 
-      <div className="min-h-screen bg-white pt-24 pb-16">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <header>
-              <h1 className="text-4xl sm:text-5xl font-black text-gray-900 mb-6">
-                About <span className="bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">FINNOTIA</span>
+      {/* Adjusted padding for compact mobile view */}
+      <div className="min-h-screen bg-white pt-20 pb-10 sm:pt-24 sm:pb-16">
+        <div className="container mx-auto px-4 sm:px-6">
+          <div className="max-w-3xl mx-auto">
+            
+            {/* Compact Header */}
+            <header className="text-center sm:text-left mb-6 sm:mb-8">
+              <h1 className="text-3xl sm:text-5xl font-black text-gray-900">
+                About <span className="bg-gradient-to-r from-[#4A90E2] to-[#2E5AAD] bg-clip-text text-transparent">FINNOTIA</span>
               </h1>
             </header>
             
-            <article className="prose prose-lg max-w-none">
-              <p className="text-xl text-gray-600 mb-8">
-                FINNOTIA is India's leading AI-powered IPO prediction and stock market analysis platform, helping millions of investors make smarter investment decisions with real-time data and intelligent insights.
+            {/* Content Wrapper - Removing prose-lg for tighter fit */}
+            <article className="space-y-8 text-gray-700">
+              
+              {/* Intro */}
+              <p className="text-base sm:text-lg font-medium text-gray-600 leading-relaxed">
+                FINNOTIA is India's leading AI-powered IPO prediction platform, helping millions make smarter decisions with real-time data and intelligent insights.
               </p>
 
-              <section>
-                <h2 className="text-3xl font-bold text-gray-900 mt-12 mb-4">Our Mission</h2>
-                <p className="text-gray-700 leading-relaxed mb-6">
-                  We believe that every investor deserves access to professional-grade IPO analysis and stock market predictions. Our mission is to democratize financial intelligence by providing cutting-edge AI technology for IPO predictions that was previously available only to institutional investors.
+              {/* Sections with Grid Layout for Compactness */}
+              <div className="grid gap-8 sm:gap-10">
+                
+                {/* Mission */}
+                <section>
+                  <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">Our Mission</h2>
+                  <p className="text-sm sm:text-base leading-relaxed text-gray-600">
+                    We democratize financial intelligence by providing professional-grade AI technology for IPO predictions, previously available only to institutional investors.
+                  </p>
+                </section>
+
+                {/* Offerings - Optimized List */}
+                <section>
+                  <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">What We Offer</h2>
+                  <ul className="space-y-2.5">
+                    {offerings.map((item, index) => (
+                      <li key={index} className="flex items-start gap-2.5 text-sm sm:text-base">
+                        <span className="text-[#4A90E2] font-bold mt-0.5">•</span>
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+
+                {/* Team & Why Choose Combined visually in style */}
+                <div className="grid sm:grid-cols-2 gap-8">
+                  <section>
+                    <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">Our Team</h2>
+                    <p className="text-sm sm:text-base leading-relaxed text-gray-600">
+                      Founded by expert analysts and data scientists, combining decades of market expertise with cutting-edge AI to deliver India's best financial platform.
+                    </p>
+                  </section>
+
+                  <section>
+                    <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">Why Us?</h2>
+                    <p className="text-sm sm:text-base leading-relaxed text-gray-600">
+                      With 95% accuracy in IPO predictions and real-time data, every feature is designed for your profit. Download FINNOTIA today.
+                    </p>
+                  </section>
+                </div>
+
+              </div>
+
+              {/* Compact Disclaimer */}
+              <section className="mt-8 p-4 bg-gray-50 rounded-lg border border-gray-100">
+                <h3 className="text-sm font-bold text-gray-900 mb-1">Disclaimer</h3>
+                <p className="text-xs text-gray-500 leading-relaxed text-justify">
+                  FINNOTIA provides AI-generated analysis for informational purposes only. We are NOT SEBI registered. This is NOT investment advice. Investments carry market risks; please consult a financial advisor.
                 </p>
               </section>
 
-              <section>
-                <h2 className="text-3xl font-bold text-gray-900 mt-12 mb-4">What We Offer</h2>
-                <ul className="space-y-4 text-gray-700">
-                  <li className="flex items-start gap-3">
-                    <span className="text-emerald-600 font-bold">•</span>
-                    <span>AI-powered IPO predictions with 95% accuracy on listing gains</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <span className="text-emerald-600 font-bold">•</span>
-                    <span>Real-time stock market analysis and technical indicators</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <span className="text-emerald-600 font-bold">•</span>
-                    <span>Breaking financial news and IPO announcements</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <span className="text-emerald-600 font-bold">•</span>
-                    <span>Comprehensive mutual fund analysis and recommendations</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <span className="text-emerald-600 font-bold">•</span>
-                    <span>Smart alerts for IPO openings, GMP updates, and market movements</span>
-                  </li>
-                </ul>
-              </section>
-
-              <section>
-                <h2 className="text-3xl font-bold text-gray-900 mt-12 mb-4">Our Team</h2>
-                <p className="text-gray-700 leading-relaxed mb-6">
-                  Founded by a team of experienced financial analysts, data scientists, and software engineers, FINNOTIA combines decades of market expertise with cutting-edge AI technology to deliver the best financial intelligence platform in India.
-                </p>
-              </section>
-
-              <section>
-                <h2 className="text-3xl font-bold text-gray-900 mt-12 mb-4">Why Choose FINNOTIA?</h2>
-                <p className="text-gray-700 leading-relaxed mb-6">
-                  We're committed to providing accurate IPO predictions and timely market insights. With 95% accuracy in IPO predictions and real-time market data, every feature is designed to help you make profitable investment decisions. Download FINNOTIA today and start making smarter IPO and stock investments.
-                </p>
-              </section>
-
-              <section className="mt-12 p-6 bg-gray-50 rounded-xl">
-                <h3 className="text-xl font-bold text-gray-900 mb-3">Important Disclaimer</h3>
-                <p className="text-sm text-gray-600 leading-relaxed">
-                  FINNOTIA provides AI-generated market analysis and predictions for informational purposes only. We are NOT registered with SEBI or any regulatory authority. This is NOT investment advice. All investments carry market risks, and you are solely responsible for your investment decisions. Always conduct your own research and consult qualified financial advisors before making investment decisions.
-                </p>
-              </section>
             </article>
           </div>
         </div>

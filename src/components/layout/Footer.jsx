@@ -5,8 +5,8 @@ import { Mail } from 'lucide-react';
 
 const footerLinks = {
   product: [
-    { name: 'Features', href: '#features' },
-    { name: 'How It Works', href: '#how' },
+    { name: 'Features', href: '/#features' },
+    { name: 'How It Works', href: '/#how' },
     { name: 'Download App', href: 'https://play.google.com/store/apps/details?id=com.finnotia' },
   ],
   company: [

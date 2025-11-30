@@ -1,12 +1,12 @@
 'use client';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Mail, Facebook, Twitter, Linkedin, Instagram } from 'lucide-react';
+import { Mail } from 'lucide-react';
 
 const footerLinks = {
   product: [
-    { name: 'Features', href: '#features' },
-    { name: 'How It Works', href: '#how' },
+    { name: 'Features', href: '/#features' },
+    { name: 'How It Works', href: '/#how' },
     { name: 'Download App', href: 'https://play.google.com/store/apps/details?id=com.finnotia' },
   ],
   company: [
@@ -19,13 +19,6 @@ const footerLinks = {
     { name: 'Disclaimer', href: '/disclaimer' },
   ],
 };
-
-// const socialLinks = [
-//   { icon: Facebook, href: 'https://facebook.com', label: 'Facebook' },
-//   { icon: Twitter, href: 'https://twitter.com', label: 'Twitter' },
-//   { icon: Linkedin, href: 'https://linkedin.com', label: 'LinkedIn' },
-//   { icon: Instagram, href: 'https://instagram.com', label: 'Instagram' },
-// ];
 
 export default function Footer() {
   return (
@@ -128,25 +121,6 @@ export default function Footer() {
             <p className="text-gray-500 text-xs">
               © {new Date().getFullYear()} FINNOTIA. All rights reserved.
             </p>
-
-            {/* Social Links */}
-            {/* <div className="flex items-center gap-3">
-              {socialLinks.map((social) => {
-                const Icon = social.icon;
-                return (
-                  <a
-                    key={social.label}
-                    href={social.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={social.label}
-                    className="w-8 h-8 bg-gray-900 rounded-lg flex items-center justify-center text-gray-400 hover:bg-[#4A90E2] hover:text-white transition-all duration-300"
-                  >
-                    <Icon className="w-4 h-4" />
-                  </a>
-                );
-              })}
-            </div> */}
           </div>
         </div>
       </div>

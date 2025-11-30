@@ -6,9 +6,9 @@ import Image from 'next/image';
 
 const navLinks = [
   { name: 'Home', href: '/' },
-  { name: 'Features', href: '#features' },
-  { name: 'How It Works', href: '#how' },
-  { name: 'Contact', href: '#contact' },
+  { name: 'Features', href: '/#features' },     // Change: Added '/' before '#'
+  { name: 'How It Works', href: '/#how' },      // Change: Added '/' before '#'
+  { name: 'Contact', href: '/contact' },
 ];
 
 export default function Header() {

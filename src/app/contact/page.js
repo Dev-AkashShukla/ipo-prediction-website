@@ -1,9 +1,6 @@
 'use client';
-import { Mail, Phone, MapPin, Send } from 'lucide-react';
+import { Mail, Send, Loader2 } from 'lucide-react';
 import { useState } from 'react';
-
-// Note: For client components in Next.js 14, metadata should be exported from parent layout or page.js file
-// This component focuses on structured data and semantic HTML
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -12,228 +9,251 @@ export default function ContactPage() {
     subject: '',
     message: '',
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState(null);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    alert('Thank you for contacting us! We will get back to you soon at ' + formData.email);
-    setFormData({ name: '', email: '', subject: '', message: '' });
+  const handleSubmit = async () => {
+    setIsSubmitting(true);
+    setSubmitStatus(null);
+
+    try {
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          access_key: '2f120dc1-db63-4c1a-ac3f-1d85612a6678',
+          from_name: formData.name,
+          email: formData.email,
+          subject: formData.subject,
+          message: formData.message,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        setSubmitStatus('success');
+        setFormData({ name: '', email: '', subject: '', message: '' });
+      } else {
+        setSubmitStatus('error');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      setSubmitStatus('error');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Structured data for Contact page
-  const contactJsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'ContactPage',
-    mainEntity: {
-      '@type': 'Organization',
-      name: 'FINNOTIA',
-      url: 'https://finnotia.com',
-      contactPoint: [
-        {
-          '@type': 'ContactPoint',
-          telephone: '+91-98765-43210',
-          contactType: 'customer support',
-          email: 'support@finnotia.com',
-          availableLanguage: ['English', 'Hindi'],
-          areaServed: 'IN',
-        },
-      ],
-      address: {
-        '@type': 'PostalAddress',
-        addressLocality: 'Mumbai',
-        addressRegion: 'Maharashtra',
-        addressCountry: 'IN',
-      },
-    },
-  };
-
   return (
-    <>
-      {/* Structured Data */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(contactJsonLd) }}
-      />
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50/30 py-4 sm:py-8 px-3 sm:px-6">
+      <div className="max-w-6xl mx-auto">
+        
+        {/* Header - More Compact for Mobile */}
+        <header className="text-center mb-4 mt-8 sm:mb-8 sm:mt-12">
+          <h1 className="text-xl sm:text-3xl lg:text-4xl font-black text-gray-900 mb-1.5">
+            Get in <span className="bg-gradient-to-r from-[#4A90E2] to-[#2E5AAD] bg-clip-text text-transparent">Touch</span>
+          </h1>
+          <p className="text-xs sm:text-sm text-gray-600 max-w-xl mx-auto px-2">
+            Have questions? We'd love to hear from you.
+          </p>
+        </header>
 
-      <div className="min-h-screen bg-gray-50 pt-24 pb-16">
-        <div className="container mx-auto px-4">
-          <div className="max-w-6xl mx-auto">
-            <header className="text-center mb-12">
-              <h1 className="text-4xl sm:text-5xl font-black text-gray-900 mb-4">
-                Get in <span className="bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">Touch</span>
-              </h1>
-              <p className="text-xl text-gray-600">
-                Have questions about IPO predictions or stock analysis? We'd love to hear from you. Send us a message and we'll respond as soon as possible.
-              </p>
-            </header>
+        <div className="grid lg:grid-cols-5 gap-3 sm:gap-5">
+          
+          {/* Main Form */}
+          <section className="lg:col-span-3 bg-white rounded-xl sm:rounded-2xl shadow-xl p-4 sm:p-6 lg:p-8">
+            <h2 className="text-base sm:text-lg font-bold text-gray-900 mb-3 sm:mb-5">Send a Message</h2>
+            
+            {/* Success Message */}
+            {submitStatus === 'success' && (
+              <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg">
+                <p className="text-xs sm:text-sm text-green-800 font-semibold">
+                  ✓ Message sent successfully! We'll get back to you soon.
+                </p>
+              </div>
+            )}
 
-            <div className="grid lg:grid-cols-2 gap-12">
-              {/* Contact Form */}
-              <section className="bg-white rounded-2xl shadow-xl p-8">
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">Send us a message</h2>
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  <div>
-                    <label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-2">
-                      Your Name
-                    </label>
-                    <input
-                      id="name"
-                      type="text"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleChange}
-                      required
-                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-emerald-600 focus:outline-none transition-colors"
-                      placeholder="John Doe"
-                      aria-label="Your full name"
-                    />
-                  </div>
+            {/* Error Message */}
+            {submitStatus === 'error' && (
+              <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+                <p className="text-xs sm:text-sm text-red-800 font-semibold">
+                  ✗ Something went wrong. Please try again.
+                </p>
+              </div>
+            )}
 
-                  <div>
-                    <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2">
-                      Email Address
-                    </label>
-                    <input
-                      id="email"
-                      type="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      required
-                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-emerald-600 focus:outline-none transition-colors"
-                      placeholder="john@example.com"
-                      aria-label="Your email address"
-                    />
-                  </div>
+            <div className="space-y-3 sm:space-y-4">
+              
+              {/* Name & Email Row */}
+              <div className="grid sm:grid-cols-2 gap-3">
+                <div>
+                  <label htmlFor="name" className="block text-xs font-semibold text-gray-700 mb-1.5">
+                    Name *
+                  </label>
+                  <input
+                    id="name"
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    required
+                    disabled={isSubmitting}
+                    className="w-full px-3 py-2 text-xs sm:text-sm border border-gray-200 rounded-lg focus:border-[#4A90E2] focus:ring-2 focus:ring-[#4A90E2]/20 focus:outline-none transition-all bg-gray-50/50 focus:bg-white disabled:opacity-50"
+                    placeholder="Your Name"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="email" className="block text-xs font-semibold text-gray-700 mb-1.5">
+                    Email *
+                  </label>
+                  <input
+                    id="email"
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
+                    disabled={isSubmitting}
+                    className="w-full px-3 py-2 text-xs sm:text-sm border border-gray-200 rounded-lg focus:border-[#4A90E2] focus:ring-2 focus:ring-[#4A90E2]/20 focus:outline-none transition-all bg-gray-50/50 focus:bg-white disabled:opacity-50"
+                    placeholder="your@example.com"
+                  />
+                </div>
+              </div>
 
-                  <div>
-                    <label htmlFor="subject" className="block text-sm font-semibold text-gray-700 mb-2">
-                      Subject
-                    </label>
-                    <input
-                      id="subject"
-                      type="text"
-                      name="subject"
-                      value={formData.subject}
-                      onChange={handleChange}
-                      required
-                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-emerald-600 focus:outline-none transition-colors"
-                      placeholder="How can we help?"
-                      aria-label="Message subject"
-                    />
-                  </div>
+              {/* Subject */}
+              <div>
+                <label htmlFor="subject" className="block text-xs font-semibold text-gray-700 mb-1.5">
+                  Subject *
+                </label>
+                <input
+                  id="subject"
+                  type="text"
+                  name="subject"
+                  value={formData.subject}
+                  onChange={handleChange}
+                  required
+                  disabled={isSubmitting}
+                  className="w-full px-3 py-2 text-xs sm:text-sm border border-gray-200 rounded-lg focus:border-[#4A90E2] focus:ring-2 focus:ring-[#4A90E2]/20 focus:outline-none transition-all bg-gray-50/50 focus:bg-white disabled:opacity-50"
+                  placeholder="How can we help?"
+                />
+              </div>
 
-                  <div>
-                    <label htmlFor="message" className="block text-sm font-semibold text-gray-700 mb-2">
-                      Message
-                    </label>
-                    <textarea
-                      id="message"
-                      name="message"
-                      value={formData.message}
-                      onChange={handleChange}
-                      required
-                      rows={6}
-                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-emerald-600 focus:outline-none transition-colors resize-none"
-                      placeholder="Tell us more about your inquiry..."
-                      aria-label="Your message"
-                    />
-                  </div>
+              {/* Message */}
+              <div>
+                <label htmlFor="message" className="block text-xs font-semibold text-gray-700 mb-1.5">
+                  Message *
+                </label>
+                <textarea
+                  id="message"
+                  name="message"
+                  value={formData.message}
+                  onChange={handleChange}
+                  required
+                  disabled={isSubmitting}
+                  rows={3}
+                  className="w-full px-3 py-2 text-xs sm:text-sm border border-gray-200 rounded-lg focus:border-[#4A90E2] focus:ring-2 focus:ring-[#4A90E2]/20 focus:outline-none transition-all bg-gray-50/50 focus:bg-white resize-none disabled:opacity-50"
+                  placeholder="Tell us more about your inquiry..."
+                />
+              </div>
 
-                  <button
-                    type="submit"
-                    className="w-full bg-gradient-to-r from-emerald-600 to-teal-600 text-white px-8 py-4 rounded-xl font-bold text-lg hover:shadow-2xl hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2"
-                    aria-label="Send message"
-                  >
-                    Send Message
-                    <Send className="w-5 h-5" />
-                  </button>
-                </form>
-              </section>
+              {/* Submit Button */}
+              <button
+                onClick={handleSubmit}
+                disabled={isSubmitting}
+                className="w-full bg-gradient-to-r from-[#4A90E2] to-[#2E5AAD] text-white px-4 py-2.5 sm:py-3 rounded-lg font-bold text-xs sm:text-sm hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+              >
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>Sending...</span>
+                  </>
+                ) : (
+                  <>
+                    <span>Send Message</span>
+                    <Send className="w-4 h-4" />
+                  </>
+                )}
+              </button>
+            </div>
+          </section>
 
-              {/* Contact Info */}
-              <div className="space-y-8">
-                <section className="bg-white rounded-2xl shadow-xl p-8">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-6">Contact Information</h2>
-                  
-                  <address className="space-y-6 not-italic">
-                    <div className="flex items-start gap-4">
-                      <div className="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                        <Mail className="w-6 h-6 text-emerald-600" aria-hidden="true" />
-                      </div>
-                      <div>
-                        <h3 className="font-bold text-gray-900 mb-1">Email Us</h3>
-                        <a 
-                          href="mailto:support@finnotia.com"
-                          className="text-gray-600 hover:text-emerald-600 transition-colors"
-                        >
-                          support@finnotia.com
-                        </a>
-                        <br />
-                        <a 
-                          href="mailto:contact@finnotia.com"
-                          className="text-gray-600 hover:text-emerald-600 transition-colors"
-                        >
-                          contact@finnotia.com
-                        </a>
-                      </div>
-                    </div>
-
-                    <div className="flex items-start gap-4">
-                      <div className="w-12 h-12 bg-teal-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                        <Phone className="w-6 h-6 text-teal-600" aria-hidden="true" />
-                      </div>
-                      <div>
-                        <h3 className="font-bold text-gray-900 mb-1">Call Us</h3>
-                        <a 
-                          href="tel:+919876543210"
-                          className="text-gray-600 hover:text-teal-600 transition-colors"
-                        >
-                          +91 98765 43210
-                        </a>
-                        <p className="text-gray-600 text-sm">Mon-Fri, 9AM-6PM IST</p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-start gap-4">
-                      <div className="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                        <MapPin className="w-6 h-6 text-emerald-600" aria-hidden="true" />
-                      </div>
-                      <div>
-                        <h3 className="font-bold text-gray-900 mb-1">Visit Us</h3>
-                        <p className="text-gray-600">
-                          Mumbai<br />
-                          Maharashtra<br />
-                          India
-                        </p>
-                      </div>
-                    </div>
-                  </address>
-                </section>
-
-                <aside className="bg-gradient-to-br from-emerald-600 to-teal-600 rounded-2xl shadow-xl p-8 text-white">
-                  <h3 className="text-2xl font-bold mb-4">Get IPO Predictions</h3>
-                  <p className="mb-6">
-                    Get AI-powered IPO predictions and real-time market analysis. Download FINNOTIA and start investing smarter today.
+          {/* Sidebar - More Compact */}
+          <aside className="lg:col-span-2 space-y-3">
+            
+            {/* App Download Card */}
+            <div className="bg-gradient-to-br from-[#4A90E2] to-[#2E5AAD] rounded-xl sm:rounded-2xl shadow-xl p-4 sm:p-5 text-white">
+              <div className="flex items-start gap-2.5 mb-3">
+                <div className="w-9 h-9 bg-white/20 backdrop-blur rounded-lg flex items-center justify-center flex-shrink-0">
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M17.6 9.48l1.84-3.18c.16-.31.04-.69-.26-.85-.29-.15-.65-.06-.83.22l-1.88 3.24a11.5 11.5 0 00-8.94 0L5.65 5.67c-.19-.28-.54-.37-.83-.22-.3.16-.42.54-.26.85L6.4 9.48A10.44 10.44 0 001 18h22a10.44 10.44 0 00-5.4-8.52zM7 15.25a1.25 1.25 0 110-2.5 1.25 1.25 0 010 2.5zm10 0a1.25 1.25 0 110-2.5 1.25 1.25 0 010 2.5z"/>
+                  </svg>
+                </div>
+                <div>
+                  <h3 className="text-sm sm:text-base font-bold mb-0.5">Get FINNOTIA</h3>
+                  <p className="text-xs opacity-90 leading-snug">
+                    Real-time IPO alerts & analysis
                   </p>
-                  <a 
-                    href="https://play.google.com/store/apps/details?id=com.finnotia"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-block bg-white text-emerald-600 px-6 py-3 rounded-xl font-bold hover:shadow-xl transition-all duration-300"
-                    aria-label="Download FINNOTIA app from Google Play Store"
-                  >
-                    Download App
-                  </a>
-                </aside>
+                </div>
+              </div>
+              <a 
+                href="https://play.google.com/store/apps/details?id=com.finnotia"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block text-center bg-white text-[#4A90E2] px-4 py-2 rounded-lg text-xs sm:text-sm font-bold hover:shadow-lg hover:bg-gray-50 active:scale-95 transition-all duration-200"
+              >
+                Download Now
+              </a>
+            </div>
+
+            {/* Contact Information Card */}
+            <div className="bg-white rounded-xl sm:rounded-2xl shadow-xl p-4 sm:p-5">
+              <h2 className="text-sm sm:text-base font-bold text-gray-900 mb-3">Contact Info</h2>
+              
+              <div className="space-y-3">
+                {/* Email */}
+                <div className="flex items-start gap-2.5">
+                  <div className="w-8 h-8 bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <Mail className="w-4 h-4 text-[#4A90E2]" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <h3 className="text-xs font-bold text-gray-900 mb-0.5">Email Us</h3>
+                    <a 
+                      href="mailto:contact@finnotia.com" 
+                      className="block text-xs text-gray-600 hover:text-[#4A90E2] transition-colors truncate"
+                    >
+                      contact@finnotia.com
+                    </a>
+                  </div>
+                </div>
+
+                {/* Response Time Badge */}
+                <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-lg p-2.5">
+                  <div className="flex items-center gap-2">
+                    <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div>
+                    <p className="text-xs font-semibold text-green-800">
+                      We respond within 24 hours
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
+          </aside>
         </div>
+
+        {/* Trust Badge Footer */}
+        <footer className="text-center mt-4 sm:mt-8 px-4">
+          <p className="text-xs text-gray-500">
+            🔒 Your information is secure and will never be shared
+          </p>
+        </footer>
       </div>
-    </>
+    </div>
   );
 }

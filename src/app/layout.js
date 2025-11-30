@@ -1,10 +1,17 @@
+// src/app/layout.js - Replace with this optimized version
 import { Inter } from 'next/font/google';
 import './globals.css';
 import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
 import { seoConfig, structuredData } from '../lib/seo-metadata';
 
-const inter = Inter({ subsets: ['latin'] });
+// Font optimization with display swap
+const inter = Inter({ 
+  subsets: ['latin'],
+  display: 'swap', // CRITICAL: Fast font loading
+  preload: true,
+  variable: '--font-inter',
+});
 
 export const metadata = {
   metadataBase: new URL(seoConfig.siteUrl),
@@ -39,7 +46,7 @@ export const metadata = {
     description: seoConfig.defaultDescription,
     images: [
       {
-        url: '/og-image.png', // Create this image (1200x630px)
+        url: '/og-image.png',
         width: 1200,
         height: 630,
         alt: 'FINNOTIA - AI-Powered IPO Predictions',
@@ -76,9 +83,7 @@ export const metadata = {
   },
   
   verification: {
-    google: 'your-google-verification-code', // Add after Google Search Console setup
-    // yandex: 'your-yandex-verification-code',
-    // bing: 'your-bing-verification-code',
+    google: 'your-google-verification-code',
   },
   
   alternates: {
@@ -89,7 +94,6 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
-  // JSON-LD Structured Data
   const jsonLd = {
     '@context': 'https://schema.org',
     '@graph': [
@@ -128,14 +132,16 @@ export default function RootLayout({ children }) {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
         
-        {/* Preconnect to important domains */}
+        {/* CRITICAL: Preconnect for faster loading */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         
         {/* DNS Prefetch */}
         <link rel="dns-prefetch" href="https://www.google-analytics.com" />
+        <link rel="dns-prefetch" href="https://play.google.com" />
         
-        {/* Canonical Link will be added per page */}
+        {/* Preload critical assets */}
+        <link rel="preload" href="/finnotia-logo.png" as="image" />
       </head>
       <body className={inter.className}>
         <Header />

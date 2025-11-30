@@ -1,30 +1,36 @@
 'use client';
 import { motion } from 'framer-motion';
-import { Smartphone, TrendingUp, BarChart3, Bell, Newspaper } from 'lucide-react';
+import { Smartphone, TrendingUp, BarChart3, Bell, Newspaper, PieChart } from 'lucide-react';
 
+// Yahan maine teri images ko map kar diya hai.
+// Make sure ki ye images (stock.png, ai_prediction.png, etc.) tere project ke 'public' folder mein hon.
 const screenshots = [
   {
     title: 'Live Dashboard',
-    description: 'Real-time market overview',
+    description: 'Market Activity Scanner',
     icon: BarChart3,
+    image: 'stock.png', // Image file name
     color: 'from-[#4A90E2] to-[#2E5CB8]',
   },
   {
-    title: 'Stock Analysis',
-    description: 'AI-powered stock insights',
+    title: 'AI Analysis',
+    description: 'AI-Powered Predictions',
     icon: TrendingUp,
+    image: 'ai_prediction.png',
     color: 'from-[#2E5CB8] to-[#3B82F6]',
   },
   {
-    title: 'Market Alerts',
-    description: 'Instant notifications',
-    icon: Bell,
+    title: 'Mutual Funds',
+    description: 'Smart SIP Calculator',
+    icon: PieChart, // Changed icon to match Mutual Funds
+    image: 'mutual_fund.png',
     color: 'from-cyan-500 to-blue-500',
   },
   {
     title: 'News Feed',
-    description: 'Latest market news',
+    description: 'Real-time Updates',
     icon: Newspaper,
+    image: 'news.png',
     color: 'from-[#4A90E2] to-[#1E3A8A]',
   },
 ];
@@ -52,9 +58,8 @@ export default function AppScreenshots() {
         </motion.div>
 
         {/* Screenshots Grid */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 max-w-4xl mx-auto">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-8 max-w-6xl mx-auto">
           {screenshots.map((screen, index) => {
-            const Icon = screen.icon;
             return (
               <motion.div
                 key={index}
@@ -62,39 +67,45 @@ export default function AppScreenshots() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
-                whileHover={{ scale: 1.05 }}
-                className="relative group"
+                whileHover={{ y: -5 }}
+                className="relative group cursor-pointer"
               >
                 {/* Phone Frame */}
-                <div className="relative bg-gray-900 rounded-xl sm:rounded-2xl p-1.5 sm:p-2 shadow-xl max-w-[160px] sm:max-w-none mx-auto">
-                  {/* Notch */}
-                  <div className="absolute top-1.5 sm:top-2 left-1/2 -translate-x-1/2 w-10 sm:w-16 h-3 sm:h-4 bg-gray-900 rounded-b-lg z-10" />
+                <div className="relative bg-gray-900 rounded-[2rem] p-2 shadow-2xl border-4 border-gray-900 max-w-[200px] sm:max-w-none mx-auto">
+                  {/* Notch - Thoda refine kiya hai taki real phone lage */}
+                  <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/3 h-5 bg-gray-900 rounded-b-xl z-20" />
                   
-                  {/* Screen */}
-                  <div className={`relative bg-gradient-to-br ${screen.color} rounded-lg sm:rounded-xl aspect-[9/19] overflow-hidden`}>
-                    {/* Content */}
-                    <div className="absolute inset-0 flex flex-col items-center justify-center p-2 sm:p-4">
-                      <div className="w-8 h-8 sm:w-12 sm:h-12 bg-white/20 backdrop-blur-sm rounded-lg sm:rounded-xl flex items-center justify-center mb-2 sm:mb-3">
-                        <Icon className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
-                      </div>
-                      <div className="space-y-1 sm:space-y-2 w-full">
-                        <div className="h-1.5 sm:h-2 bg-white/30 rounded-full" />
-                        <div className="h-1.5 sm:h-2 bg-white/20 rounded-full w-3/4" />
-                        <div className="h-1.5 sm:h-2 bg-white/20 rounded-full w-1/2" />
-                      </div>
-                    </div>
+                  {/* Screen Container */}
+                  <div className="relative bg-white rounded-[1.5rem] aspect-[9/19] overflow-hidden isolate">
+                    
+                    {/* Actual Image Render */}
+                    <img 
+                      src={screen.image} 
+                      alt={screen.title}
+                      className="absolute inset-0 w-full h-full object-cover object-top z-10"
+                      loading="lazy"
+                    />
 
-                    {/* Phone Icon */}
-                    <div className="absolute top-2 sm:top-3 right-2 sm:right-3">
-                      <Smartphone className="w-3 h-3 sm:w-4 sm:h-4 text-white/50" />
-                    </div>
+                    {/* Overlay Gradient (Optional: Text visibility ke liye niche thoda fade diya hai) */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent z-10 pointer-events-none" />
+
+                    {/* Placeholder fallback agar image na mile */}
+                    <div className={`absolute inset-0 bg-gradient-to-br ${screen.color} -z-10`} />
                   </div>
+
+                  {/* Side Buttons (Volume/Power) - Realistic detail */}
+                  <div className="absolute top-20 -right-1.5 w-1 h-10 bg-gray-800 rounded-r-md" />
+                  <div className="absolute top-20 -left-1.5 w-1 h-6 bg-gray-800 rounded-l-md" />
+                  <div className="absolute top-32 -left-1.5 w-1 h-10 bg-gray-800 rounded-l-md" />
                 </div>
 
-                {/* Title */}
-                <div className="text-center mt-2 sm:mt-3">
-                  <h3 className="text-xs sm:text-base font-bold text-gray-900 mb-0.5 sm:mb-1">{screen.title}</h3>
-                  <p className="text-[10px] sm:text-xs text-gray-600">{screen.description}</p>
+                {/* Title & Description below phone */}
+                <div className="text-center mt-5">
+                  <div className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-blue-50 text-blue-600 mb-2">
+                    <screen.icon size={16} />
+                  </div>
+                  <h3 className="text-base sm:text-lg font-bold text-gray-900">{screen.title}</h3>
+                  <p className="text-xs sm:text-sm text-gray-500 font-medium">{screen.description}</p>
                 </div>
               </motion.div>
             );

@@ -1,25 +1,25 @@
-# robots.txt for FINNOTIA
+# public/robots.txt - Root public folder mein save kar
 
-# Allow all search engines to crawl
+# Allow all search engines
 User-agent: *
 Allow: /
 
-# Disallow admin or private areas (if any)
-# Disallow: /admin/
-# Disallow: /api/
+# Disallow admin or unnecessary paths (if any)
+Disallow: /api/
+Disallow: /_next/
 
 # Sitemap location
 Sitemap: https://finnotia.com/sitemap.xml
 
-# Crawl-delay (optional, for slower bots)
-# Crawl-delay: 10
+# Crawl rate (optional - for Google)
+Crawl-delay: 0
 
-# Specific rules for Google Bot
+# Specific instructions for Google
 User-agent: Googlebot
 Allow: /
 Crawl-delay: 0
 
-# Specific rules for Bing Bot
+# Specific instructions for Bingbot
 User-agent: Bingbot
 Allow: /
 Crawl-delay: 0

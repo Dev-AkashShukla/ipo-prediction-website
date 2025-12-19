@@ -145,7 +145,7 @@ export default function RootLayout({ children }) {
       </head>
       <body className={inter.className}>
         <Header />
-        <main className="min-h-screen">
+        <main className="min-h-fitcontent">
           {children}
         </main>
         <Footer />

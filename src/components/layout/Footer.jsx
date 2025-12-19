@@ -1,13 +1,15 @@
 'use client';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Mail } from 'lucide-react';
+import { APP_NAME, PLAY_STORE_URL, CONTACT_INFO } from '../../lib/constants';
 
 const footerLinks = {
   product: [
     { name: 'Features', href: '/#features' },
     { name: 'How It Works', href: '/#how' },
-    { name: 'Download App', href: 'https://play.google.com/store/apps/details?id=com.finnotia' },
+    { name: 'Download App', href: PLAY_STORE_URL, external: true },
   ],
   company: [
     { name: 'About Us', href: '/about' },
@@ -22,6 +24,13 @@ const footerLinks = {
 };
 
 export default function Footer() {
+  // Use state to avoid hydration mismatch with year
+  const [year, setYear] = useState(2024);
+  
+  useEffect(() => {
+    setYear(new Date().getFullYear());
+  }, []);
+
   return (
     <footer id="contact" className="bg-black text-white pt-12 pb-6">
       <div className="container mx-auto px-4">
@@ -31,20 +40,20 @@ export default function Footer() {
             <div className="w-10 h-10 relative flex-shrink-0">
               <Image 
                 src="/finnotia-logo.png" 
-                alt="Finnotia Logo" 
+                alt={`${APP_NAME} Logo`}
                 width={40}
                 height={40}
                 className="w-full h-full object-contain"
               />
             </div>
-            <span className="text-xl font-bold">FINNOTIA</span>
+            <span className="text-xl font-bold">{APP_NAME}</span>
           </Link>
           <p className="text-sm text-gray-400 max-w-md leading-relaxed">
             AI-powered IPO predictions and stock market analysis platform. Make smarter investment decisions with real-time data and intelligent insights.
           </p>
         </div>
 
-        {/* Links Grid - Mobile Horizontal */}
+        {/* Links Grid */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {/* Product Links */}
           <div>
@@ -54,8 +63,8 @@ export default function Footer() {
                 <li key={link.name}>
                   <a
                     href={link.href}
-                    target={link.href.startsWith('http') ? '_blank' : '_self'}
-                    rel={link.href.startsWith('http') ? 'noopener noreferrer' : ''}
+                    target={link.external ? '_blank' : '_self'}
+                    rel={link.external ? 'noopener noreferrer' : ''}
                     className="text-xs text-gray-400 hover:text-[#4A90E2] transition-colors duration-200 block"
                   >
                     {link.name}
@@ -99,17 +108,23 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Contact Info */}
+          {/* Contact Info - Using constants */}
           <div>
             <h3 className="text-sm font-bold mb-3 text-[#4A90E2]">Contact</h3>
             <div className="space-y-2">
-              <a href="mailto:support@finnotia.com" className="flex items-center gap-2 text-gray-400 hover:text-[#4A90E2] text-xs transition-colors">
+              <a 
+                href={`mailto:${CONTACT_INFO.supportEmail}`} 
+                className="flex items-center gap-2 text-gray-400 hover:text-[#4A90E2] text-xs transition-colors"
+              >
                 <Mail className="w-3 h-3" />
-                <span>support@finnotia.com</span>
+                <span>{CONTACT_INFO.supportEmail}</span>
               </a>
-              <a href="mailto:contact@finnotia.com" className="flex items-center gap-2 text-gray-400 hover:text-[#4A90E2] text-xs transition-colors">
+              <a 
+                href={`mailto:${CONTACT_INFO.contactEmail}`} 
+                className="flex items-center gap-2 text-gray-400 hover:text-[#4A90E2] text-xs transition-colors"
+              >
                 <Mail className="w-3 h-3" />
-                <span>contact@finnotia.com</span>
+                <span>{CONTACT_INFO.contactEmail}</span>
               </a>
             </div>
           </div>
@@ -120,7 +135,7 @@ export default function Footer() {
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             {/* Copyright */}
             <p className="text-gray-500 text-xs">
-              © {new Date().getFullYear()} FINNOTIA. All rights reserved.
+              © {year} {APP_NAME}. All rights reserved.
             </p>
           </div>
         </div>

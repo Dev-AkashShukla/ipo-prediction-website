@@ -1,6 +1,7 @@
 'use client';
 import { motion } from 'framer-motion';
 import { Brain, TrendingUp, Newspaper, BarChart3, Shield, Zap } from 'lucide-react';
+import SectionHeader from '../ui/SectionHeader';
 
 const features = [
   {
@@ -45,24 +46,13 @@ export default function FeaturesSection() {
   return (
     <section id="features" className="py-8 sm:py-12 bg-white">
       <div className="container mx-auto px-4">
-        {/* Section Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-6 sm:mb-8"
-        >
-          <span className="inline-block px-3 py-1 bg-blue-100 text-[#2E5CB8] rounded-full text-xs font-semibold mb-2 sm:mb-3">
-            Features
-          </span>
-          <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-2 sm:mb-3">
-            Everything You Need to <span className="bg-gradient-to-r from-[#4A90E2] to-[#1E3A8A] bg-clip-text text-transparent">Invest Smart</span>
-          </h2>
-          <p className="text-xs sm:text-sm lg:text-base text-gray-600 max-w-2xl mx-auto">
-            Powerful AI-driven tools and real-time insights designed to help you make smarter financial decisions.
-          </p>
-        </motion.div>
+        {/* Reusable Section Header */}
+        <SectionHeader
+          badge="Features"
+          title="Everything You Need to"
+          highlightedText="Invest Smart"
+          description="Powerful AI-driven tools and real-time insights designed to help you make smarter financial decisions."
+        />
 
         {/* Features Grid */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-6 max-w-6xl mx-auto">

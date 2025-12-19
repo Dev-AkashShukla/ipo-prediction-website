@@ -1,6 +1,7 @@
 'use client';
 import { motion } from 'framer-motion';
 import { Download, Sparkles } from 'lucide-react';
+import { PLAY_STORE_URL } from '../../lib/constants';
 
 export default function CTASection() {
   return (
@@ -37,9 +38,9 @@ export default function CTASection() {
             Download FINNOTIA and get AI-powered market analysis, real-time stock updates, and financial news all in one app.
           </p>
 
-          {/* CTA Button */}
+          {/* CTA Button - Using constant */}
           <motion.a
-            href="https://play.google.com/store/apps/details?id=com.finnotia"
+            href={PLAY_STORE_URL}
             target="_blank"
             rel="noopener noreferrer"
             whileHover={{ scale: 1.05 }}

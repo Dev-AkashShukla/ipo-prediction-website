@@ -1,6 +1,8 @@
 'use client';
 import { Mail, Send, Loader2 } from 'lucide-react';
 import { useState } from 'react';
+import { PLAY_STORE_URL, CONTACT_INFO, GRADIENTS } from '../../lib/constants';
+import AndroidIcon from '../../components/ui/AndroidIcon';
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -55,10 +57,10 @@ export default function ContactPage() {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50/30 py-4 sm:py-8 px-3 sm:px-6">
       <div className="max-w-6xl mx-auto">
         
-        {/* Header - More Compact for Mobile */}
+        {/* Header */}
         <header className="text-center mb-4 mt-8 sm:mb-8 sm:mt-12">
           <h1 className="text-xl sm:text-3xl lg:text-4xl font-black text-gray-900 mb-1.5">
-            Get in <span className="bg-gradient-to-r from-[#4A90E2] to-[#2E5AAD] bg-clip-text text-transparent">Touch</span>
+            Get in <span className={`bg-gradient-to-r ${GRADIENTS.primary} bg-clip-text text-transparent`}>Touch</span>
           </h1>
           <p className="text-xs sm:text-sm text-gray-600 max-w-xl mx-auto px-2">
             Have questions? We'd love to hear from you.
@@ -167,7 +169,7 @@ export default function ContactPage() {
               <button
                 onClick={handleSubmit}
                 disabled={isSubmitting}
-                className="w-full bg-gradient-to-r from-[#4A90E2] to-[#2E5AAD] text-white px-4 py-2.5 sm:py-3 rounded-lg font-bold text-xs sm:text-sm hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                className={`w-full bg-gradient-to-r ${GRADIENTS.primary} text-white px-4 py-2.5 sm:py-3 rounded-lg font-bold text-xs sm:text-sm hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100`}
               >
                 {isSubmitting ? (
                   <>
@@ -184,16 +186,14 @@ export default function ContactPage() {
             </div>
           </section>
 
-          {/* Sidebar - More Compact */}
+          {/* Sidebar */}
           <aside className="lg:col-span-2 space-y-3">
             
-            {/* App Download Card */}
-            <div className="bg-gradient-to-br from-[#4A90E2] to-[#2E5AAD] rounded-xl sm:rounded-2xl shadow-xl p-4 sm:p-5 text-white">
+            {/* App Download Card - Using constants */}
+            <div className={`bg-gradient-to-br ${GRADIENTS.primary} rounded-xl sm:rounded-2xl shadow-xl p-4 sm:p-5 text-white`}>
               <div className="flex items-start gap-2.5 mb-3">
                 <div className="w-9 h-9 bg-white/20 backdrop-blur rounded-lg flex items-center justify-center flex-shrink-0">
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M17.6 9.48l1.84-3.18c.16-.31.04-.69-.26-.85-.29-.15-.65-.06-.83.22l-1.88 3.24a11.5 11.5 0 00-8.94 0L5.65 5.67c-.19-.28-.54-.37-.83-.22-.3.16-.42.54-.26.85L6.4 9.48A10.44 10.44 0 001 18h22a10.44 10.44 0 00-5.4-8.52zM7 15.25a1.25 1.25 0 110-2.5 1.25 1.25 0 010 2.5zm10 0a1.25 1.25 0 110-2.5 1.25 1.25 0 010 2.5z"/>
-                  </svg>
+                  <AndroidIcon className="w-5 h-5" />
                 </div>
                 <div>
                   <h3 className="text-sm sm:text-base font-bold mb-0.5">Get FINNOTIA</h3>
@@ -203,7 +203,7 @@ export default function ContactPage() {
                 </div>
               </div>
               <a 
-                href="https://play.google.com/store/apps/details?id=com.finnotia"
+                href={PLAY_STORE_URL}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="block text-center bg-white text-[#4A90E2] px-4 py-2 rounded-lg text-xs sm:text-sm font-bold hover:shadow-lg hover:bg-gray-50 active:scale-95 transition-all duration-200"
@@ -212,7 +212,7 @@ export default function ContactPage() {
               </a>
             </div>
 
-            {/* Contact Information Card */}
+            {/* Contact Information Card - Using constants */}
             <div className="bg-white rounded-xl sm:rounded-2xl shadow-xl p-4 sm:p-5">
               <h2 className="text-sm sm:text-base font-bold text-gray-900 mb-3">Contact Info</h2>
               
@@ -225,10 +225,10 @@ export default function ContactPage() {
                   <div className="min-w-0 flex-1">
                     <h3 className="text-xs font-bold text-gray-900 mb-0.5">Email Us</h3>
                     <a 
-                      href="mailto:contact@finnotia.com" 
+                      href={`mailto:${CONTACT_INFO.contactEmail}`}
                       className="block text-xs text-gray-600 hover:text-[#4A90E2] transition-colors truncate"
                     >
-                      contact@finnotia.com
+                      {CONTACT_INFO.contactEmail}
                     </a>
                   </div>
                 </div>

@@ -1,10 +1,11 @@
 'use client';
 import { motion } from 'framer-motion';
 import { Sparkles, Download, TrendingUp, Shield, Zap } from 'lucide-react';
+import { PLAY_STORE_URL, GRADIENTS } from '../../lib/constants';
+import GradientText from '../ui/GradientText';
 
 export default function HeroSection() {
   return (
-    // 'min-h-[90vh]' ko yahan se hata diya hai
     <section className="relative flex justify-center overflow-hidden bg-gradient-to-br from-blue-50 via-indigo-50 to-blue-100 pt-20 pb-10">
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
@@ -33,7 +34,7 @@ export default function HeroSection() {
             transition={{ duration: 0.8 }}
             className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-3 sm:mb-4 leading-tight"
           >
-            Master IPO Investing with <span className="bg-gradient-to-r from-[#4A90E2] to-[#1E3A8A] bg-clip-text text-transparent">AI Predictions</span>
+            Master IPO Investing with <GradientText>AI Predictions</GradientText>
           </motion.h1>
 
           {/* Description */}
@@ -75,10 +76,10 @@ export default function HeroSection() {
             className="flex flex-col sm:flex-row gap-3 justify-center mb-6 sm:mb-8"
           >
             <a
-              href="https://play.google.com/store/apps/details?id=com.finnotia"
+              href={PLAY_STORE_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="group bg-gradient-to-r from-[#4A90E2] to-[#2E5CB8] text-white px-6 py-2.5 rounded-lg font-semibold text-sm hover:shadow-lg hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2"
+              className={`group bg-gradient-to-r ${GRADIENTS.primary} text-white px-6 py-2.5 rounded-lg font-semibold text-sm hover:shadow-lg hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2`}
             >
               Download from PlayStore
               <Download className="w-4 h-4 group-hover:translate-y-0.5 transition-transform duration-300" />
@@ -90,27 +91,6 @@ export default function HeroSection() {
               Learn More
             </a>
           </motion.div>
-
-          {/* Stats */}
-          {/* <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6, duration: 0.8 }}
-            className="grid grid-cols-3 gap-2 sm:gap-4 max-w-lg mx-auto"
-          >
-            <div className="text-center">
-              <div className="text-lg sm:text-xl lg:text-2xl font-bold text-[#2E5CB8]">100K+</div>
-              <div className="text-xs text-gray-600">Active Users</div>
-            </div>
-            <div className="text-center">
-              <div className="text-lg sm:text-xl lg:text-2xl font-bold text-[#1E3A8A]">24/7</div>
-              <div className="text-xs text-gray-600">Live Updates</div>
-            </div>
-            <div className="text-center">
-              <div className="text-lg sm:text-xl lg:text-2xl font-bold text-[#3B82F6]">99%</div>
-              <div className="text-xs text-gray-600">Uptime</div>
-            </div>
-          </motion.div> */}
         </div>
       </div>
 

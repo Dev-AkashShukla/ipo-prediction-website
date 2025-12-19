@@ -1,6 +1,7 @@
 'use client';
 import { motion } from 'framer-motion';
 import { Download, Smartphone, TrendingUp, Zap } from 'lucide-react';
+import SectionHeader from '../ui/SectionHeader';
 
 const steps = [
   {
@@ -33,23 +34,13 @@ export default function HowItWorks() {
   return (
     <section id="how" className="py-8 sm:py-12 bg-gray-50">
       <div className="container mx-auto px-4">
-        {/* Section Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-6 sm:mb-8"
-        >
-          <span className="inline-block px-3 py-1 bg-blue-100 text-[#2E5CB8] rounded-full text-xs font-semibold mb-2 sm:mb-3">
-            Getting Started
-          </span>
-          <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-2 sm:mb-3">
-            Start in <span className="bg-gradient-to-r from-[#4A90E2] to-[#1E3A8A] bg-clip-text text-transparent">4 Simple Steps</span>
-          </h2>
-          <p className="text-xs sm:text-sm lg:text-base text-gray-600 max-w-2xl mx-auto">
-            Getting started is easy. Download the app and begin your smart investing journey today.
-          </p>
-        </motion.div>
+        {/* Reusable Section Header */}
+        <SectionHeader
+          badge="Getting Started"
+          title="Start in"
+          highlightedText="4 Simple Steps"
+          description="Getting started is easy. Download the app and begin your smart investing journey today."
+        />
 
         {/* Steps */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 max-w-6xl mx-auto">

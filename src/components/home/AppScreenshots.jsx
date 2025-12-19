@@ -1,15 +1,14 @@
 'use client';
 import { motion } from 'framer-motion';
-import { Smartphone, TrendingUp, BarChart3, Bell, Newspaper, PieChart } from 'lucide-react';
+import { TrendingUp, BarChart3, Newspaper, PieChart } from 'lucide-react';
+import SectionHeader from '../ui/SectionHeader';
 
-// Yahan maine teri images ko map kar diya hai.
-// Make sure ki ye images (stock.png, ai_prediction.png, etc.) tere project ke 'public' folder mein hon.
 const screenshots = [
   {
     title: 'Live Dashboard',
     description: 'Market Activity Scanner',
     icon: BarChart3,
-    image: 'stock.png', // Image file name
+    image: 'stock.png',
     color: 'from-[#4A90E2] to-[#2E5CB8]',
   },
   {
@@ -22,7 +21,7 @@ const screenshots = [
   {
     title: 'Mutual Funds',
     description: 'Smart SIP Calculator',
-    icon: PieChart, // Changed icon to match Mutual Funds
+    icon: PieChart,
     image: 'mutual_fund.png',
     color: 'from-cyan-500 to-blue-500',
   },
@@ -39,23 +38,14 @@ export default function AppScreenshots() {
   return (
     <section className="py-12 sm:py-16 bg-white">
       <div className="container mx-auto px-4">
-        {/* Section Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-10"
-        >
-          <span className="inline-block px-3 py-1 bg-blue-100 text-[#2E5CB8] rounded-full text-xs font-semibold mb-3">
-            App Preview
-          </span>
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-3">
-            Beautiful & <span className="bg-gradient-to-r from-[#4A90E2] to-[#1E3A8A] bg-clip-text text-transparent">Intuitive Design</span>
-          </h2>
-          <p className="text-sm sm:text-base text-gray-600 max-w-2xl mx-auto">
-            Experience a modern, user-friendly interface designed for both beginners and professionals.
-          </p>
-        </motion.div>
+        {/* Reusable Section Header */}
+        <SectionHeader
+          badge="App Preview"
+          title="Beautiful &"
+          highlightedText="Intuitive Design"
+          description="Experience a modern, user-friendly interface designed for both beginners and professionals."
+          className="mb-10"
+        />
 
         {/* Screenshots Grid */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-8 max-w-6xl mx-auto">
@@ -72,7 +62,7 @@ export default function AppScreenshots() {
               >
                 {/* Phone Frame */}
                 <div className="relative bg-gray-900 rounded-[2rem] p-2 shadow-2xl border-4 border-gray-900 max-w-[200px] sm:max-w-none mx-auto">
-                  {/* Notch - Thoda refine kiya hai taki real phone lage */}
+                  {/* Notch */}
                   <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/3 h-5 bg-gray-900 rounded-b-xl z-20" />
                   
                   {/* Screen Container */}
@@ -86,14 +76,14 @@ export default function AppScreenshots() {
                       loading="lazy"
                     />
 
-                    {/* Overlay Gradient (Optional: Text visibility ke liye niche thoda fade diya hai) */}
+                    {/* Overlay Gradient */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent z-10 pointer-events-none" />
 
-                    {/* Placeholder fallback agar image na mile */}
+                    {/* Placeholder fallback */}
                     <div className={`absolute inset-0 bg-gradient-to-br ${screen.color} -z-10`} />
                   </div>
 
-                  {/* Side Buttons (Volume/Power) - Realistic detail */}
+                  {/* Side Buttons */}
                   <div className="absolute top-20 -right-1.5 w-1 h-10 bg-gray-800 rounded-r-md" />
                   <div className="absolute top-20 -left-1.5 w-1 h-6 bg-gray-800 rounded-l-md" />
                   <div className="absolute top-32 -left-1.5 w-1 h-10 bg-gray-800 rounded-l-md" />

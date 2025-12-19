@@ -2,6 +2,8 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Home, ArrowLeft, Search } from 'lucide-react';
+import { PLAY_STORE_URL, GRADIENTS } from '../lib/constants';
+import AndroidIcon from '../components/ui/AndroidIcon';
 
 export default function NotFound() {
   return (
@@ -34,7 +36,7 @@ export default function NotFound() {
           transition={{ delay: 0.2, duration: 0.5 }}
           className="mb-4"
         >
-          <div className="inline-flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-[#4A90E2] to-[#2E5AAD] rounded-2xl shadow-lg shadow-blue-500/30">
+          <div className={`inline-flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br ${GRADIENTS.primary} rounded-2xl shadow-lg shadow-blue-500/30`}>
             <Search className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
           </div>
         </motion.div>
@@ -63,7 +65,7 @@ export default function NotFound() {
         >
           <Link
             href="/"
-            className="group inline-flex items-center justify-center gap-2 bg-gradient-to-r from-[#4A90E2] to-[#2E5AAD] text-white px-5 py-2.5 rounded-xl font-semibold text-sm hover:shadow-xl hover:shadow-blue-500/25 hover:scale-105 active:scale-95 transition-all duration-300"
+            className={`group inline-flex items-center justify-center gap-2 bg-gradient-to-r ${GRADIENTS.primary} text-white px-5 py-2.5 rounded-xl font-semibold text-sm hover:shadow-xl hover:shadow-blue-500/25 hover:scale-105 active:scale-95 transition-all duration-300`}
           >
             <Home className="w-4 h-4" />
             <span>Back to Home</span>
@@ -78,7 +80,7 @@ export default function NotFound() {
           </button>
         </motion.div>
 
-        {/* Download CTA */}
+        {/* Download CTA - Using constant */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -86,14 +88,12 @@ export default function NotFound() {
         >
           <p className="text-xs text-gray-500 mb-1.5">Looking for IPO predictions? Get our app!</p>
           <a
-            href="https://play.google.com/store/apps/details?id=com.finnotia"
+            href={PLAY_STORE_URL}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 text-[#2E5AAD] hover:text-[#4A90E2] font-semibold text-xs sm:text-sm transition-colors duration-300"
           >
-            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M17.6 9.48l1.84-3.18c.16-.31.04-.69-.26-.85-.29-.15-.65-.06-.83.22l-1.88 3.24a11.5 11.5 0 00-8.94 0L5.65 5.67c-.19-.28-.54-.37-.83-.22-.3.16-.42.54-.26.85L6.4 9.48A10.44 10.44 0 001 18h22a10.44 10.44 0 00-5.4-8.52zM7 15.25a1.25 1.25 0 110-2.5 1.25 1.25 0 010 2.5zm10 0a1.25 1.25 0 110-2.5 1.25 1.25 0 010 2.5z"/>
-            </svg>
+            <AndroidIcon className="w-4 h-4" />
             <span>Download from Play Store</span>
             <ArrowLeft className="w-3.5 h-3.5 rotate-180" />
           </a>

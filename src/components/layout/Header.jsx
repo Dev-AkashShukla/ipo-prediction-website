@@ -3,11 +3,12 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Menu, X } from 'lucide-react';
 import Image from 'next/image';
+import { PLAY_STORE_URL, APP_NAME, GRADIENTS } from '../../lib/constants';
 
 const navLinks = [
   { name: 'Home', href: '/' },
-  { name: 'Features', href: '/#features' },     // Change: Added '/' before '#'
-  { name: 'How It Works', href: '/#how' },      // Change: Added '/' before '#'
+  { name: 'Features', href: '/#features' },
+  { name: 'How It Works', href: '/#how' },
   { name: 'Contact', href: '/contact' },
 ];
 
@@ -31,7 +32,6 @@ export default function Header() {
       document.body.style.overflow = 'unset';
     }
     
-    // Cleanup on unmount
     return () => {
       document.body.style.overflow = 'unset';
     };
@@ -59,14 +59,14 @@ export default function Header() {
               <div className="w-10 h-10 relative flex-shrink-0">
                 <Image 
                   src="/finnotia-logo.png" 
-                  alt="Finnotia Logo" 
+                  alt={`${APP_NAME} Logo`}
                   width={40}
                   height={40}
                   className="w-full h-full object-contain transform group-hover:scale-110 transition-transform duration-300"
                 />
               </div>
               <span className="text-lg font-bold text-gray-900">
-                FINNOTIA
+                {APP_NAME}
               </span>
             </Link>
 
@@ -84,13 +84,13 @@ export default function Header() {
               ))}
             </div>
 
-            {/* Download Button */}
+            {/* Download Button - Using constant */}
             <div className="hidden md:block">
               <a
-                href="https://play.google.com/store/apps/details?id=com.finnotia"
+                href={PLAY_STORE_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-gradient-to-r from-[#4A90E2] to-[#2E5CB8] text-white px-5 py-2 rounded-lg text-sm font-semibold hover:shadow-lg hover:scale-105 transition-all duration-300"
+                className={`bg-gradient-to-r ${GRADIENTS.primary} text-white px-5 py-2 rounded-lg text-sm font-semibold hover:shadow-lg hover:scale-105 transition-all duration-300`}
               >
                 Download App
               </a>
@@ -120,10 +120,10 @@ export default function Header() {
               ))}
               <div className="pt-3 border-t border-gray-200">
                 <a
-                  href="https://play.google.com/store/apps/details?id=com.finnotia"
+                  href={PLAY_STORE_URL}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block text-center bg-gradient-to-r from-[#4A90E2] to-[#2E5CB8] text-white px-5 py-2.5 rounded-lg text-sm font-semibold hover:shadow-lg transition-all duration-300"
+                  className={`block text-center bg-gradient-to-r ${GRADIENTS.primary} text-white px-5 py-2.5 rounded-lg text-sm font-semibold hover:shadow-lg transition-all duration-300`}
                 >
                   Download App
                 </a>

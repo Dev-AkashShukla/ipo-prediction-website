@@ -1,5 +1,5 @@
-import { Metadata } from 'next';
 import { pageMetadata, seoConfig } from '../../lib/seo-metadata';
+import { APP_NAME, GRADIENTS } from '../../lib/constants';
 
 export const metadata = {
   title: pageMetadata.about.title,
@@ -24,7 +24,6 @@ export const metadata = {
 };
 
 export default function AboutPage() {
-  // Data extracted for cleaner rendering
   const offerings = [
     "AI-powered IPO predictions with 95% accuracy on listing gains",
     "Real-time stock market analysis and technical indicators",
@@ -38,7 +37,7 @@ export default function AboutPage() {
     '@type': 'AboutPage',
     mainEntity: {
       '@type': 'Organization',
-      name: 'FINNOTIA',
+      name: APP_NAME,
       description: 'AI-powered IPO prediction and stock market analysis platform for Indian investors',
       foundingDate: '2024',
       url: seoConfig.siteUrl,
@@ -53,7 +52,6 @@ export default function AboutPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(aboutJsonLd) }}
       />
 
-      {/* Adjusted padding for compact mobile view */}
       <div className="min-h-screen bg-white pt-20 pb-10 sm:pt-24 sm:pb-16">
         <div className="container mx-auto px-4 sm:px-6">
           <div className="max-w-3xl mx-auto">
@@ -61,19 +59,19 @@ export default function AboutPage() {
             {/* Compact Header */}
             <header className="text-center sm:text-left mb-6 sm:mb-8">
               <h1 className="text-3xl sm:text-5xl font-black text-gray-900">
-                About <span className="bg-gradient-to-r from-[#4A90E2] to-[#2E5AAD] bg-clip-text text-transparent">FINNOTIA</span>
+                About <span className={`bg-gradient-to-r ${GRADIENTS.primary} bg-clip-text text-transparent`}>{APP_NAME}</span>
               </h1>
             </header>
             
-            {/* Content Wrapper - Removing prose-lg for tighter fit */}
+            {/* Content Wrapper */}
             <article className="space-y-8 text-gray-700">
               
               {/* Intro */}
               <p className="text-base sm:text-lg font-medium text-gray-600 leading-relaxed">
-                FINNOTIA is India's leading AI-powered IPO prediction platform, helping millions make smarter decisions with real-time data and intelligent insights.
+                {APP_NAME} is India's leading AI-powered IPO prediction platform, helping millions make smarter decisions with real-time data and intelligent insights.
               </p>
 
-              {/* Sections with Grid Layout for Compactness */}
+              {/* Sections with Grid Layout */}
               <div className="grid gap-8 sm:gap-10">
                 
                 {/* Mission */}
@@ -84,7 +82,7 @@ export default function AboutPage() {
                   </p>
                 </section>
 
-                {/* Offerings - Optimized List */}
+                {/* Offerings */}
                 <section>
                   <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">What We Offer</h2>
                   <ul className="space-y-2.5">
@@ -97,7 +95,7 @@ export default function AboutPage() {
                   </ul>
                 </section>
 
-                {/* Team & Why Choose Combined visually in style */}
+                {/* Team & Why Choose */}
                 <div className="grid sm:grid-cols-2 gap-8">
                   <section>
                     <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">Our Team</h2>
@@ -109,18 +107,18 @@ export default function AboutPage() {
                   <section>
                     <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">Why Us?</h2>
                     <p className="text-sm sm:text-base leading-relaxed text-gray-600">
-                      With 95% accuracy in IPO predictions and real-time data, every feature is designed for your profit. Download FINNOTIA today.
+                      With 95% accuracy in IPO predictions and real-time data, every feature is designed for your profit. Download {APP_NAME} today.
                     </p>
                   </section>
                 </div>
 
               </div>
 
-              {/* Compact Disclaimer */}
+              {/* Disclaimer */}
               <section className="mt-8 p-4 bg-gray-50 rounded-lg border border-gray-100">
                 <h3 className="text-sm font-bold text-gray-900 mb-1">Disclaimer</h3>
                 <p className="text-xs text-gray-500 leading-relaxed text-justify">
-                  FINNOTIA provides AI-generated analysis for informational purposes only. We are NOT SEBI registered. This is NOT investment advice. Investments carry market risks; please consult a financial advisor.
+                  {APP_NAME} provides AI-generated analysis for informational purposes only. We are NOT SEBI registered. This is NOT investment advice. Investments carry market risks; please consult a financial advisor.
                 </p>
               </section>
 

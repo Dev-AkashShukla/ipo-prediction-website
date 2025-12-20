@@ -140,8 +140,7 @@ export default function RootLayout({ children }) {
         <link rel="dns-prefetch" href="https://www.google-analytics.com" />
         <link rel="dns-prefetch" href="https://play.google.com" />
         
-        {/* Preload critical assets */}
-        <link rel="preload" href="/finnotia-logo.png" as="image" />
+        {/* Note: Logo preload removed - Next.js Image component handles optimization */}
       </head>
       <body className={inter.className}>
         <Header />

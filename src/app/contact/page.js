@@ -1,7 +1,7 @@
 'use client';
 import { Mail, Send, Loader2 } from 'lucide-react';
-import { useState } from 'react';
-import { PLAY_STORE_URL, CONTACT_INFO, GRADIENTS } from '../../lib/constants';
+import { useState, useEffect, useCallback } from 'react';
+import { PLAY_STORE_URL, CONTACT_INFO, GRADIENTS, RECAPTCHA_SITE_KEY } from '../../lib/constants';
 import AndroidIcon from '../../components/ui/AndroidIcon';
 
 export default function ContactPage() {
@@ -13,23 +13,53 @@ export default function ContactPage() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(null);
+  const [recaptchaLoaded, setRecaptchaLoaded] = useState(false);
+
+  // Load reCAPTCHA script
+  useEffect(() => {
+    if (!RECAPTCHA_SITE_KEY) {
+      setRecaptchaLoaded(true);
+      return;
+    }
+
+    if (window.grecaptcha) {
+      window.grecaptcha.ready(() => setRecaptchaLoaded(true));
+      return;
+    }
+
+    const script = document.createElement('script');
+    script.src = `https://www.google.com/recaptcha/api.js?render=${RECAPTCHA_SITE_KEY}`;
+    script.async = true;
+    script.defer = true;
+    script.onload = () => {
+      window.grecaptcha.ready(() => setRecaptchaLoaded(true));
+    };
+    document.head.appendChild(script);
+  }, []);
+
+  const getRecaptchaToken = useCallback(async () => {
+    if (!RECAPTCHA_SITE_KEY || !window.grecaptcha) return null;
+    return await window.grecaptcha.execute(RECAPTCHA_SITE_KEY, { action: 'contact_form' });
+  }, []);
 
   const handleSubmit = async () => {
+    if (!formData.name || !formData.email || !formData.subject || !formData.message) {
+      setSubmitStatus('validation_error');
+      return;
+    }
+
     setIsSubmitting(true);
     setSubmitStatus(null);
 
     try {
-      const response = await fetch('https://api.web3forms.com/submit', {
+      const recaptchaToken = await getRecaptchaToken();
+
+      const response = await fetch('/api/contact', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          access_key: '2f120dc1-db63-4c1a-ac3f-1d85612a6678',
-          from_name: formData.name,
-          email: formData.email,
-          subject: formData.subject,
-          message: formData.message,
+          ...formData,
+          recaptchaToken,
         }),
       });
 
@@ -38,6 +68,10 @@ export default function ContactPage() {
       if (result.success) {
         setSubmitStatus('success');
         setFormData({ name: '', email: '', subject: '', message: '' });
+      } else if (result.error === 'rate_limited') {
+        setSubmitStatus('rate_limited');
+      } else if (result.error === 'spam_detected') {
+        setSubmitStatus('spam');
       } else {
         setSubmitStatus('error');
       }
@@ -87,6 +121,33 @@ export default function ContactPage() {
               <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
                 <p className="text-xs sm:text-sm text-red-800 font-semibold">
                   ✗ Something went wrong. Please try again.
+                </p>
+              </div>
+            )}
+
+            {/* Validation Error */}
+            {submitStatus === 'validation_error' && (
+              <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                <p className="text-xs sm:text-sm text-yellow-800 font-semibold">
+                  ⚠ Please fill all required fields.
+                </p>
+              </div>
+            )}
+
+            {/* Rate Limited */}
+            {submitStatus === 'rate_limited' && (
+              <div className="mb-4 p-3 bg-orange-50 border border-orange-200 rounded-lg">
+                <p className="text-xs sm:text-sm text-orange-800 font-semibold">
+                  ⏱ Too many requests. Please wait a minute.
+                </p>
+              </div>
+            )}
+
+            {/* Spam Detected */}
+            {submitStatus === 'spam' && (
+              <div className="mb-4 p-3 bg-orange-50 border border-orange-200 rounded-lg">
+                <p className="text-xs sm:text-sm text-orange-800 font-semibold">
+                  🤖 Security check failed. Please try again.
                 </p>
               </div>
             )}
@@ -168,7 +229,7 @@ export default function ContactPage() {
               {/* Submit Button */}
               <button
                 onClick={handleSubmit}
-                disabled={isSubmitting}
+                disabled={isSubmitting || !recaptchaLoaded}
                 className={`w-full bg-gradient-to-r ${GRADIENTS.primary} text-white px-4 py-2.5 sm:py-3 rounded-lg font-bold text-xs sm:text-sm hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100`}
               >
                 {isSubmitting ? (

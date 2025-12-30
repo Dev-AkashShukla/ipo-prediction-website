@@ -6,38 +6,38 @@ import SectionHeader from '../ui/SectionHeader';
 const features = [
   {
     icon: Brain,
-    title: 'AI-Powered IPO Predictions',
-    description: 'Advanced machine learning algorithms predict IPO listing gains, GMP trends, and subscription patterns with 95% accuracy.',
+    title: 'AI-Based IPO Analysis',
+    description: 'AI-driven analysis of IPO data including GMP, subscription trends, and market conditions.',
     color: 'from-purple-500 to-pink-500',
   },
   {
     icon: TrendingUp,
-    title: 'Real-Time Stock Analysis',
-    description: 'Live stock prices, technical analysis, performance charts, and AI-generated insights for individual stocks.',
+    title: 'Stock Market Insights',
+    description: 'Stock analysis based on market news, sentiment, risk factors, and trend indicators.',
     color: 'from-[#4A90E2] to-[#2E5CB8]',
   },
   {
     icon: Newspaper,
-    title: 'Breaking Market News',
-    description: 'Latest financial news, market updates, and industry insights curated for Indian stock market investors.',
+    title: 'Verified Market News',
+    description: 'Important market-moving news curated from trusted financial sources.',
     color: 'from-blue-500 to-cyan-500',
   },
   {
     icon: BarChart3,
     title: 'Mutual Fund Analysis',
-    description: 'Comprehensive mutual fund insights with NAV tracking, performance comparison, and personalized recommendations.',
+    description: 'AI-curated insights across equity, debt, and hybrid mutual fund categories.',
     color: 'from-orange-500 to-red-500',
   },
   {
     icon: Shield,
     title: 'Secure & Private',
-    description: 'Bank-level encryption ensures your data and preferences are protected. Your privacy is our top priority.',
+    description: 'No unnecessary data collection. Your usage and preferences stay private.',
     color: 'from-indigo-500 to-purple-500',
   },
   {
     icon: Zap,
-    title: 'Instant Alerts',
-    description: 'Smart alerts for IPO openings, stock movements, GMP updates, and news. Never miss important opportunities.',
+    title: 'Smart Alerts',
+    description: 'Get notified about IPO activity, market updates, and important news.',
     color: 'from-yellow-500 to-orange-500',
   },
 ];

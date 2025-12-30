@@ -6,34 +6,33 @@ import { Users, TrendingUp, Newspaper, Target } from 'lucide-react';
 const stats = [
   {
     icon: Users,
-    value: 100000,
-    suffix: '+',
-    label: 'Active Users',
+    value: 0,
+    suffix: '',
+    label: 'Growing User Community',
     color: 'from-[#4A90E2] to-[#2E5CB8]',
   },
   {
     icon: TrendingUp,
-    value: 50000,
-    suffix: '+',
-    label: 'Stocks Analyzed',
+    value: 0,
+    suffix: '',
+    label: 'Daily Market Analysis',
     color: 'from-[#2E5CB8] to-[#3B82F6]',
   },
   {
     icon: Newspaper,
-    value: 1000,
-    suffix: '+',
-    label: 'Daily News Updates',
+    value: 0,
+    suffix: '',
+    label: 'Verified News Coverage',
     color: 'from-cyan-500 to-blue-500',
   },
   {
     icon: Target,
     value: 24,
     suffix: '/7',
-    label: 'Market Coverage',
+    label: 'Market Monitoring',
     color: 'from-[#4A90E2] to-[#1E3A8A]',
   },
-];
-
+]
 function AnimatedCounter({ value, duration = 2000 }) {
   const [count, setCount] = useState(0);
   const [hasAnimated, setHasAnimated] = useState(false);

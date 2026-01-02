@@ -16,11 +16,12 @@ export default function ContactPage() {
   const [recaptchaLoaded, setRecaptchaLoaded] = useState(false);
 
   const RECAPTCHA_SITE_KEY = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
+  const WEB3FORMS_KEY = process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY;
 
+  // Load reCAPTCHA script
   useEffect(() => {
-    // If no reCAPTCHA key, skip loading
     if (!RECAPTCHA_SITE_KEY) {
-      console.log('reCAPTCHA site key not configured, skipping...');
+      console.log('⚠️ reCAPTCHA site key not configured');
       setRecaptchaLoaded(true);
       return;
     }
@@ -35,16 +36,20 @@ export default function ContactPage() {
     script.async = true;
     script.defer = true;
     script.onload = () => {
-      window.grecaptcha.ready(() => setRecaptchaLoaded(true));
+      window.grecaptcha.ready(() => {
+        console.log('✅ reCAPTCHA loaded');
+        setRecaptchaLoaded(true);
+      });
     };
     script.onerror = () => {
-      console.error('Failed to load reCAPTCHA');
-      setRecaptchaLoaded(true); // Allow form submission even if reCAPTCHA fails to load
+      console.error('❌ Failed to load reCAPTCHA');
+      setRecaptchaLoaded(true);
     };
     document.head.appendChild(script);
   }, [RECAPTCHA_SITE_KEY]);
 
   const handleSubmit = async () => {
+    // Validation
     if (!formData.name || !formData.email || !formData.subject || !formData.message) {
       setSubmitStatus('validation_error');
       return;
@@ -56,65 +61,74 @@ export default function ContactPage() {
       return;
     }
 
+    if (!WEB3FORMS_KEY) {
+      console.error('❌ WEB3FORMS_KEY not configured');
+      setSubmitStatus('config_error');
+      return;
+    }
+
     setIsSubmitting(true);
     setSubmitStatus(null);
 
     try {
-      // Get reCAPTCHA token for bot detection (optional)
-      let recaptchaToken = null;
+      // ✅ Step 1: Get reCAPTCHA token and verify with our backend
       if (RECAPTCHA_SITE_KEY && window.grecaptcha) {
         try {
-          recaptchaToken = await window.grecaptcha.execute(RECAPTCHA_SITE_KEY, { 
+          const recaptchaToken = await window.grecaptcha.execute(RECAPTCHA_SITE_KEY, { 
             action: 'contact_form' 
           });
+          
+          // Verify token with our backend
+          const verifyResponse = await fetch('/api/verify-captcha', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ recaptchaToken }),
+          });
+          
+          const verifyResult = await verifyResponse.json();
+          
+          if (!verifyResult.success) {
+            console.log('🤖 Bot detected');
+            setSubmitStatus('spam');
+            setIsSubmitting(false);
+            return;
+          }
+          console.log('✅ Human verified, score:', verifyResult.score);
         } catch (recaptchaError) {
-          console.error('reCAPTCHA error:', recaptchaError);
-          // Continue without reCAPTCHA token
+          console.error('❌ reCAPTCHA error:', recaptchaError);
+          // Continue anyway if reCAPTCHA fails
         }
       }
 
-      // ✅ Send to backend API
-      const response = await fetch('/api/contact', {
+      // ✅ Step 2: Send directly to Web3Forms from browser using FormData
+      console.log('📧 Sending to Web3Forms from browser...');
+      
+      const web3FormData = new FormData();
+      web3FormData.append('access_key', WEB3FORMS_KEY);
+      web3FormData.append('name', formData.name);
+      web3FormData.append('email', formData.email);
+      web3FormData.append('subject', `[FINNOTIA Contact] ${formData.subject}`);
+      web3FormData.append('message', formData.message);
+      web3FormData.append('from_name', 'FINNOTIA Contact Form');
+
+      const response = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          subject: formData.subject,
-          message: formData.message,
-          recaptchaToken: recaptchaToken, // ✅ Now properly sent
-        })
+        body: web3FormData,
       });
 
       const result = await response.json();
+      console.log('Web3Forms result:', result);
 
       if (result.success) {
         setSubmitStatus('success');
         setFormData({ name: '', email: '', subject: '', message: '' });
         setTimeout(() => setSubmitStatus(null), 5000);
       } else {
-        console.error('Contact form error:', result);
-        switch (result.error) {
-          case 'spam_detected':
-            setSubmitStatus('spam');
-            break;
-          case 'rate_limited':
-            setSubmitStatus('rate_limited');
-            break;
-          case 'validation_error':
-            setSubmitStatus('validation_error');
-            break;
-          case 'config_error':
-            setSubmitStatus('config_error');
-            break;
-          default:
-            setSubmitStatus('error');
-        }
+        console.error('❌ Web3Forms error:', result);
+        setSubmitStatus('error');
       }
     } catch (error) {
-      console.error('Error:', error);
+      console.error('❌ Error:', error);
       setSubmitStatus('error');
     } finally {
       setIsSubmitting(false);
@@ -165,7 +179,7 @@ export default function ContactPage() {
             {submitStatus === 'config_error' && (
               <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
                 <p className="text-xs sm:text-sm text-red-800 font-semibold">
-                  ✗ Email service not configured. Please email us directly at support@finnotia.com
+                  ✗ Email service not configured. Please email us directly at {CONTACT_INFO.contactEmail}
                 </p>
               </div>
             )}
@@ -275,13 +289,18 @@ export default function ContactPage() {
 
               <button
                 onClick={handleSubmit}
-                disabled={isSubmitting}
+                disabled={isSubmitting || !recaptchaLoaded}
                 className={`w-full bg-gradient-to-r ${GRADIENTS.primary} text-white px-4 py-2.5 sm:py-3 rounded-lg font-bold text-xs sm:text-sm hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100`}
               >
                 {isSubmitting ? (
                   <>
                     <Loader2 className="w-4 h-4 animate-spin" />
                     <span>Sending...</span>
+                  </>
+                ) : !recaptchaLoaded ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>Loading...</span>
                   </>
                 ) : (
                   <>

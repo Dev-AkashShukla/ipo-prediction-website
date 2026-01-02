@@ -14,11 +14,12 @@ export default function DownloadPage() {
   const [recaptchaLoaded, setRecaptchaLoaded] = useState(false);
 
   const RECAPTCHA_SITE_KEY = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
+  const WEB3FORMS_KEY = process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY;
 
+  // Load reCAPTCHA script
   useEffect(() => {
-    // If no reCAPTCHA key, skip loading
     if (!RECAPTCHA_SITE_KEY) {
-      console.log('reCAPTCHA site key not configured, skipping...');
+      console.log('⚠️ reCAPTCHA site key not configured');
       setRecaptchaLoaded(true);
       return;
     }
@@ -33,11 +34,14 @@ export default function DownloadPage() {
     script.async = true;
     script.defer = true;
     script.onload = () => {
-      window.grecaptcha.ready(() => setRecaptchaLoaded(true));
+      window.grecaptcha.ready(() => {
+        console.log('✅ reCAPTCHA loaded');
+        setRecaptchaLoaded(true);
+      });
     };
     script.onerror = () => {
-      console.error('Failed to load reCAPTCHA');
-      setRecaptchaLoaded(true); // Allow form submission even if reCAPTCHA fails
+      console.error('❌ Failed to load reCAPTCHA');
+      setRecaptchaLoaded(true);
     };
     document.head.appendChild(script);
   }, [RECAPTCHA_SITE_KEY]);
@@ -56,59 +60,74 @@ export default function DownloadPage() {
       return;
     }
 
+    if (!WEB3FORMS_KEY) {
+      console.error('❌ WEB3FORMS_KEY not configured');
+      setError('Email service not configured. Please try later.');
+      return;
+    }
+
     setIsSubmitting(true);
     setError('');
 
     try {
-      // Get reCAPTCHA token for bot detection (optional)
-      let recaptchaToken = null;
+      // ✅ Step 1: Get reCAPTCHA token and verify with our backend
       if (RECAPTCHA_SITE_KEY && window.grecaptcha) {
         try {
-          recaptchaToken = await window.grecaptcha.execute(RECAPTCHA_SITE_KEY, { 
+          const recaptchaToken = await window.grecaptcha.execute(RECAPTCHA_SITE_KEY, { 
             action: 'notify_me' 
           });
+          
+          // Verify token with our backend
+          const verifyResponse = await fetch('/api/verify-captcha', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ recaptchaToken }),
+          });
+          
+          const verifyResult = await verifyResponse.json();
+          
+          if (!verifyResult.success) {
+            console.log('🤖 Bot detected');
+            setError('Security check failed. Please try again.');
+            setIsSubmitting(false);
+            return;
+          }
+          console.log('✅ Human verified, score:', verifyResult.score);
         } catch (recaptchaError) {
-          console.error('reCAPTCHA error:', recaptchaError);
-          // Continue without reCAPTCHA token
+          console.error('❌ reCAPTCHA error:', recaptchaError);
+          // Continue anyway if reCAPTCHA fails
         }
       }
 
-      // ✅ Send to backend API
-      const response = await fetch('/api/notify', {
+      // ✅ Step 2: Send directly to Web3Forms from browser using FormData
+      console.log('📧 Sending to Web3Forms from browser...');
+      
+      const web3FormData = new FormData();
+      web3FormData.append('access_key', WEB3FORMS_KEY);
+      web3FormData.append('subject', '🔔 New App Launch Notification Signup - FINNOTIA');
+      web3FormData.append('name', 'New Subscriber');
+      web3FormData.append('email', email);
+      web3FormData.append('message', `New notification signup!\n\nEmail: ${email}\nTime: ${new Date().toISOString()}\nSource: Download Page`);
+      web3FormData.append('from_name', 'FINNOTIA Notify Me');
+
+      const response = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: email,
-          recaptchaToken: recaptchaToken, // ✅ Now properly sent
-        })
+        body: web3FormData,
       });
 
       const result = await response.json();
+      console.log('Web3Forms result:', result);
 
       if (result.success) {
         setIsSubmitted(true);
         setEmail('');
         setTimeout(() => setIsSubmitted(false), 5000);
       } else {
-        console.error('Notify form error:', result);
-        switch (result.error) {
-          case 'rate_limited':
-            setError('Too many requests. Please wait a minute.');
-            break;
-          case 'spam_detected':
-            setError('Security check failed. Please try again.');
-            break;
-          case 'config_error':
-            setError('Email service not configured. Please try later.');
-            break;
-          default:
-            setError(result.message || 'Failed to submit. Please try again.');
-        }
+        console.error('❌ Web3Forms error:', result);
+        setError(result.message || 'Failed to submit. Please try again.');
       }
     } catch (err) {
-      console.error('Error:', err);
+      console.error('❌ Error:', err);
       setError('Something went wrong. Please try again.');
     } finally {
       setIsSubmitting(false);
@@ -194,13 +213,18 @@ export default function DownloadPage() {
                       />
                       <button 
                         type="submit"
-                        disabled={isSubmitting}
+                        disabled={isSubmitting || !recaptchaLoaded}
                         className={`px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl bg-gradient-to-r ${GRADIENTS.primary} text-white font-bold shadow-xl shadow-blue-500/30 hover:shadow-blue-500/40 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 whitespace-nowrap text-sm sm:text-base disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100`}
                       >
                         {isSubmitting ? (
                           <>
                             <Loader2 className="w-4 h-4 animate-spin" />
                             <span className="hidden xs:inline">Sending...</span>
+                          </>
+                        ) : !recaptchaLoaded ? (
+                          <>
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                            <span className="hidden xs:inline">Loading...</span>
                           </>
                         ) : (
                           <>

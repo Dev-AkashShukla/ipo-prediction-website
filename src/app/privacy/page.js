@@ -89,7 +89,7 @@ export default function PrivacyPolicy() {
               </div>
             </section>
 
-            {/* Section 2 */}
+            {/* Section 2 - FIXED */}
             <section>
               <div className="flex items-start gap-2 mb-2">
                 <div className="flex-shrink-0 w-6 h-6 bg-[#4A90E2] text-white rounded text-xs flex items-center justify-center font-bold">
@@ -105,7 +105,7 @@ export default function PrivacyPolicy() {
                     <h4 className="font-bold text-gray-900 mb-1 text-xs">🎯 Core Services:</h4>
                     <ul className="list-disc pl-4 space-y-0.5 text-xs">
                       <li>Create and manage your account</li>
-                      <li>Provide IPO predictions & analysis</li>
+                      <li>Provide IPO analysis & market insights</li>
                       <li>Send notifications about IPO updates</li>
                       <li>Process requests and respond to inquiries</li>
                     </ul>
@@ -114,7 +114,7 @@ export default function PrivacyPolicy() {
                   <div className="bg-white border border-blue-100 rounded p-2">
                     <h4 className="font-bold text-gray-900 mb-1 text-xs">📊 AI & ML:</h4>
                     <ul className="list-disc pl-4 space-y-0.5 text-xs">
-                      <li>Improve AI prediction models</li>
+                      <li>Improve AI analysis models</li>
                       <li>Personalize content & recommendations</li>
                       <li>Analyze usage patterns</li>
                       <li>Train ML systems (anonymized data)</li>
@@ -181,7 +181,7 @@ export default function PrivacyPolicy() {
               </div>
             </section>
 
-            {/* Section 4 */}
+            {/* Section 4 - FIXED */}
             <section>
               <div className="flex items-start gap-2 mb-2">
                 <div className="flex-shrink-0 w-6 h-6 bg-[#4A90E2] text-white rounded text-xs flex items-center justify-center font-bold">
@@ -196,7 +196,7 @@ export default function PrivacyPolicy() {
                   <div className="bg-white border border-blue-100 rounded p-2">
                     <h4 className="font-bold text-gray-900 mb-1 text-xs">🤖 AI & Analytics:</h4>
                     <ul className="list-disc pl-4 space-y-0.5 text-xs">
-                      <li><strong>Google Gemini:</strong> IPO predictions</li>
+                      <li><strong>Google Gemini:</strong> IPO analysis</li>
                       <li><strong>Perplexity AI:</strong> News summarization</li>
                       <li><strong>Google Analytics:</strong> User behavior</li>
                       <li><strong>Firebase:</strong> App performance</li>
@@ -235,6 +235,7 @@ export default function PrivacyPolicy() {
               </div>
             </section>
 
+            {/* Sections 5-11 remain the same - copying from original */}
             {/* Section 5 */}
             <section>
               <div className="flex items-start gap-2 mb-2">
@@ -444,10 +445,6 @@ export default function PrivacyPolicy() {
                   Questions about this Privacy Policy or data handling? Contact us:
                 </p>
                 <div className="space-y-1 text-xs">
-                  {/* <p>
-                    <strong>Privacy Officer:</strong>{' '}
-                    <a href="mailto:privacy@finnotia.com" className="underline">privacy@finnotia.com</a>
-                  </p> */}
                   <p>
                     <strong>Support:</strong>{' '}
                     <a href="mailto:support@finnotia.com" className="underline">support@finnotia.com</a>

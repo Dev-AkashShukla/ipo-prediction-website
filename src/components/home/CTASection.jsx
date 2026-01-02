@@ -30,12 +30,12 @@ export default function CTASection() {
 
           {/* Heading */}
           <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white mb-3 sm:mb-4 leading-tight">
-            Start Making Smarter Investments Today
+            Start Analyzing Markets Smarter Today
           </h2>
 
           {/* Description */}
           <p className="text-xs sm:text-sm lg:text-base text-white/90 mb-4 sm:mb-6 leading-relaxed">
-            Download FINNOTIA and get AI-powered market analysis, real-time stock updates, and financial news all in one app.
+            Download FINNOTIA and get AI-powered market research, real-time stock insights, and financial news analysis — all in one educational platform.
           </p>
 
           {/* CTA Button - Using constant */}
@@ -63,7 +63,7 @@ export default function CTASection() {
               <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/>
               </svg>
-              <span className="font-medium">No Registration</span>
+              <span className="font-medium">Educational Tool</span>
             </div>
             <div className="flex items-center gap-1.5 sm:gap-2">
               <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="currentColor" viewBox="0 0 20 20">

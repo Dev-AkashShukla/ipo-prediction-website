@@ -24,8 +24,8 @@ const steps = [
   },
   {
     icon: Zap,
-    title: 'Make Smart Decisions',
-    description: 'Use AI insights and market analysis to make informed investment decisions.',
+    title: 'Analyze & Learn',
+    description: 'Use AI insights and market analysis to understand investment trends and make informed research decisions.',
     color: 'from-blue-500 to-indigo-500',
   },
 ];
@@ -39,7 +39,7 @@ export default function HowItWorks() {
           badge="Getting Started"
           title="Start in"
           highlightedText="4 Simple Steps"
-          description="Getting started is easy. Download the app and begin your smart investing journey today."
+          description="Getting started is easy. Download the app and begin your market research journey today."
         />
 
         {/* Steps */}

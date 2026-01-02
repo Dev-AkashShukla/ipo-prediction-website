@@ -2,19 +2,74 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Bell, Check, TrendingUp, Shield, Zap, ArrowLeft, BarChart3, Sparkles } from 'lucide-react';
+import { Bell, Check, TrendingUp, Shield, Zap, BarChart3, Sparkles, Loader2 } from 'lucide-react';
 import { APP_NAME, GRADIENTS } from '../../lib/constants'; 
 import AndroidIcon from '../../components/ui/AndroidIcon';
 
 export default function DownloadPage() {
   const [email, setEmail] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleSubmit = (e) => {
+  // ✅ Your Web3Forms Access Key
+  const WEB3FORMS_ACCESS_KEY = process.env.NEXT_PUBLIC_WEB3FORMS_KEY || 'YOUR_WEB3FORMS_KEY';
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (email) {
-      setIsSubmitted(true);
-      setTimeout(() => setEmail(''), 3000);
+    
+    if (!email) {
+      setError('Please enter your email');
+      return;
+    }
+
+    setIsSubmitting(true);
+    setError('');
+
+    try {
+      // Get reCAPTCHA token
+      let recaptchaToken = null;
+      if (window.grecaptcha) {
+        recaptchaToken = await window.grecaptcha.execute(
+          process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY,
+          { action: 'notify_me' }
+        );
+      }
+
+      // ✅ Send to Web3Forms
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          access_key: WEB3FORMS_ACCESS_KEY,
+          subject: `🔔 New App Launch Notification Request - ${APP_NAME}`,
+          from_name: 'FINNOTIA App Download',
+          email: email,
+          message: `New user wants to be notified about app launch: ${email}`,
+          'g-recaptcha-response': recaptchaToken,
+        })
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        setIsSubmitted(true);
+        setEmail('');
+        // Reset after 5 seconds
+        setTimeout(() => {
+          setIsSubmitted(false);
+        }, 5000);
+      } else {
+        setError('Failed to submit. Please try again.');
+      }
+    } catch (err) {
+      console.error('Error:', err);
+      setError('Something went wrong. Please try again.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -26,6 +81,15 @@ export default function DownloadPage() {
 
   return (
     <div className="py-12 min-h-screen bg-gradient-to-br from-[#F8FAFC] via-white to-blue-50/30 flex flex-col relative overflow-hidden font-sans">
+
+      {/* reCAPTCHA Script */}
+      {process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY && (
+        <script
+          src={`https://www.google.com/recaptcha/api.js?render=${process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}`}
+          async
+          defer
+        />
+      )}
 
       {/* Enhanced Background Effects */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -77,7 +141,7 @@ export default function DownloadPage() {
               {APP_NAME} cuts through the market hype. We use AI to analyze IPOs and stocks based on logic, financials, and real-time data—not rumors.
             </motion.p>
 
-            {/* Enhanced Email Form */}
+            {/* Enhanced Email Form - FIXED */}
             <motion.div 
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
@@ -95,17 +159,31 @@ export default function DownloadPage() {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         required
-                        className="flex-1 px-4 py-2.5 sm:py-3 rounded-xl bg-gray-50/50 border border-transparent focus:bg-white focus:border-blue-200 focus:ring-2 focus:ring-blue-100 outline-none transition-all text-sm sm:text-base text-gray-900 placeholder:text-gray-400"
+                        disabled={isSubmitting}
+                        className="flex-1 px-4 py-2.5 sm:py-3 rounded-xl bg-gray-50/50 border border-transparent focus:bg-white focus:border-blue-200 focus:ring-2 focus:ring-blue-100 outline-none transition-all text-sm sm:text-base text-gray-900 placeholder:text-gray-400 disabled:opacity-50"
                       />
                       <button 
                         type="submit"
-                        className={`px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl bg-gradient-to-r ${GRADIENTS.primary} text-white font-bold shadow-xl shadow-blue-500/30 hover:shadow-blue-500/40 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 whitespace-nowrap text-sm sm:text-base`}
+                        disabled={isSubmitting}
+                        className={`px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl bg-gradient-to-r ${GRADIENTS.primary} text-white font-bold shadow-xl shadow-blue-500/30 hover:shadow-blue-500/40 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 whitespace-nowrap text-sm sm:text-base disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100`}
                       >
-                        <Bell className="w-4 h-4" />
-                        <span className="hidden xs:inline">Notify Me</span>
-                        <span className="xs:hidden">Notify</span>
+                        {isSubmitting ? (
+                          <>
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                            <span className="hidden xs:inline">Sending...</span>
+                          </>
+                        ) : (
+                          <>
+                            <Bell className="w-4 h-4" />
+                            <span className="hidden xs:inline">Notify Me</span>
+                            <span className="xs:hidden">Notify</span>
+                          </>
+                        )}
                       </button>
                     </div>
+                    {error && (
+                      <p className="text-xs text-red-600 mt-2 px-2">{error}</p>
+                    )}
                   </div>
                 </form>
               ) : (
@@ -113,7 +191,7 @@ export default function DownloadPage() {
                   <div className="absolute -inset-1 bg-gradient-to-r from-green-400 to-emerald-400 rounded-2xl blur opacity-20"></div>
                   <div className="relative bg-gradient-to-r from-green-50 to-emerald-50 text-green-700 px-4 sm:px-6 py-3 rounded-xl flex items-center justify-center gap-3 border border-green-200/50 shadow-xl shadow-green-200/50">
                     <Check className="w-5 h-5" />
-                    <span className="font-bold text-sm sm:text-base">You're on the list!</span>
+                    <span className="font-bold text-sm sm:text-base">You're on the list! 🎉</span>
                   </div>
                 </div>
               )}
@@ -138,7 +216,7 @@ export default function DownloadPage() {
             </motion.div>
           </div>
 
-          {/* RIGHT: Enhanced 3D Mockup */}
+          {/* RIGHT: 3D Phone with Real Screenshot */}
           <motion.div 
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -157,53 +235,13 @@ export default function DownloadPage() {
               {/* Screen Overlay Shine Effect */}
               <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-transparent pointer-events-none z-10"></div>
 
-              {/* Screen Content */}
-              <div className="w-full h-full bg-gradient-to-br from-[#F5F7FB] to-[#E8EDF5] relative flex flex-col">
-                
-                {/* Enhanced Header */}
-                <div className="h-32 sm:h-36 bg-gradient-to-br from-[#4A90E2] via-[#3A7BC8] to-[#5BA3F5] p-5 sm:p-6 flex flex-col justify-end relative overflow-hidden">
-                  <div className="absolute top-0 right-0 w-28 sm:w-32 h-28 sm:h-32 bg-white/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2"></div>
-                  <div className="absolute bottom-0 left-0 w-20 sm:w-24 h-20 sm:h-24 bg-blue-300/10 rounded-full blur-xl translate-y-1/2 -translate-x-1/2"></div>
-                  <div className="w-7 h-7 sm:w-8 sm:h-8 bg-white/25 rounded-lg mb-2.5 sm:mb-3 backdrop-blur-sm shadow-lg"></div>
-                  <div className="w-28 sm:w-32 h-5 sm:h-6 bg-white rounded-lg shadow-md"></div>
-                </div>
-
-                {/* Enhanced Cards List */}
-                <div className="p-4 sm:p-5 space-y-3 sm:space-y-4 flex-1 overflow-hidden">
-                  {/* Card 1 - Active */}
-                  <div className="bg-white p-3.5 sm:p-4 rounded-xl sm:rounded-2xl shadow-md border border-blue-100/50 hover:shadow-lg transition-shadow">
-                    <div className="flex justify-between items-start mb-2.5 sm:mb-3">
-                      <div className="w-9 h-9 sm:w-10 sm:h-10 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-lg shadow-sm"></div>
-                      <div className="px-2 py-0.5 sm:py-1 bg-gradient-to-r from-green-50 to-emerald-50 text-green-600 text-[9px] sm:text-[10px] font-bold rounded-md border border-green-200/50">HIGH GMP</div>
-                    </div>
-                    <div className="w-3/4 h-3.5 sm:h-4 bg-gradient-to-r from-gray-100 to-gray-50 rounded mb-1.5 sm:mb-2"></div>
-                    <div className="w-1/2 h-2.5 sm:h-3 bg-gray-50 rounded"></div>
-                  </div>
-
-                  {/* Card 2 - Inactive */}
-                  <div className="bg-white/70 p-3.5 sm:p-4 rounded-xl sm:rounded-2xl shadow-sm border border-gray-100 opacity-70">
-                    <div className="flex justify-between items-start mb-2.5 sm:mb-3">
-                      <div className="w-9 h-9 sm:w-10 sm:h-10 bg-gradient-to-br from-orange-50 to-amber-50 rounded-lg"></div>
-                      <div className="px-2 py-0.5 sm:py-1 bg-gray-100 text-gray-400 text-[9px] sm:text-[10px] font-bold rounded-md">CLOSED</div>
-                    </div>
-                    <div className="w-2/3 h-3.5 sm:h-4 bg-gray-100 rounded mb-1.5 sm:mb-2"></div>
-                  </div>
-
-                  {/* Card 3 - Subtle */}
-                  <div className="bg-white/50 p-3.5 sm:p-4 rounded-xl sm:rounded-2xl shadow-sm border border-gray-50 opacity-50">
-                    <div className="flex justify-between items-start">
-                      <div className="w-9 h-9 sm:w-10 sm:h-10 bg-gray-50 rounded-lg"></div>
-                      <div className="w-12 sm:w-14 h-5 bg-gray-50 rounded"></div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Enhanced Bottom Nav */}
-                <div className="mt-auto bg-white/90 backdrop-blur-md h-14 sm:h-16 border-t border-gray-200/50 flex items-center justify-around px-4 shadow-lg">
-                  <div className="w-9 h-9 sm:w-10 sm:h-10 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-full text-[#4A90E2] flex items-center justify-center shadow-md"><TrendingUp size={16} strokeWidth={2.5}/></div>
-                  <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full text-gray-300 flex items-center justify-center"><BarChart3 size={16}/></div>
-                  <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full text-gray-300 flex items-center justify-center"><Shield size={16}/></div>
-                </div>
+              {/* Real App Screenshot */}
+              <div className="w-full h-full relative overflow-hidden rounded-[30px] sm:rounded-[32px]">
+                <img 
+                  src="/finnotia-app-download.png" 
+                  alt="Finnotia App Interface"
+                  className="w-full h-full object-cover object-center"
+                />
               </div>
             </div>
 
@@ -223,7 +261,7 @@ export default function DownloadPage() {
                   <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-green-600" />
                 </div>
                 <div>
-                  <p className="text-[9px] sm:text-[10px] text-gray-500 font-bold uppercase tracking-wide">Listing Gain</p>
+                  <p className="text-[9px] sm:text-[10px] text-gray-500 font-bold uppercase tracking-wide">Current GMP</p>
                   <p className="text-xs sm:text-sm font-black text-gray-900">+45.2%</p>
                 </div>
               </div>
@@ -247,7 +285,7 @@ export default function DownloadPage() {
                 </div>
                 <div>
                   <p className="text-[9px] sm:text-[10px] text-gray-500 font-bold uppercase tracking-wide">Risk Analysis</p>
-                  <p className="text-xs sm:text-sm font-black text-gray-900">Low Risk</p>
+                  <p className="text-xs sm:text-sm font-black text-gray-900">Analysis Ready</p>
                 </div>
               </div>
             </motion.div>
@@ -265,6 +303,13 @@ export default function DownloadPage() {
           </motion.div>
 
         </div>
+      </div>
+
+      {/* Mini Footer Disclaimer */}
+      <div className="absolute bottom-2 w-full text-center z-20 px-4">
+        <p className="text-[10px] text-gray-400">
+          Disclaimer: {APP_NAME} is an educational tool. We are NOT SEBI registered. Data is for informational purposes only.
+        </p>
       </div>
 
       <style jsx>{`

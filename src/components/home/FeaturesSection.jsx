@@ -48,11 +48,11 @@ export default function FeaturesSection() {
       <div className="container mx-auto px-4">
         {/* Reusable Section Header */}
         <SectionHeader
-          badge="Features"
-          title="Everything You Need to"
-          highlightedText="Invest Smart"
-          description="Powerful AI-driven tools and real-time insights designed to help you make smarter financial decisions."
-        />
+  badge="Features"
+  title="Everything You Need to"
+  highlightedText="Analyze Markets" // Changed from "Invest Smart"
+  description="Powerful AI-driven tools and real-time insights designed to help you make informed, data-driven decisions." // Changed from "smarter financial decisions"
+/>
 
         {/* Features Grid */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-6 max-w-6xl mx-auto">

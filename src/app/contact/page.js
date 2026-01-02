@@ -1,7 +1,7 @@
 'use client';
 import { Mail, Send, Loader2 } from 'lucide-react';
-import { useState, useEffect, useCallback } from 'react';
-import { PLAY_STORE_URL, CONTACT_INFO, GRADIENTS, RECAPTCHA_SITE_KEY } from '../../lib/constants';
+import { useState, useEffect } from 'react';
+import { PLAY_STORE_URL, CONTACT_INFO, GRADIENTS } from '../../lib/constants';
 import AndroidIcon from '../../components/ui/AndroidIcon';
 
 export default function ContactPage() {
@@ -14,6 +14,10 @@ export default function ContactPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(null);
   const [recaptchaLoaded, setRecaptchaLoaded] = useState(false);
+
+  // ✅ Your Web3Forms Access Key
+  const WEB3FORMS_ACCESS_KEY = process.env.NEXT_PUBLIC_WEB3FORMS_KEY || 'YOUR_WEB3FORMS_KEY';
+  const RECAPTCHA_SITE_KEY = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
 
   // Load reCAPTCHA script
   useEffect(() => {
@@ -35,14 +39,10 @@ export default function ContactPage() {
       window.grecaptcha.ready(() => setRecaptchaLoaded(true));
     };
     document.head.appendChild(script);
-  }, []);
-
-  const getRecaptchaToken = useCallback(async () => {
-    if (!RECAPTCHA_SITE_KEY || !window.grecaptcha) return null;
-    return await window.grecaptcha.execute(RECAPTCHA_SITE_KEY, { action: 'contact_form' });
-  }, []);
+  }, [RECAPTCHA_SITE_KEY]);
 
   const handleSubmit = async () => {
+    // Validation
     if (!formData.name || !formData.email || !formData.subject || !formData.message) {
       setSubmitStatus('validation_error');
       return;
@@ -52,15 +52,30 @@ export default function ContactPage() {
     setSubmitStatus(null);
 
     try {
-      const recaptchaToken = await getRecaptchaToken();
+      // Get reCAPTCHA token
+      let recaptchaToken = null;
+      if (RECAPTCHA_SITE_KEY && window.grecaptcha) {
+        recaptchaToken = await window.grecaptcha.execute(RECAPTCHA_SITE_KEY, { 
+          action: 'contact_form' 
+        });
+      }
 
-      const response = await fetch('/api/contact', {
+      // ✅ Send to Web3Forms
+      const response = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
         body: JSON.stringify({
-          ...formData,
-          recaptchaToken,
-        }),
+          access_key: WEB3FORMS_ACCESS_KEY,
+          name: formData.name,
+          email: formData.email,
+          subject: `Contact Form: ${formData.subject}`,
+          message: formData.message,
+          from_name: 'FINNOTIA Contact Form',
+          'g-recaptcha-response': recaptchaToken,
+        })
       });
 
       const result = await response.json();
@@ -68,12 +83,18 @@ export default function ContactPage() {
       if (result.success) {
         setSubmitStatus('success');
         setFormData({ name: '', email: '', subject: '', message: '' });
-      } else if (result.error === 'rate_limited') {
-        setSubmitStatus('rate_limited');
-      } else if (result.error === 'spam_detected') {
-        setSubmitStatus('spam');
+        
+        // Reset success message after 5 seconds
+        setTimeout(() => {
+          setSubmitStatus(null);
+        }, 5000);
       } else {
-        setSubmitStatus('error');
+        // Check for specific Web3Forms errors
+        if (result.message && result.message.includes('spam')) {
+          setSubmitStatus('spam');
+        } else {
+          setSubmitStatus('error');
+        }
       }
     } catch (error) {
       console.error('Error:', error);
@@ -92,7 +113,7 @@ export default function ContactPage() {
       <div className="max-w-6xl mx-auto">
         
         {/* Header */}
-        <header className="text-center mb-4 mt-8 sm:mb-8 sm:mt-12">
+        <header className="text-center mb-4 mt-12 sm:mb-8 sm:mt-12">
           <h1 className="text-xl sm:text-3xl lg:text-4xl font-black text-gray-900 mb-1.5">
             Get in <span className={`bg-gradient-to-r ${GRADIENTS.primary} bg-clip-text text-transparent`}>Touch</span>
           </h1>
@@ -130,15 +151,6 @@ export default function ContactPage() {
               <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
                 <p className="text-xs sm:text-sm text-yellow-800 font-semibold">
                   ⚠ Please fill all required fields.
-                </p>
-              </div>
-            )}
-
-            {/* Rate Limited */}
-            {submitStatus === 'rate_limited' && (
-              <div className="mb-4 p-3 bg-orange-50 border border-orange-200 rounded-lg">
-                <p className="text-xs sm:text-sm text-orange-800 font-semibold">
-                  ⏱ Too many requests. Please wait a minute.
                 </p>
               </div>
             )}
@@ -244,13 +256,20 @@ export default function ContactPage() {
                   </>
                 )}
               </button>
+
+              {/* reCAPTCHA Badge Info */}
+              {RECAPTCHA_SITE_KEY && (
+                <p className="text-[10px] text-gray-400 text-center">
+                  Protected by reCAPTCHA • <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" className="underline hover:text-gray-600">Privacy</a> • <a href="https://policies.google.com/terms" target="_blank" rel="noopener noreferrer" className="underline hover:text-gray-600">Terms</a>
+                </p>
+              )}
             </div>
           </section>
 
           {/* Sidebar */}
           <aside className="lg:col-span-2 space-y-3">
             
-            {/* App Download Card - Using constants */}
+            {/* App Download Card */}
             <div className={`bg-gradient-to-br ${GRADIENTS.primary} rounded-xl sm:rounded-2xl shadow-xl p-4 sm:p-5 text-white`}>
               <div className="flex items-start gap-2.5 mb-3">
                 <div className="w-9 h-9 bg-white/20 backdrop-blur rounded-lg flex items-center justify-center flex-shrink-0">
@@ -273,7 +292,7 @@ export default function ContactPage() {
               </a>
             </div>
 
-            {/* Contact Information Card - Using constants */}
+            {/* Contact Information Card */}
             <div className="bg-white rounded-xl sm:rounded-2xl shadow-xl p-4 sm:p-5">
               <h2 className="text-sm sm:text-base font-bold text-gray-900 mb-3">Contact Info</h2>
               

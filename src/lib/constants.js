@@ -1,7 +1,7 @@
-// Application constants for FINNOTIA
+// Application constants for FINNOTIA - SEBI COMPLIANT
 
 export const APP_NAME = 'FINNOTIA';
-export const APP_DESCRIPTION = 'AI-Powered IPO Predictions & Market Analysis';
+export const APP_DESCRIPTION = 'AI-Powered IPO Analysis & Market Research';
 
 // ✅ Play Store Link - Single source of truth
 // export const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.finnotia';
@@ -45,10 +45,10 @@ export const GRADIENTS = {
 };
 
 export const FEATURES_LIST = [
-  'AI-Powered IPO Predictions',
-  'Stock Market Analysis',
+  'AI-Powered IPO Analysis',
+  'Stock Market Insights',
   'Real-Time Market News',
-  'Mutual Fund Insights',
+  'Mutual Fund Analysis',
   'GMP Tracking',
   'Smart Alerts',
 ];

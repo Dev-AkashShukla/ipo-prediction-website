@@ -26,7 +26,7 @@ export const metadata = {
 export default function AboutPage() {
   const offerings = [
     'AI-based IPO analysis using GMP, subscription data & market conditions',
-    'IPO listing price range predictions with post-listing accuracy tracking',
+    'IPO listing price insights with post-listing performance tracking',
     'Stock insights based on news triggers, sentiment & risk analysis',
     'AI-curated mutual fund analysis across equity, debt & hybrid categories',
     'Verified market news with impact analysis and smart alerts',
@@ -177,17 +177,17 @@ export default function AboutPage() {
                 </div>
               </div>
 
-              {/* Disclaimer */}
+              {/* ENHANCED Disclaimer - RED & BOLD */}
               <section className="mt-10 p-4 bg-gray-50 rounded-lg border border-gray-100">
-                <h3 className="text-sm font-bold text-gray-900 mb-1">
-                  Disclaimer
+                <h3 className="text-sm font-bold text-red-900 mb-2">
+                  ⚠️ IMPORTANT DISCLAIMER
                 </h3>
-                <p className="text-xs text-gray-500 leading-relaxed text-justify">
-                  {APP_NAME} provides AI-generated market analysis for
+                <p className="text-xs text-red-800 leading-relaxed font-medium">
+                  <strong>{APP_NAME} provides AI-generated market analysis for
                   informational and educational purposes only. We are NOT SEBI
                   registered. This is NOT investment advice. Market investments
                   are subject to risk. Please consult a SEBI-registered advisor
-                  before making investment decisions.
+                  before making any investment decisions.</strong>
                 </p>
               </section>
 

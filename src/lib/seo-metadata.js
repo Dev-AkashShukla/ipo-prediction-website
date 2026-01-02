@@ -1,38 +1,38 @@
-// src/lib/seo-metadata.js - Replace with better SEO keywords
+// src/lib/seo-metadata.js - SEBI Compliant Version
 
 export const seoConfig = {
   siteName: 'FINNOTIA',
   siteUrl: 'https://finnotia.com',
-  defaultTitle: 'FINNOTIA - Best IPO Prediction App India | 95% Accurate AI Stock Analysis 2024',
-  defaultDescription: 'India\'s #1 IPO prediction app with 95% accuracy. Get AI-powered IPO analysis, GMP tracking, stock market news, mutual fund insights. Download free for NSE/BSE IPO predictions.',
+  defaultTitle: 'FINNOTIA - AI-Powered IPO Analysis & Market Research Tool India 2024',
+  defaultDescription: 'AI-powered IPO analysis platform for Indian investors. Get detailed IPO insights, GMP tracking, stock market research, mutual fund analysis. Free educational tool for NSE/BSE market data.',
   defaultKeywords: [
     // Primary keywords (high search volume)
-    'IPO prediction app India',
-    'best IPO analysis app 2024',
+    'IPO analysis app India',
+    'IPO research tool 2024',
     'IPO GMP today',
     'upcoming IPO India',
-    'IPO listing prediction',
+    'IPO listing insights',
     'mainboard IPO',
     'SME IPO list',
     
     // Long-tail keywords (better conversion)
-    'how to predict IPO listing price',
-    'best app for IPO investment India',
+    'IPO listing price analysis',
+    'IPO investment research India',
     'IPO grey market premium tracking',
     'NSE BSE IPO calendar 2024',
-    'AI stock market prediction India',
+    'AI stock market analysis India',
     'IPO subscription status live',
     'IPO allotment status check',
     
     // Location-based
     'IPO analysis India',
-    'Indian stock market app',
-    'NSE IPO predictions',
+    'Indian stock market research app',
+    'NSE IPO insights',
     'BSE IPO analysis',
     
     // Brand keywords
     'FINNOTIA app',
-    'FINNOTIA IPO predictions',
+    'FINNOTIA IPO analysis',
     'finnotia.com',
   ],
   twitterHandle: '@finnotia',
@@ -41,7 +41,7 @@ export const seoConfig = {
     url: 'https://finnotia.com',
     logo: 'https://finnotia.com/finnotia-logo.png',
     foundingDate: '2024',
-    description: 'AI-powered IPO prediction and stock market analysis platform helping Indian retail investors make smarter investment decisions with 95% accurate predictions',
+    description: 'AI-powered IPO analysis and stock market research platform helping Indian retail investors understand market data through structured insights and analysis',
     contactPoint: {
       telephone: '+91-98765-43210',
       contactType: 'customer support',
@@ -53,55 +53,55 @@ export const seoConfig = {
 
 export const pageMetadata = {
   home: {
-    title: 'Best IPO Prediction App India 2024 | AI Stock Analysis - FINNOTIA',
-    description: '🎯 #1 IPO prediction app with 95% accuracy! Get free IPO GMP, listing predictions, stock analysis, market news. Download FINNOTIA - trusted by 100K+ investors.',
+    title: 'IPO Analysis App India 2024 | AI Market Research - FINNOTIA',
+    description: 'Comprehensive IPO analysis platform. Get IPO insights, GMP tracking, stock research, market news. Educational tool for NSE/BSE market data - NOT investment advice.',
     keywords: [
-      'IPO prediction app',
-      'best IPO app India',
+      'IPO analysis app',
+      'IPO research tool India',
       'IPO GMP tracking',
       'upcoming IPO 2024',
       'mainboard IPO list',
       'SME IPO analysis',
       'NSE BSE IPO',
-      'IPO listing prediction',
+      'IPO listing insights',
       'grey market premium',
       'IPO subscription status',
-      'stock market app India',
-      'AI IPO prediction',
+      'stock market research app India',
+      'AI IPO analysis',
     ],
     schema: 'WebApplication',
   },
   features: {
-    title: 'FINNOTIA Features - AI IPO Predictions, GMP Tracking, Stock Analysis',
-    description: '⚡ Discover FINNOTIA features: 95% accurate IPO predictions, real-time GMP updates, NSE/BSE IPO calendar, stock analysis, mutual funds, smart alerts. Free download!',
+    title: 'FINNOTIA Features - AI IPO Analysis, GMP Tracking, Stock Research',
+    description: 'Discover FINNOTIA features: AI-powered IPO analysis, real-time GMP updates, NSE/BSE IPO calendar, stock research, mutual funds, market alerts. Free educational tool!',
     keywords: [
-      'IPO prediction features',
+      'IPO analysis features',
       'GMP tracking app',
       'IPO subscription tracker',
-      'stock analysis tools India',
+      'stock research tools India',
       'IPO allotment status',
       'market alerts',
       'mutual fund analysis',
-      'technical stock analysis',
+      'technical stock research',
     ],
   },
   about: {
-    title: 'About FINNOTIA - India\'s Most Accurate IPO Prediction Platform',
-    description: 'Learn about FINNOTIA - trusted by 100K+ investors. 95% accurate AI-powered IPO predictions, real-time market analysis. NOT SEBI registered. For educational use only.',
+    title: 'About FINNOTIA - AI-Powered IPO Analysis & Research Platform',
+    description: 'Learn about FINNOTIA - AI-powered IPO analysis and market research platform. Provides detailed market insights and data analysis. NOT SEBI registered. For educational use only.',
     keywords: [
       'FINNOTIA about',
-      'best IPO prediction platform',
-      'AI stock analysis India',
-      'IPO prediction accuracy',
+      'IPO analysis platform',
+      'AI stock research India',
+      'IPO market insights',
     ],
   },
   contact: {
-    title: 'Contact FINNOTIA - IPO Prediction & Stock Analysis Support',
-    description: '📧 Contact FINNOTIA support for IPO predictions, app features, or queries. Email: support@finnotia.com | Quick response within 24 hours.',
+    title: 'Contact FINNOTIA - IPO Analysis & Market Research Support',
+    description: '📧 Contact FINNOTIA support for IPO analysis features, market research, or queries. Email: support@finnotia.com | Quick response within 24 hours.',
     keywords: [
       'FINNOTIA contact',
-      'IPO app support',
-      'stock analysis help',
+      'IPO analysis support',
+      'stock research help',
       'customer support India',
     ],
   },
@@ -114,12 +114,12 @@ export const structuredData = {
     name: 'FINNOTIA',
     url: 'https://finnotia.com',
     logo: 'https://finnotia.com/finnotia-logo.png',
-    description: 'AI-powered IPO prediction and stock market analysis platform for Indian investors',
+    description: 'AI-powered IPO analysis and stock market research platform for Indian investors',
     foundingDate: '2024',
     areaServed: 'IN',
     knowsAbout: [
-      'IPO Predictions',
-      'Stock Market Analysis',
+      'IPO Analysis',
+      'Stock Market Research',
       'Grey Market Premium',
       'Mutual Funds',
       'NSE IPO',
@@ -144,7 +144,7 @@ export const structuredData = {
   mobileApp: {
     '@context': 'https://schema.org',
     '@type': 'MobileApplication',
-    name: 'FINNOTIA - IPO Predictions & Stock Analysis',
+    name: 'FINNOTIA - IPO Analysis & Market Research',
     operatingSystem: 'ANDROID',
     applicationCategory: 'FinanceApplication',
     offers: {
@@ -159,7 +159,7 @@ export const structuredData = {
       bestRating: '5',
       worstRating: '1',
     },
-    description: 'Get 95% accurate IPO predictions, GMP tracking, stock analysis, and market news for Indian investors. Free download.',
+    description: 'AI-powered IPO analysis platform with GMP tracking, stock research, and market insights for Indian investors. Free educational tool - NOT investment advice.',
     screenshot: 'https://finnotia.com/app-screenshot.png',
     softwareVersion: '1.0.0',
     datePublished: '2024-01-01',
@@ -168,10 +168,10 @@ export const structuredData = {
   faqPage: [
     {
       '@type': 'Question',
-      name: 'What is FINNOTIA and how accurate are IPO predictions?',
+      name: 'What is FINNOTIA and what insights does it provide?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'FINNOTIA is an AI-powered platform providing IPO predictions with 95% accuracy, real-time GMP tracking, stock analysis, and market news for Indian investors. It covers NSE and BSE IPOs including mainboard and SME listings.',
+        text: 'FINNOTIA is an AI-powered platform providing IPO analysis with data-driven insights, real-time GMP tracking, stock research, and market news for Indian investors. It covers NSE and BSE IPOs including mainboard and SME listings. This is educational content, NOT investment advice.',
       },
     },
     {
@@ -179,7 +179,7 @@ export const structuredData = {
       name: 'Is FINNOTIA SEBI registered?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'No, FINNOTIA is NOT SEBI registered. We provide educational content and AI-generated analysis for informational purposes only. This is NOT investment advice. Always consult SEBI-registered advisors before investing.',
+        text: 'No, FINNOTIA is NOT SEBI registered. We provide educational content and AI-generated analysis for informational purposes only. This is NOT investment advice. Always consult SEBI-registered advisors before making any investment decisions.',
       },
     },
     {
@@ -187,7 +187,7 @@ export const structuredData = {
       name: 'Is FINNOTIA app free to use?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Yes, FINNOTIA is 100% free to download and use. No registration required for basic features like IPO predictions, GMP tracking, and market news.',
+        text: 'Yes, FINNOTIA is 100% free to download and use. No registration required for basic features like IPO analysis, GMP tracking, and market news.',
       },
     },
     {
@@ -195,7 +195,7 @@ export const structuredData = {
       name: 'How to check IPO GMP on FINNOTIA?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Download FINNOTIA app from Google Play Store. Open the app and navigate to the IPO section. You\'ll see real-time Grey Market Premium (GMP) for all upcoming and current IPOs on NSE and BSE.',
+        text: 'Download FINNOTIA app from Google Play Store. Open the app and navigate to the IPO section. You will see real-time Grey Market Premium (GMP) for all upcoming and current IPOs on NSE and BSE.',
       },
     },
     {

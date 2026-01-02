@@ -7,8 +7,8 @@ const stats = [
   {
     icon: Users,
     value: 0,
-    suffix: '',
-    label: 'Growing User Community',
+    suffix: '+',
+    label: 'Active Users',
     color: 'from-[#4A90E2] to-[#2E5CB8]',
   },
   {
@@ -32,7 +32,8 @@ const stats = [
     label: 'Market Monitoring',
     color: 'from-[#4A90E2] to-[#1E3A8A]',
   },
-]
+];
+
 function AnimatedCounter({ value, duration = 2000 }) {
   const [count, setCount] = useState(0);
   const [hasAnimated, setHasAnimated] = useState(false);
@@ -85,10 +86,10 @@ export default function StatsSection() {
           className="text-center mb-6"
         >
           <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white mb-2">
-            Trusted by Thousands
+            Growing Community
           </h2>
           <p className="text-xs sm:text-sm text-white/80 max-w-2xl mx-auto">
-            Join the community making smarter investment decisions every day with FINNOTIA.
+            Join the community learning about markets and analyzing investment opportunities with FINNOTIA.
           </p>
         </motion.div>
 

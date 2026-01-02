@@ -18,7 +18,9 @@ export default function ContactPage() {
   const RECAPTCHA_SITE_KEY = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
 
   useEffect(() => {
+    // If no reCAPTCHA key, skip loading
     if (!RECAPTCHA_SITE_KEY) {
+      console.log('reCAPTCHA site key not configured, skipping...');
       setRecaptchaLoaded(true);
       return;
     }
@@ -34,6 +36,10 @@ export default function ContactPage() {
     script.defer = true;
     script.onload = () => {
       window.grecaptcha.ready(() => setRecaptchaLoaded(true));
+    };
+    script.onerror = () => {
+      console.error('Failed to load reCAPTCHA');
+      setRecaptchaLoaded(true); // Allow form submission even if reCAPTCHA fails to load
     };
     document.head.appendChild(script);
   }, [RECAPTCHA_SITE_KEY]);
@@ -54,15 +60,20 @@ export default function ContactPage() {
     setSubmitStatus(null);
 
     try {
-      // Get reCAPTCHA token for bot detection
+      // Get reCAPTCHA token for bot detection (optional)
       let recaptchaToken = null;
       if (RECAPTCHA_SITE_KEY && window.grecaptcha) {
-        recaptchaToken = await window.grecaptcha.execute(RECAPTCHA_SITE_KEY, { 
-          action: 'contact_form' 
-        });
+        try {
+          recaptchaToken = await window.grecaptcha.execute(RECAPTCHA_SITE_KEY, { 
+            action: 'contact_form' 
+          });
+        } catch (recaptchaError) {
+          console.error('reCAPTCHA error:', recaptchaError);
+          // Continue without reCAPTCHA token
+        }
       }
 
-      // ✅ ONLY call YOUR backend API - NOT Web3Forms directly!
+      // ✅ Send to backend API
       const response = await fetch('/api/contact', {
         method: 'POST',
         headers: {
@@ -73,7 +84,7 @@ export default function ContactPage() {
           email: formData.email,
           subject: formData.subject,
           message: formData.message,
-         // recaptchaToken: recaptchaToken,
+          recaptchaToken: recaptchaToken, // ✅ Now properly sent
         })
       });
 
@@ -84,6 +95,7 @@ export default function ContactPage() {
         setFormData({ name: '', email: '', subject: '', message: '' });
         setTimeout(() => setSubmitStatus(null), 5000);
       } else {
+        console.error('Contact form error:', result);
         switch (result.error) {
           case 'spam_detected':
             setSubmitStatus('spam');
@@ -93,6 +105,9 @@ export default function ContactPage() {
             break;
           case 'validation_error':
             setSubmitStatus('validation_error');
+            break;
+          case 'config_error':
+            setSubmitStatus('config_error');
             break;
           default:
             setSubmitStatus('error');
@@ -143,6 +158,14 @@ export default function ContactPage() {
               <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
                 <p className="text-xs sm:text-sm text-red-800 font-semibold">
                   ✗ Something went wrong. Please try again.
+                </p>
+              </div>
+            )}
+
+            {submitStatus === 'config_error' && (
+              <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+                <p className="text-xs sm:text-sm text-red-800 font-semibold">
+                  ✗ Email service not configured. Please email us directly at support@finnotia.com
                 </p>
               </div>
             )}
@@ -252,7 +275,7 @@ export default function ContactPage() {
 
               <button
                 onClick={handleSubmit}
-                disabled={isSubmitting || !recaptchaLoaded}
+                disabled={isSubmitting}
                 className={`w-full bg-gradient-to-r ${GRADIENTS.primary} text-white px-4 py-2.5 sm:py-3 rounded-lg font-bold text-xs sm:text-sm hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100`}
               >
                 {isSubmitting ? (

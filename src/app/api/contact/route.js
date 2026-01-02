@@ -1,8 +1,9 @@
 // src/app/api/contact/route.js
 import { NextResponse } from 'next/server';
 
+// ✅ Use server-side env variable (without NEXT_PUBLIC_ prefix for security)
+const WEB3FORMS_ACCESS_KEY = process.env.WEB3FORMS_KEY || process.env.NEXT_PUBLIC_WEB3FORMS_KEY;
 const RECAPTCHA_SECRET_KEY = process.env.RECAPTCHA_SECRET_KEY;
-const WEB3FORMS_ACCESS_KEY = process.env.NEXT_PUBLIC_WEB3FORMS_KEY;
 const RECAPTCHA_SCORE_THRESHOLD = 0.5;
 
 // Rate limiting
@@ -24,10 +25,10 @@ function isRateLimited(ip) {
   return false;
 }
 
-// ✅ Verify reCAPTCHA with GOOGLE (not Web3Forms)
+// ✅ Verify reCAPTCHA with GOOGLE
 async function verifyRecaptcha(token) {
   if (!RECAPTCHA_SECRET_KEY || !token) {
-    console.log('reCAPTCHA skipped');
+    console.log('reCAPTCHA skipped - no secret key or token');
     return { success: true, score: 1 };
   }
 
@@ -81,7 +82,7 @@ export async function POST(request) {
       );
     }
 
-    // ✅ Step 1: Verify reCAPTCHA with GOOGLE
+    // ✅ Step 1: Verify reCAPTCHA with GOOGLE (optional)
     if (recaptchaToken && RECAPTCHA_SECRET_KEY) {
       const recaptchaResult = await verifyRecaptcha(recaptchaToken);
       
@@ -93,14 +94,20 @@ export async function POST(request) {
       }
     }
 
+    // ✅ Check if Web3Forms key exists
     if (!WEB3FORMS_ACCESS_KEY) {
+      console.error('❌ WEB3FORMS_KEY not configured in environment variables');
       return NextResponse.json(
-        { success: false, error: 'config_error', message: 'Email not configured' },
+        { success: false, error: 'config_error', message: 'Email service not configured. Please contact support.' },
         { status: 500 }
       );
     }
 
-    // ✅ Step 2: Send to Web3Forms WITHOUT reCAPTCHA token!
+    console.log('📧 Sending to Web3Forms...');
+    console.log('Access Key exists:', !!WEB3FORMS_ACCESS_KEY);
+    console.log('Access Key length:', WEB3FORMS_ACCESS_KEY?.length);
+
+    // ✅ Step 2: Send to Web3Forms
     const emailResponse = await fetch('https://api.web3forms.com/submit', {
       method: 'POST',
       headers: { 
@@ -111,36 +118,54 @@ export async function POST(request) {
         access_key: WEB3FORMS_ACCESS_KEY,
         name: name,
         email: email,
-        subject: `[FINNOTIA] ${subject}`,
+        subject: `[FINNOTIA Contact] ${subject}`,
         message: `Name: ${name}\nEmail: ${email}\nSubject: ${subject}\n\nMessage:\n${message}`,
-        // ❌ NO g-recaptcha-response here! That's a Pro feature!
+        from_name: 'FINNOTIA Contact Form',
+        replyto: email,
       }),
     });
 
-    const contentType = emailResponse.headers.get('content-type');
-    if (!contentType || !contentType.includes('application/json')) {
-      console.error('Web3Forms returned non-JSON');
+    // ✅ Better error handling - log the actual response
+    const responseText = await emailResponse.text();
+    console.log('Web3Forms raw response:', responseText);
+    console.log('Web3Forms status:', emailResponse.status);
+
+    // Try to parse as JSON
+    let emailResult;
+    try {
+      emailResult = JSON.parse(responseText);
+    } catch (parseError) {
+      console.error('❌ Web3Forms returned non-JSON:', responseText.substring(0, 500));
       return NextResponse.json(
-        { success: false, error: 'api_error', message: 'Email service error' },
+        { 
+          success: false, 
+          error: 'api_error', 
+          message: 'Email service returned invalid response. Check server logs.',
+          debug: process.env.NODE_ENV === 'development' ? responseText.substring(0, 200) : undefined
+        },
         { status: 500 }
       );
     }
 
-    const emailResult = await emailResponse.json();
-    console.log('Web3Forms result:', emailResult);
+    console.log('Web3Forms parsed result:', emailResult);
 
     if (emailResult.success) {
-      return NextResponse.json({ success: true, message: 'Message sent!' });
+      return NextResponse.json({ success: true, message: 'Message sent successfully!' });
     } else {
+      console.error('❌ Web3Forms error:', emailResult);
       return NextResponse.json(
-        { success: false, error: 'email_failed', message: emailResult.message || 'Failed' },
+        { 
+          success: false, 
+          error: 'email_failed', 
+          message: emailResult.message || 'Failed to send email' 
+        },
         { status: 500 }
       );
     }
   } catch (error) {
-    console.error('Contact API error:', error);
+    console.error('❌ Contact API error:', error);
     return NextResponse.json(
-      { success: false, error: 'server_error', message: 'Server error' },
+      { success: false, error: 'server_error', message: 'Server error. Please try again.' },
       { status: 500 }
     );
   }

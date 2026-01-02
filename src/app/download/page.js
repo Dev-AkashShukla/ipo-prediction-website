@@ -16,7 +16,9 @@ export default function DownloadPage() {
   const RECAPTCHA_SITE_KEY = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
 
   useEffect(() => {
+    // If no reCAPTCHA key, skip loading
     if (!RECAPTCHA_SITE_KEY) {
+      console.log('reCAPTCHA site key not configured, skipping...');
       setRecaptchaLoaded(true);
       return;
     }
@@ -32,6 +34,10 @@ export default function DownloadPage() {
     script.defer = true;
     script.onload = () => {
       window.grecaptcha.ready(() => setRecaptchaLoaded(true));
+    };
+    script.onerror = () => {
+      console.error('Failed to load reCAPTCHA');
+      setRecaptchaLoaded(true); // Allow form submission even if reCAPTCHA fails
     };
     document.head.appendChild(script);
   }, [RECAPTCHA_SITE_KEY]);
@@ -54,15 +60,20 @@ export default function DownloadPage() {
     setError('');
 
     try {
-      // Get reCAPTCHA token for bot detection
+      // Get reCAPTCHA token for bot detection (optional)
       let recaptchaToken = null;
       if (RECAPTCHA_SITE_KEY && window.grecaptcha) {
-        recaptchaToken = await window.grecaptcha.execute(RECAPTCHA_SITE_KEY, { 
-          action: 'notify_me' 
-        });
+        try {
+          recaptchaToken = await window.grecaptcha.execute(RECAPTCHA_SITE_KEY, { 
+            action: 'notify_me' 
+          });
+        } catch (recaptchaError) {
+          console.error('reCAPTCHA error:', recaptchaError);
+          // Continue without reCAPTCHA token
+        }
       }
 
-      // ✅ ONLY call YOUR backend API - NOT Web3Forms directly!
+      // ✅ Send to backend API
       const response = await fetch('/api/notify', {
         method: 'POST',
         headers: {
@@ -70,7 +81,7 @@ export default function DownloadPage() {
         },
         body: JSON.stringify({
           email: email,
-         // recaptchaToken: recaptchaToken,
+          recaptchaToken: recaptchaToken, // ✅ Now properly sent
         })
       });
 
@@ -81,6 +92,7 @@ export default function DownloadPage() {
         setEmail('');
         setTimeout(() => setIsSubmitted(false), 5000);
       } else {
+        console.error('Notify form error:', result);
         switch (result.error) {
           case 'rate_limited':
             setError('Too many requests. Please wait a minute.');
@@ -88,8 +100,11 @@ export default function DownloadPage() {
           case 'spam_detected':
             setError('Security check failed. Please try again.');
             break;
+          case 'config_error':
+            setError('Email service not configured. Please try later.');
+            break;
           default:
-            setError('Failed to submit. Please try again.');
+            setError(result.message || 'Failed to submit. Please try again.');
         }
       }
     } catch (err) {
@@ -179,7 +194,7 @@ export default function DownloadPage() {
                       />
                       <button 
                         type="submit"
-                        disabled={isSubmitting || !recaptchaLoaded}
+                        disabled={isSubmitting}
                         className={`px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl bg-gradient-to-r ${GRADIENTS.primary} text-white font-bold shadow-xl shadow-blue-500/30 hover:shadow-blue-500/40 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 whitespace-nowrap text-sm sm:text-base disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100`}
                       >
                         {isSubmitting ? (

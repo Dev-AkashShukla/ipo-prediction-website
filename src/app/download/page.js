@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Bell, Check, TrendingUp, Shield, Zap, BarChart3, Sparkles, Loader2 } from 'lucide-react';
 import { APP_NAME, GRADIENTS } from '../../lib/constants'; 
@@ -11,9 +11,30 @@ export default function DownloadPage() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
+  const [recaptchaLoaded, setRecaptchaLoaded] = useState(false);
 
-  // ✅ Your Web3Forms Access Key
-  const WEB3FORMS_ACCESS_KEY = process.env.NEXT_PUBLIC_WEB3FORMS_KEY || 'YOUR_WEB3FORMS_KEY';
+  const RECAPTCHA_SITE_KEY = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
+
+  useEffect(() => {
+    if (!RECAPTCHA_SITE_KEY) {
+      setRecaptchaLoaded(true);
+      return;
+    }
+
+    if (window.grecaptcha) {
+      window.grecaptcha.ready(() => setRecaptchaLoaded(true));
+      return;
+    }
+
+    const script = document.createElement('script');
+    script.src = `https://www.google.com/recaptcha/api.js?render=${RECAPTCHA_SITE_KEY}`;
+    script.async = true;
+    script.defer = true;
+    script.onload = () => {
+      window.grecaptcha.ready(() => setRecaptchaLoaded(true));
+    };
+    document.head.appendChild(script);
+  }, [RECAPTCHA_SITE_KEY]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -23,33 +44,33 @@ export default function DownloadPage() {
       return;
     }
 
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setError('Please enter a valid email');
+      return;
+    }
+
     setIsSubmitting(true);
     setError('');
 
     try {
-      // Get reCAPTCHA token
+      // Get reCAPTCHA token for bot detection
       let recaptchaToken = null;
-      if (window.grecaptcha) {
-        recaptchaToken = await window.grecaptcha.execute(
-          process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY,
-          { action: 'notify_me' }
-        );
+      if (RECAPTCHA_SITE_KEY && window.grecaptcha) {
+        recaptchaToken = await window.grecaptcha.execute(RECAPTCHA_SITE_KEY, { 
+          action: 'notify_me' 
+        });
       }
 
-      // ✅ Send to Web3Forms
-      const response = await fetch('https://api.web3forms.com/submit', {
+      // ✅ ONLY call YOUR backend API - NOT Web3Forms directly!
+      const response = await fetch('/api/notify', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Accept': 'application/json'
         },
         body: JSON.stringify({
-          access_key: WEB3FORMS_ACCESS_KEY,
-          subject: `🔔 New App Launch Notification Request - ${APP_NAME}`,
-          from_name: 'FINNOTIA App Download',
           email: email,
-          message: `New user wants to be notified about app launch: ${email}`,
-          'g-recaptcha-response': recaptchaToken,
+         // recaptchaToken: recaptchaToken,
         })
       });
 
@@ -58,12 +79,18 @@ export default function DownloadPage() {
       if (result.success) {
         setIsSubmitted(true);
         setEmail('');
-        // Reset after 5 seconds
-        setTimeout(() => {
-          setIsSubmitted(false);
-        }, 5000);
+        setTimeout(() => setIsSubmitted(false), 5000);
       } else {
-        setError('Failed to submit. Please try again.');
+        switch (result.error) {
+          case 'rate_limited':
+            setError('Too many requests. Please wait a minute.');
+            break;
+          case 'spam_detected':
+            setError('Security check failed. Please try again.');
+            break;
+          default:
+            setError('Failed to submit. Please try again.');
+        }
       }
     } catch (err) {
       console.error('Error:', err);
@@ -82,16 +109,6 @@ export default function DownloadPage() {
   return (
     <div className="py-12 min-h-screen bg-gradient-to-br from-[#F8FAFC] via-white to-blue-50/30 flex flex-col relative overflow-hidden font-sans">
 
-      {/* reCAPTCHA Script */}
-      {process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY && (
-        <script
-          src={`https://www.google.com/recaptcha/api.js?render=${process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}`}
-          async
-          defer
-        />
-      )}
-
-      {/* Enhanced Background Effects */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-[-15%] right-[-10%] w-[400px] sm:w-[600px] h-[400px] sm:h-[600px] bg-gradient-to-br from-blue-400/15 to-indigo-400/10 rounded-full blur-[120px] animate-pulse" style={{ animationDuration: '8s' }} />
         <div className="absolute bottom-[-15%] left-[-15%] w-[500px] sm:w-[700px] h-[500px] sm:h-[700px] bg-gradient-to-tr from-indigo-400/15 to-purple-400/10 rounded-full blur-[120px] animate-pulse" style={{ animationDuration: '10s', animationDelay: '2s' }} />
@@ -101,10 +118,8 @@ export default function DownloadPage() {
       <div className="container mx-auto px-4 py-8 sm:py-12 lg:py-0 flex-1 flex items-center relative z-10">
         <div className="max-w-7xl mx-auto w-full grid lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-16 items-center">
           
-          {/* LEFT: Enhanced Text Section */}
           <div className="text-center lg:text-left space-y-5 sm:space-y-8 order-2 lg:order-1">
             
-            {/* Enhanced Badge */}
             <motion.div 
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
@@ -118,7 +133,6 @@ export default function DownloadPage() {
               <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-widest">Launching Soon</span>
             </motion.div>
 
-            {/* Enhanced Title */}
             <motion.h1 
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
@@ -131,7 +145,6 @@ export default function DownloadPage() {
               </span>
             </motion.h1>
 
-            {/* Enhanced Description */}
             <motion.p 
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
@@ -141,7 +154,6 @@ export default function DownloadPage() {
               {APP_NAME} cuts through the market hype. We use AI to analyze IPOs and stocks based on logic, financials, and real-time data—not rumors.
             </motion.p>
 
-            {/* Enhanced Email Form - FIXED */}
             <motion.div 
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
@@ -157,14 +169,17 @@ export default function DownloadPage() {
                         type="email" 
                         placeholder="Enter your email"
                         value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        onChange={(e) => {
+                          setEmail(e.target.value);
+                          if (error) setError('');
+                        }}
                         required
                         disabled={isSubmitting}
                         className="flex-1 px-4 py-2.5 sm:py-3 rounded-xl bg-gray-50/50 border border-transparent focus:bg-white focus:border-blue-200 focus:ring-2 focus:ring-blue-100 outline-none transition-all text-sm sm:text-base text-gray-900 placeholder:text-gray-400 disabled:opacity-50"
                       />
                       <button 
                         type="submit"
-                        disabled={isSubmitting}
+                        disabled={isSubmitting || !recaptchaLoaded}
                         className={`px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl bg-gradient-to-r ${GRADIENTS.primary} text-white font-bold shadow-xl shadow-blue-500/30 hover:shadow-blue-500/40 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 whitespace-nowrap text-sm sm:text-base disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100`}
                       >
                         {isSubmitting ? (
@@ -195,9 +210,14 @@ export default function DownloadPage() {
                   </div>
                 </div>
               )}
+
+              {RECAPTCHA_SITE_KEY && (
+                <p className="text-[10px] text-gray-400 text-center mt-2">
+                  Protected by reCAPTCHA • <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" className="underline hover:text-gray-600">Privacy</a> • <a href="https://policies.google.com/terms" target="_blank" rel="noopener noreferrer" className="underline hover:text-gray-600">Terms</a>
+                </p>
+              )}
             </motion.div>
 
-            {/* Enhanced Features */}
             <motion.div 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -216,7 +236,6 @@ export default function DownloadPage() {
             </motion.div>
           </div>
 
-          {/* RIGHT: 3D Phone with Real Screenshot */}
           <motion.div 
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -224,7 +243,6 @@ export default function DownloadPage() {
             className="relative h-[500px] sm:h-[600px] flex items-center justify-center order-1 lg:order-2"
             style={{ perspective: '1200px' }}
           >
-            {/* Enhanced 3D Phone Container */}
             <div 
               className="relative w-[260px] sm:w-[300px] h-[520px] sm:h-[600px] bg-gradient-to-br from-gray-900 to-gray-800 rounded-[36px] sm:rounded-[40px] border-[6px] sm:border-[8px] border-gray-900 shadow-2xl overflow-hidden transform transition-all duration-500 hover:scale-105"
               style={{ 
@@ -232,10 +250,7 @@ export default function DownloadPage() {
                 boxShadow: '30px 30px 60px -15px rgba(0, 0, 0, 0.3), 0 0 40px rgba(74, 144, 226, 0.1)' 
               }}
             >
-              {/* Screen Overlay Shine Effect */}
               <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-transparent pointer-events-none z-10"></div>
-
-              {/* Real App Screenshot */}
               <div className="w-full h-full relative overflow-hidden rounded-[30px] sm:rounded-[32px]">
                 <img 
                   src="/finnotia-app-download.png" 
@@ -245,7 +260,6 @@ export default function DownloadPage() {
               </div>
             </div>
 
-            {/* Enhanced Floating Card 1 */}
             <motion.div 
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -267,7 +281,6 @@ export default function DownloadPage() {
               </div>
             </motion.div>
 
-            {/* Enhanced Floating Card 2 */}
             <motion.div 
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -290,7 +303,6 @@ export default function DownloadPage() {
               </div>
             </motion.div>
 
-            {/* Enhanced Android Icon */}
             <motion.div 
               initial={{ opacity: 0, rotate: 0, scale: 0 }}
               animate={{ opacity: 1, rotate: 12, scale: 1 }}
@@ -299,13 +311,10 @@ export default function DownloadPage() {
             >
               <AndroidIcon className="w-6 h-6 sm:w-8 sm:h-8 text-[#3DDC84]" />
             </motion.div>
-
           </motion.div>
-
         </div>
       </div>
 
-      {/* Mini Footer Disclaimer */}
       <div className="absolute bottom-2 w-full text-center z-20 px-4">
         <p className="text-[10px] text-gray-400">
           Disclaimer: {APP_NAME} is an educational tool. We are NOT SEBI registered. Data is for informational purposes only.

@@ -1,4 +1,4 @@
-// src/app/api/contact/route.js
+// src/app/api/notify/route.js
 import { NextResponse } from 'next/server';
 
 const RECAPTCHA_SECRET_KEY = process.env.RECAPTCHA_SECRET_KEY;
@@ -8,7 +8,7 @@ const RECAPTCHA_SCORE_THRESHOLD = 0.5;
 // Rate limiting
 const rateLimitMap = new Map();
 const RATE_LIMIT_WINDOW = 60 * 1000;
-const MAX_REQUESTS = 3;
+const MAX_REQUESTS = 5;
 
 function isRateLimited(ip) {
   const now = Date.now();
@@ -64,12 +64,12 @@ export async function POST(request) {
     }
 
     const body = await request.json();
-    const { name, email, subject, message, recaptchaToken } = body;
+    const { email, recaptchaToken } = body;
 
     // Validation
-    if (!name || !email || !subject || !message) {
+    if (!email) {
       return NextResponse.json(
-        { success: false, error: 'validation_error', message: 'All fields required' },
+        { success: false, error: 'validation_error', message: 'Email required' },
         { status: 400 }
       );
     }
@@ -109,10 +109,9 @@ export async function POST(request) {
       },
       body: JSON.stringify({
         access_key: WEB3FORMS_ACCESS_KEY,
-        name: name,
+        subject: '🔔 New App Launch Notification - FINNOTIA',
         email: email,
-        subject: `[FINNOTIA] ${subject}`,
-        message: `Name: ${name}\nEmail: ${email}\nSubject: ${subject}\n\nMessage:\n${message}`,
+        message: `New notification request!\n\nEmail: ${email}\nTime: ${new Date().toISOString()}`,
         // ❌ NO g-recaptcha-response here! That's a Pro feature!
       }),
     });
@@ -130,7 +129,7 @@ export async function POST(request) {
     console.log('Web3Forms result:', emailResult);
 
     if (emailResult.success) {
-      return NextResponse.json({ success: true, message: 'Message sent!' });
+      return NextResponse.json({ success: true, message: 'You are on the list!' });
     } else {
       return NextResponse.json(
         { success: false, error: 'email_failed', message: emailResult.message || 'Failed' },
@@ -138,7 +137,7 @@ export async function POST(request) {
       );
     }
   } catch (error) {
-    console.error('Contact API error:', error);
+    console.error('Notify API error:', error);
     return NextResponse.json(
       { success: false, error: 'server_error', message: 'Server error' },
       { status: 500 }

@@ -15,11 +15,8 @@ export default function ContactPage() {
   const [submitStatus, setSubmitStatus] = useState(null);
   const [recaptchaLoaded, setRecaptchaLoaded] = useState(false);
 
-  // ✅ Your Web3Forms Access Key
-  const WEB3FORMS_ACCESS_KEY = process.env.NEXT_PUBLIC_WEB3FORMS_KEY || 'YOUR_WEB3FORMS_KEY';
   const RECAPTCHA_SITE_KEY = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
 
-  // Load reCAPTCHA script
   useEffect(() => {
     if (!RECAPTCHA_SITE_KEY) {
       setRecaptchaLoaded(true);
@@ -42,9 +39,14 @@ export default function ContactPage() {
   }, [RECAPTCHA_SITE_KEY]);
 
   const handleSubmit = async () => {
-    // Validation
     if (!formData.name || !formData.email || !formData.subject || !formData.message) {
       setSubmitStatus('validation_error');
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      setSubmitStatus('email_error');
       return;
     }
 
@@ -52,7 +54,7 @@ export default function ContactPage() {
     setSubmitStatus(null);
 
     try {
-      // Get reCAPTCHA token
+      // Get reCAPTCHA token for bot detection
       let recaptchaToken = null;
       if (RECAPTCHA_SITE_KEY && window.grecaptcha) {
         recaptchaToken = await window.grecaptcha.execute(RECAPTCHA_SITE_KEY, { 
@@ -60,21 +62,18 @@ export default function ContactPage() {
         });
       }
 
-      // ✅ Send to Web3Forms
-      const response = await fetch('https://api.web3forms.com/submit', {
+      // ✅ ONLY call YOUR backend API - NOT Web3Forms directly!
+      const response = await fetch('/api/contact', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Accept': 'application/json'
         },
         body: JSON.stringify({
-          access_key: WEB3FORMS_ACCESS_KEY,
           name: formData.name,
           email: formData.email,
-          subject: `Contact Form: ${formData.subject}`,
+          subject: formData.subject,
           message: formData.message,
-          from_name: 'FINNOTIA Contact Form',
-          'g-recaptcha-response': recaptchaToken,
+         // recaptchaToken: recaptchaToken,
         })
       });
 
@@ -83,17 +82,20 @@ export default function ContactPage() {
       if (result.success) {
         setSubmitStatus('success');
         setFormData({ name: '', email: '', subject: '', message: '' });
-        
-        // Reset success message after 5 seconds
-        setTimeout(() => {
-          setSubmitStatus(null);
-        }, 5000);
+        setTimeout(() => setSubmitStatus(null), 5000);
       } else {
-        // Check for specific Web3Forms errors
-        if (result.message && result.message.includes('spam')) {
-          setSubmitStatus('spam');
-        } else {
-          setSubmitStatus('error');
+        switch (result.error) {
+          case 'spam_detected':
+            setSubmitStatus('spam');
+            break;
+          case 'rate_limited':
+            setSubmitStatus('rate_limited');
+            break;
+          case 'validation_error':
+            setSubmitStatus('validation_error');
+            break;
+          default:
+            setSubmitStatus('error');
         }
       }
     } catch (error) {
@@ -106,13 +108,15 @@ export default function ContactPage() {
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    if (submitStatus && submitStatus !== 'success') {
+      setSubmitStatus(null);
+    }
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50/30 py-4 sm:py-8 px-3 sm:px-6">
       <div className="max-w-6xl mx-auto">
         
-        {/* Header */}
         <header className="text-center mb-4 mt-12 sm:mb-8 sm:mt-12">
           <h1 className="text-xl sm:text-3xl lg:text-4xl font-black text-gray-900 mb-1.5">
             Get in <span className={`bg-gradient-to-r ${GRADIENTS.primary} bg-clip-text text-transparent`}>Touch</span>
@@ -124,11 +128,9 @@ export default function ContactPage() {
 
         <div className="grid lg:grid-cols-5 gap-3 sm:gap-5">
           
-          {/* Main Form */}
           <section className="lg:col-span-3 bg-white rounded-xl sm:rounded-2xl shadow-xl p-4 sm:p-6 lg:p-8">
             <h2 className="text-base sm:text-lg font-bold text-gray-900 mb-3 sm:mb-5">Send a Message</h2>
             
-            {/* Success Message */}
             {submitStatus === 'success' && (
               <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg">
                 <p className="text-xs sm:text-sm text-green-800 font-semibold">
@@ -137,7 +139,6 @@ export default function ContactPage() {
               </div>
             )}
 
-            {/* Error Message */}
             {submitStatus === 'error' && (
               <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
                 <p className="text-xs sm:text-sm text-red-800 font-semibold">
@@ -146,7 +147,6 @@ export default function ContactPage() {
               </div>
             )}
 
-            {/* Validation Error */}
             {submitStatus === 'validation_error' && (
               <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
                 <p className="text-xs sm:text-sm text-yellow-800 font-semibold">
@@ -155,7 +155,14 @@ export default function ContactPage() {
               </div>
             )}
 
-            {/* Spam Detected */}
+            {submitStatus === 'email_error' && (
+              <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                <p className="text-xs sm:text-sm text-yellow-800 font-semibold">
+                  ⚠ Please enter a valid email address.
+                </p>
+              </div>
+            )}
+
             {submitStatus === 'spam' && (
               <div className="mb-4 p-3 bg-orange-50 border border-orange-200 rounded-lg">
                 <p className="text-xs sm:text-sm text-orange-800 font-semibold">
@@ -164,9 +171,16 @@ export default function ContactPage() {
               </div>
             )}
 
+            {submitStatus === 'rate_limited' && (
+              <div className="mb-4 p-3 bg-orange-50 border border-orange-200 rounded-lg">
+                <p className="text-xs sm:text-sm text-orange-800 font-semibold">
+                  ⏱ Too many requests. Please wait a minute and try again.
+                </p>
+              </div>
+            )}
+
             <div className="space-y-3 sm:space-y-4">
               
-              {/* Name & Email Row */}
               <div className="grid sm:grid-cols-2 gap-3">
                 <div>
                   <label htmlFor="name" className="block text-xs font-semibold text-gray-700 mb-1.5">
@@ -202,7 +216,6 @@ export default function ContactPage() {
                 </div>
               </div>
 
-              {/* Subject */}
               <div>
                 <label htmlFor="subject" className="block text-xs font-semibold text-gray-700 mb-1.5">
                   Subject *
@@ -220,7 +233,6 @@ export default function ContactPage() {
                 />
               </div>
 
-              {/* Message */}
               <div>
                 <label htmlFor="message" className="block text-xs font-semibold text-gray-700 mb-1.5">
                   Message *
@@ -238,7 +250,6 @@ export default function ContactPage() {
                 />
               </div>
 
-              {/* Submit Button */}
               <button
                 onClick={handleSubmit}
                 disabled={isSubmitting || !recaptchaLoaded}
@@ -257,7 +268,6 @@ export default function ContactPage() {
                 )}
               </button>
 
-              {/* reCAPTCHA Badge Info */}
               {RECAPTCHA_SITE_KEY && (
                 <p className="text-[10px] text-gray-400 text-center">
                   Protected by reCAPTCHA • <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" className="underline hover:text-gray-600">Privacy</a> • <a href="https://policies.google.com/terms" target="_blank" rel="noopener noreferrer" className="underline hover:text-gray-600">Terms</a>
@@ -266,10 +276,8 @@ export default function ContactPage() {
             </div>
           </section>
 
-          {/* Sidebar */}
           <aside className="lg:col-span-2 space-y-3">
             
-            {/* App Download Card */}
             <div className={`bg-gradient-to-br ${GRADIENTS.primary} rounded-xl sm:rounded-2xl shadow-xl p-4 sm:p-5 text-white`}>
               <div className="flex items-start gap-2.5 mb-3">
                 <div className="w-9 h-9 bg-white/20 backdrop-blur rounded-lg flex items-center justify-center flex-shrink-0">
@@ -292,12 +300,10 @@ export default function ContactPage() {
               </a>
             </div>
 
-            {/* Contact Information Card */}
             <div className="bg-white rounded-xl sm:rounded-2xl shadow-xl p-4 sm:p-5">
               <h2 className="text-sm sm:text-base font-bold text-gray-900 mb-3">Contact Info</h2>
               
               <div className="space-y-3">
-                {/* Email */}
                 <div className="flex items-start gap-2.5">
                   <div className="w-8 h-8 bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
                     <Mail className="w-4 h-4 text-[#4A90E2]" />
@@ -313,7 +319,6 @@ export default function ContactPage() {
                   </div>
                 </div>
 
-                {/* Response Time Badge */}
                 <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-lg p-2.5">
                   <div className="flex items-center gap-2">
                     <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div>
@@ -327,7 +332,6 @@ export default function ContactPage() {
           </aside>
         </div>
 
-        {/* Trust Badge Footer */}
         <footer className="text-center mt-4 sm:mt-8 px-4">
           <p className="text-xs text-gray-500">
             🔒 Your information is secure and will never be shared

@@ -1,4 +1,4 @@
-// src/app/layout.js - Replace with this optimized version
+// src/app/layout.js - SEBI Compliant Version
 import { Inter } from 'next/font/google';
 import './globals.css';
 import Header from '../components/layout/Header';
@@ -8,7 +8,7 @@ import { seoConfig, structuredData } from '../lib/seo-metadata';
 // Font optimization with display swap
 const inter = Inter({ 
   subsets: ['latin'],
-  display: 'swap', // CRITICAL: Fast font loading
+  display: 'swap',
   preload: true,
   variable: '--font-inter',
 });
@@ -49,7 +49,8 @@ export const metadata = {
         url: '/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'FINNOTIA - AI-Powered IPO Predictions',
+        // ✅ FIXED: Changed "Predictions" to "Tracker"
+        alt: 'FINNOTIA - AI-Powered IPO Tracker & Market Data',
       },
     ],
   },
@@ -132,15 +133,13 @@ export default function RootLayout({ children }) {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
         
-        {/* CRITICAL: Preconnect for faster loading */}
+        {/* Preconnect for faster loading */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         
         {/* DNS Prefetch */}
         <link rel="dns-prefetch" href="https://www.google-analytics.com" />
         <link rel="dns-prefetch" href="https://play.google.com" />
-        
-        {/* Note: Logo preload removed - Next.js Image component handles optimization */}
       </head>
       <body className={inter.className}>
         <Header />

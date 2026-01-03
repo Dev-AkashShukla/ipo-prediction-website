@@ -1,6 +1,8 @@
-// src/app/page.js - Replace with this optimized version
+// src/app/page.js - Optimized Order
 import dynamic from 'next/dynamic';
 import HeroSection from '../components/home/HeroSection';
+// ✅ Stats ko Static import rakho (Above fold content ke liye fast hota hai)
+import StatsSection from '../components/home/StatsSection'; 
 
 // CRITICAL: Lazy load components that are below the fold
 const FeaturesSection = dynamic(() => import('../components/home/FeaturesSection'), {
@@ -22,13 +24,23 @@ const CTASection = dynamic(() => import('../components/home/CTASection'), {
 export default function HomePage() {
   return (
     <>
-      {/* Hero loads immediately - most important */}
+      {/* 1. Hero loads immediately */}
       <HeroSection />
+
+      {/* 2. Stats immediately after Hero (Builds Trust) */}
+      {/* Iska Dark Blue background Hero ke Light Blue ke sath mast contrast karega */}
+      <StatsSection />
       
-      {/* These load when user scrolls - saves initial load time */}
+      {/* 3. Features (White Background) */}
       <FeaturesSection />
+
+      {/* 4. How It Works (Gray Background) */}
       <HowItWorks />
+
+      {/* 5. Screenshots (White/Gradient Background) */}
       <AppScreenshots />
+
+      {/* 6. CTA (Dark Blue Background) - End of page action */}
       <CTASection />
     </>
   );

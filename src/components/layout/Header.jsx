@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Menu, X } from 'lucide-react';
 import Image from 'next/image';
-import { PLAY_STORE_URL, APP_NAME, GRADIENTS } from '../../lib/constants';
+import { PLAY_STORE_URL, APP_NAME, GRADIENTS } from '../../lib/constants'; // Path check kar lena
 
 const navLinks = [
   { name: 'Home', href: '/' },
@@ -20,6 +20,10 @@ export default function Header() {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
     };
+
+    // ✅ FIXED: Check scroll position immediately on load
+    handleScroll();
+
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -84,7 +88,7 @@ export default function Header() {
               ))}
             </div>
 
-            {/* Download Button - Using constant */}
+            {/* Download Button */}
             <div className="hidden md:block">
               <a
                 href={PLAY_STORE_URL}

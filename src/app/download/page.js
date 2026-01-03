@@ -167,13 +167,14 @@ export default function DownloadPage() {
               <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-widest">Launching Soon</span>
             </motion.div>
 
+            {/* ✅ FIXED: Changed "Investing Simplified" to "Research Simplified" */}
             <motion.h1 
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
               className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-gray-900 leading-[1.1]"
             >
-              Investing Simplified. <br />
+              Research Simplified. <br />
               <span className={`bg-gradient-to-r ${GRADIENTS.primary} bg-clip-text text-transparent drop-shadow-sm`}>
                 No Noise. Just Data.
               </span>

@@ -88,8 +88,9 @@ export default function StatsSection() {
           <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white mb-2">
             Growing Community
           </h2>
+          {/* ✅ FIXED: Changed "investment opportunities" to "market data" */}
           <p className="text-xs sm:text-sm text-white/80 max-w-2xl mx-auto">
-            Join the community learning about markets and analyzing investment opportunities with FINNOTIA.
+            Join the community learning about markets and understanding market data with FINNOTIA.
           </p>
         </motion.div>
 

@@ -25,7 +25,8 @@ const steps = [
   {
     icon: Zap,
     title: 'Analyze & Learn',
-    description: 'Use AI insights and market analysis to understand investment trends and make informed research decisions.',
+    // ✅ FIXED: Text thoda short kiya hai taaki height balance rahe
+    description: 'Use AI insights to track market trends and make informed investment decisions.', 
     color: 'from-blue-500 to-indigo-500',
   },
 ];
@@ -43,6 +44,7 @@ export default function HowItWorks() {
         />
 
         {/* Steps */}
+        {/* 'items-stretch' grid default hota hai, bas andar child ko h-full chahiye */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 max-w-6xl mx-auto">
           {steps.map((step, index) => {
             const Icon = step.icon;
@@ -53,22 +55,24 @@ export default function HowItWorks() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
-                className="relative"
+                className="relative flex" // ✅ ADDED: 'flex' taaki andar ka div height fill kare
               >
-                {/* Connector Line */}
+                {/* Connector Line (Desktop Only) */}
                 {index < steps.length - 1 && (
                   <div className="hidden lg:block absolute top-16 left-full w-full h-0.5 bg-gradient-to-r from-gray-300 to-transparent -translate-x-1/2 z-0" />
                 )}
 
                 {/* Card */}
-                <div className="relative bg-white rounded-xl p-3 sm:p-4 lg:p-5 shadow-md hover:shadow-lg transition-shadow duration-300 z-10">
+                {/* ✅ ADDED: 'h-full', 'w-full', 'flex', 'flex-col' for equal height & proper alignment */}
+                <div className="relative bg-white rounded-xl p-3 sm:p-4 lg:p-5 shadow-md hover:shadow-lg transition-shadow duration-300 z-10 h-full w-full flex flex-col items-center">
+                  
                   {/* Step Number */}
                   <div className="absolute -top-2 -left-2 sm:-top-3 sm:-left-3 w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-[#4A90E2] to-[#2E5CB8] text-white rounded-lg flex items-center justify-center text-base sm:text-lg font-bold shadow-md">
                     {index + 1}
                   </div>
 
                   {/* Icon */}
-                  <div className={`w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br ${step.color} rounded-lg flex items-center justify-center mb-3 sm:mb-4 mx-auto`}>
+                  <div className={`w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br ${step.color} rounded-lg flex items-center justify-center mb-3 sm:mb-4`}>
                     <Icon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                   </div>
 
@@ -76,7 +80,8 @@ export default function HowItWorks() {
                   <h3 className="text-sm sm:text-base lg:text-lg font-bold text-gray-900 mb-1.5 sm:mb-2 text-center">
                     {step.title}
                   </h3>
-                  <p className="text-xs sm:text-sm text-gray-600 text-center leading-relaxed">
+                  <p className="text-xs sm:text-sm text-gray-600 text-center leading-relaxed flex-grow">
+                     {/* ✅ ADDED: 'flex-grow' taaki agar text kam bhi ho toh button/bottom alignment sahi rahe (future proof) */}
                     {step.description}
                   </p>
                 </div>

@@ -24,22 +24,25 @@ export const metadata = {
 };
 
 export default function AboutPage() {
+  // ✅ FIXED: Safe offerings list
   const offerings = [
-    'AI-based IPO analysis using GMP, subscription data & market conditions',
-    'IPO listing price insights with post-listing performance tracking',
-    'Stock insights based on news triggers, sentiment & risk analysis',
-    'AI-curated mutual fund analysis across equity, debt & hybrid categories',
-    'Verified market news with impact analysis and smart alerts',
+    'AI-curated IPO data using GMP, subscription status & market conditions',
+    'IPO listing updates with post-listing performance tracking',
+    'Stock updates based on news, sentiment & market factors',
+    'AI-curated mutual fund information across equity, debt & hybrid categories',
+    'Verified market news with curated alerts and notifications',
   ];
 
+  // ✅ FIXED: Safe JSON-LD
   const aboutJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'AboutPage',
     mainEntity: {
       '@type': 'Organization',
       name: APP_NAME,
+      // ✅ FIXED: Changed "analysis" to "information"
       description:
-        'AI-powered Indian market analysis platform for IPOs, stocks, mutual funds, and verified financial news.',
+        'AI-powered Indian market information platform for IPOs, stocks, mutual funds, and verified financial news.',
       foundingDate: '2024',
       url: seoConfig.siteUrl,
       logo: `${seoConfig.siteUrl}/finnotia-logo.png`,
@@ -79,25 +82,25 @@ export default function AboutPage() {
             {/* Content */}
             <article className="space-y-8 text-gray-700">
 
-              {/* Intro */}
+              {/* ✅ FIXED: Intro - Changed "analyze" to "track", "intelligence" to "information" */}
               <p className="text-base sm:text-lg font-medium text-gray-600 leading-relaxed">
-                {APP_NAME} is an AI-powered Indian market intelligence platform
-                designed to help users analyze IPOs, stocks, mutual funds, and
-                financial news using real-time data and structured AI insights.
+                {APP_NAME} is an AI-powered Indian market information platform
+                designed to help users track IPOs, stocks, mutual funds, and
+                financial news using real-time data and AI-curated information.
               </p>
 
               <div className="space-y-10">
 
-                {/* Mission */}
+                {/* ✅ FIXED: Mission - Changed "insights" to "information", "investors" to "users" */}
                 <section>
                   <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">
                     Our Mission
                   </h2>
                   <p className="text-sm sm:text-base leading-relaxed text-gray-600">
                     Our mission is to simplify complex market data using AI and
-                    present clear, unbiased, and structured insights so retail
-                    investors can understand market behavior without hype,
-                    rumors, or misleading tips.
+                    present clear, unbiased, and structured information so users
+                    can understand market behavior without hype, rumors, or
+                    misleading tips.
                   </p>
                 </section>
 
@@ -119,16 +122,16 @@ export default function AboutPage() {
                   </ul>
                 </section>
 
-                {/* Why Finnotia – FULL WIDTH */}
+                {/* ✅ FIXED: Why Finnotia - Changed "insight" to "information", "analyze" to "understand" */}
                 <section>
                   <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">
                     Why {APP_NAME}?
                   </h2>
                   <p className="text-sm sm:text-base leading-relaxed text-gray-600">
-                    Every insight on {APP_NAME} is generated using verified data
+                    All information on {APP_NAME} is generated using verified data
                     sources, defined market logic, and continuous performance
-                    tracking — helping users understand and analyze markets with
-                    clarity and confidence.
+                    tracking — helping users understand markets with clarity and
+                    confidence.
                   </p>
                 </section>
 
@@ -148,28 +151,28 @@ export default function AboutPage() {
                     </p>
                   </section>
 
-                  {/* Founder */}
+                  {/* ✅ FIXED: Founder - Changed "investors" to "users", "analysis" to "information" */}
                   <section>
                     <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">
                       Founder
                     </h2>
                     <p className="text-sm sm:text-base leading-relaxed text-gray-600">
-                      <strong>Akash Shukla</strong> is the founder of FINNOTIA and
+                      <strong>Akash Shukla</strong> is the founder of {APP_NAME} and
                       a software developer focused on building practical,
-                      data-driven financial tools for Indian investors.
+                      data-driven financial tools for Indian users.
                     </p>
 
                     <p className="text-sm sm:text-base leading-relaxed text-gray-600 mt-3">
                       With experience in full-stack development and AI-powered
-                      systems, Akash built FINNOTIA to simplify complex market
+                      systems, Akash built {APP_NAME} to simplify complex market
                       data and present it in a clear, structured, and unbiased
                       way.
                     </p>
 
                     <p className="text-sm sm:text-base leading-relaxed text-gray-600 mt-3">
-                      The goal behind FINNOTIA is to help users understand IPOs,
+                      The goal behind {APP_NAME} is to help users understand IPOs,
                       stocks, mutual funds, and market news using real-time data
-                      and intelligent analysis — without hype or misleading
+                      and AI-curated information — without hype or misleading
                       tips.
                     </p>
                   </section>
@@ -177,13 +180,13 @@ export default function AboutPage() {
                 </div>
               </div>
 
-              {/* ENHANCED Disclaimer - RED & BOLD */}
-              <section className="mt-10 p-4 bg-gray-50 rounded-lg border border-gray-100">
+              {/* ✅ FIXED: Disclaimer - Changed "analysis" to "information" */}
+              <section className="mt-10 p-4 bg-red-50 rounded-lg border border-red-200">
                 <h3 className="text-sm font-bold text-red-900 mb-2">
                   ⚠️ IMPORTANT DISCLAIMER
                 </h3>
                 <p className="text-xs text-red-800 leading-relaxed font-medium">
-                  <strong>{APP_NAME} provides AI-generated market analysis for
+                  <strong>{APP_NAME} provides AI-curated market information for
                   informational and educational purposes only. We are NOT SEBI
                   registered. This is NOT investment advice. Market investments
                   are subject to risk. Please consult a SEBI-registered advisor

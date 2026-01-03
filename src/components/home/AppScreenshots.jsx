@@ -12,8 +12,8 @@ const screenshots = [
     gradient: 'from-blue-500 via-blue-600 to-indigo-600',
   },
   {
-    title: 'AI Insights',
-    description: 'AI-Powered Market Insights',
+    title: 'AI Data',
+    description: 'AI-Powered Market Data',
     icon: TrendingUp,
     image: 'ai_prediction.png',
     gradient: 'from-indigo-500 via-purple-600 to-purple-700',

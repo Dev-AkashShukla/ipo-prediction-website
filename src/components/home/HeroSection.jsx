@@ -26,7 +26,7 @@ export default function HeroSection() {
           >
             <Sparkles className="w-4 h-4 text-[#3B82F6]" />
             <span className="text-xs font-semibold text-gray-700">
-              AI-Powered Market Insights
+              AI-Powered Market Information
             </span>
           </motion.div>
 
@@ -37,7 +37,7 @@ export default function HeroSection() {
             className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 leading-tight"
           >
             Understand IPOs & Markets with{" "}
-            <GradientText>AI-Driven Insights</GradientText>
+            <GradientText>AI-Curated Data</GradientText>
           </motion.h1>
 
           {/* Description */}
@@ -47,8 +47,8 @@ export default function HeroSection() {
             transition={{ delay: 0.2 }}
             className="text-xs sm:text-sm lg:text-base text-gray-600 mb-6 max-w-2xl mx-auto leading-relaxed"
           >
-            Analyze IPOs, stocks, mutual funds, and market news using real-time
-            data and structured AI analysis — built to help you understand market
+            Track IPOs, stocks, mutual funds, and market news using real-time
+            data and  structured AI-curated information — built to help you understand market
             trends clearly and confidently.
           </motion.p>
 
@@ -56,7 +56,7 @@ export default function HeroSection() {
           <div className="flex flex-wrap justify-center gap-2 mb-8">
             <span className="px-3 py-1 bg-blue-100 text-[#2E5CB8] rounded-full text-xs font-semibold flex items-center gap-1">
               <TrendingUp className="w-3 h-3" />
-              Market Analysis
+              Market Information
             </span>
             <span className="px-3 py-1 bg-indigo-100 text-[#1E3A8A] rounded-full text-xs font-semibold flex items-center gap-1">
               <Zap className="w-3 h-3" />
@@ -85,7 +85,12 @@ export default function HeroSection() {
             >
               Learn More
             </a>
+
           </div>
+          {/* ✅ ADDED: Small disclaimer */}
+          <p className="text-[10px] text-gray-400">
+            For educational purposes only. Not SEBI registered.
+          </p>
         </div>
       </div>
     </section>

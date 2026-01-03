@@ -19,14 +19,14 @@ const steps = [
   {
     icon: TrendingUp,
     title: 'Explore Markets',
-    description: 'Access real-time market data, stock analysis, news, and mutual fund insights.',
+    description: 'Access real-time market data, stock updates, news, and mutual fund information.',
     color: 'from-cyan-500 to-blue-500',
   },
   {
     icon: Zap,
-    title: 'Analyze & Learn',
+    title: 'Track  & Learn',
     // ✅ FIXED: Text thoda short kiya hai taaki height balance rahe
-    description: 'Use AI insights to track market trends and make informed investment decisions.', 
+    description: 'Use AI-curated data to track market trends and support your learning.', 
     color: 'from-blue-500 to-indigo-500',
   },
 ];
@@ -40,7 +40,7 @@ export default function HowItWorks() {
           badge="Getting Started"
           title="Start in"
           highlightedText="4 Simple Steps"
-          description="Getting started is easy. Download the app and begin your market research journey today."
+          description="Getting started is easy. Download the app and begin exploring market data today."
         />
 
         {/* Steps */}

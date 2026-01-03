@@ -15,7 +15,7 @@ const stats = [
     icon: TrendingUp,
     value: 0,
     suffix: '',
-    label: 'Daily Market Analysis',
+    label: 'Daily Market Updates',
     color: 'from-[#2E5CB8] to-[#3B82F6]',
   },
   {

@@ -105,7 +105,7 @@ export default function PrivacyPolicy() {
                     <h4 className="font-bold text-gray-900 mb-1 text-xs">🎯 Core Services:</h4>
                     <ul className="list-disc pl-4 space-y-0.5 text-xs">
                       <li>Create and manage your account</li>
-                      <li>Provide IPO analysis & market insights</li>
+                      <li>Provide IPO analysis & market updates</li>
                       <li>Send notifications about IPO updates</li>
                       <li>Process requests and respond to inquiries</li>
                     </ul>

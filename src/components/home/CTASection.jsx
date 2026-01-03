@@ -1,7 +1,7 @@
 'use client';
 import { motion } from 'framer-motion';
 import { Download, Sparkles } from 'lucide-react';
-import { PLAY_STORE_URL } from '../../lib/constants';
+import { PLAY_STORE_URL, DISCLAIMER_TEXT } from '../../lib/constants';
 
 export default function CTASection() {
   return (
@@ -28,17 +28,18 @@ export default function CTASection() {
             <Sparkles className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
           </motion.div>
 
-          {/* Heading */}
+          {/* ✅ FIXED: Heading */}
           <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white mb-3 sm:mb-4 leading-tight">
-            Start Analyzing Markets Smarter Today
+            Start Tracking Markets Smarter Today
           </h2>
 
-          {/* Description */}
+          {/* ✅ FIXED: Description - removed "research" and "analysis" */}
           <p className="text-xs sm:text-sm lg:text-base text-white/90 mb-4 sm:mb-6 leading-relaxed">
-            Download FINNOTIA and get AI-powered market research, real-time stock insights, and financial news analysis — all in one educational platform.
+            Download FINNOTIA and access AI-curated market data, real-time stock updates, 
+            and curated financial news — all in one educational platform.
           </p>
 
-          {/* CTA Button - Using constant */}
+          {/* CTA Button */}
           <motion.a
             href={PLAY_STORE_URL}
             target="_blank"
@@ -72,6 +73,11 @@ export default function CTASection() {
               <span className="font-medium">Instant Access</span>
             </div>
           </div>
+
+          {/* ✅ ADDED: Small disclaimer */}
+          <p className="mt-4 text-[10px] text-white/60">
+            For educational purposes only. Not SEBI registered.
+          </p>
         </motion.div>
       </div>
     </section>

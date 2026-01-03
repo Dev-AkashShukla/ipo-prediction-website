@@ -49,8 +49,9 @@ export default function Footer() {
             <span className="text-xl font-bold">{APP_NAME}</span>
           </Link>
           <p className="text-sm text-gray-400 max-w-md leading-relaxed">
-            AI-powered IPO analysis and stock market research platform. Analyze markets with real-time data and intelligent insights for educational purposes.
-          </p>
+  AI-powered IPO tracking and stock market information platform. 
+  Access real-time data and curated news for educational purposes.
+</p>
         </div>
 
         {/* Links Grid */}

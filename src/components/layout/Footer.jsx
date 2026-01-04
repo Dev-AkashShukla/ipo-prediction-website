@@ -24,7 +24,6 @@ const footerLinks = {
 };
 
 export default function Footer() {
-  // Use state to avoid hydration mismatch with year
   const [year, setYear] = useState(2024);
   
   useEffect(() => {
@@ -32,9 +31,9 @@ export default function Footer() {
   }, []);
 
   return (
-    <footer id="contact" className="bg-black text-white pt-12 pb-6">
+    <footer className="bg-black text-white pt-12 pb-6">
       <div className="container mx-auto px-4">
-        {/* Company Info Section */}
+        {/* Company Info */}
         <div className="mb-8">
           <Link href="/" className="flex items-center gap-2 mb-4 group">
             <div className="w-10 h-10 relative flex-shrink-0">
@@ -49,14 +48,14 @@ export default function Footer() {
             <span className="text-xl font-bold">{APP_NAME}</span>
           </Link>
           <p className="text-sm text-gray-400 max-w-md leading-relaxed">
-  AI-powered IPO tracking and stock market information platform. 
-  Access real-time data and curated news for educational purposes.
-</p>
+            AI-powered IPO tracking and stock market information platform. 
+            Access real-time data and curated news for educational purposes.
+          </p>
         </div>
 
         {/* Links Grid */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {/* Product Links */}
+          {/* Product */}
           <div>
             <h3 className="text-sm font-bold mb-3 text-[#4A90E2]">Product</h3>
             <ul className="space-y-2">
@@ -75,7 +74,7 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Company Links */}
+          {/* Company */}
           <div>
             <h3 className="text-sm font-bold mb-3 text-[#4A90E2]">Company</h3>
             <ul className="space-y-2">
@@ -92,7 +91,7 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Legal Links */}
+          {/* Legal */}
           <div>
             <h3 className="text-sm font-bold mb-3 text-[#4A90E2]">Legal</h3>
             <ul className="space-y-2">
@@ -109,7 +108,7 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Contact Info */}
+          {/* Contact */}
           <div>
             <h3 className="text-sm font-bold mb-3 text-[#4A90E2]">Contact</h3>
             <div className="space-y-2">
@@ -133,14 +132,13 @@ export default function Footer() {
 
         {/* Divider */}
         <div className="border-t border-gray-800 pt-6">
-          
-          {/* SEBI Disclaimer - Enhanced for mobile */}
+          {/* SEBI Disclaimer */}
           <div className="p-3 sm:p-4 mb-4">
             <div className="flex items-start gap-2 mb-2">
               <AlertTriangle className="w-4 h-4 text-yellow-500 flex-shrink-0 mt-0.5" />
               <h4 className="text-xs sm:text-sm font-bold text-yellow-500">Important Disclaimer</h4>
             </div>
-            <p className="text-xs sm:text-xs text-gray-400 leading-relaxed">
+            <p className="text-xs text-gray-400 leading-relaxed">
               <strong className="text-gray-300">{APP_NAME}</strong> is an educational tool and{' '}
               <strong className="text-gray-300">NOT a SEBI registered investment advisor</strong>. 
               Data provided is for informational purposes only. Investments in securities market are subject to market risks. 

@@ -258,23 +258,6 @@ export default function AppScreenshots() {
             />
           ))}
         </div>
-
-        {/* CTA Badge */}
-        <motion.div 
-          className="mt-14 sm:mt-18 lg:mt-24 text-center"
-          initial={{ opacity: 0, y: 15 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.7 }}
-        >
-          <div className="inline-flex items-center gap-2.5 px-5 py-2.5 bg-white/90 backdrop-blur-md rounded-full shadow-lg border border-gray-200/50">
-            <span className="relative flex h-2.5 w-2.5">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
-              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500" />
-            </span>
-            <span className="text-sm font-semibold text-gray-700">Available on Play Store</span>
-          </div>
-        </motion.div>
       </div>
     </section>
   );

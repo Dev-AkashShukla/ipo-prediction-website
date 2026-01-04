@@ -3,16 +3,16 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import { Bell, Check, TrendingUp, Shield, Zap, BarChart3, Sparkles, Loader2 } from 'lucide-react';
+import { Bell, Check, TrendingUp, Shield, Zap, BarChart3, Sparkles, Loader2, Newspaper } from 'lucide-react';
 import { APP_NAME, GRADIENTS } from '../../lib/constants';
 import AndroidIcon from '../../components/ui/AndroidIcon';
 import { useRecaptcha, useWeb3Forms } from '../../hooks';
 import { RecaptchaNotice } from '../../components/forms';
 
 const features = [
-  { icon: BarChart3, text: "Deep Market Information" },
+  { icon: BarChart3, text: "IPO & Stock Data" },
   { icon: Zap, text: "Real-Time GMP" },
-  { icon: Shield, text: "Unbiased Data" },
+  { icon: Newspaper, text: "Market News" },
 ];
 
 export default function DownloadPage() {
@@ -112,7 +112,7 @@ export default function DownloadPage() {
 
       <div className="absolute bottom-2 w-full text-center z-20 px-4">
         <p className="text-[10px] text-gray-400">
-          Disclaimer: {APP_NAME} is an educational tool. We are NOT SEBI registered. Data is for informational purposes only.
+          Disclaimer: {APP_NAME} provides market data for educational purposes only. We are NOT SEBI registered. This is NOT investment advice.
         </p>
       </div>
 
@@ -161,7 +161,7 @@ function HeroTitle() {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.1 }}
-      className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-gray-900 leading-[1.1]"
+      className="text-3xl sm:text-4xl md:text-5xl lg:text-5xl font-black text-gray-900 leading-[1.1]"
     >
       Research Simplified. <br />
       <span className={`bg-gradient-to-r ${GRADIENTS.primary} bg-clip-text text-transparent drop-shadow-sm`}>
@@ -179,7 +179,7 @@ function HeroDescription() {
       transition={{ delay: 0.2 }}
       className="text-base sm:text-lg text-gray-600 max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium"
     >
-      {APP_NAME} cuts through the market hype. We use AI to analyze IPOs and stocks based on logic, financials, and real-time data—not rumors.
+      {APP_NAME} brings IPOs, Stocks, Mutual Funds & Market News in one place. AI-powered research based on real data — not hype.
     </motion.p>
   );
 }
@@ -315,13 +315,13 @@ function PhoneMockup() {
             <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-green-600" />
           </div>
           <div>
-            <p className="text-[9px] sm:text-[10px] text-gray-500 font-bold uppercase tracking-wide">Current GMP</p>
-            <p className="text-xs sm:text-sm font-black text-gray-900">+45.2%</p>
+            <p className="text-[9px] sm:text-[10px] text-gray-500 font-bold uppercase tracking-wide">Live GMP Data</p>
+            <p className="text-xs sm:text-sm font-black text-gray-900">Updated</p>
           </div>
         </div>
       </motion.div>
 
-      {/* Risk Analysis Card */}
+      {/* AI Research Card */}
       <motion.div
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
@@ -338,8 +338,8 @@ function PhoneMockup() {
             <Shield className="w-4 h-4 sm:w-5 sm:h-5 text-[#4A90E2]" />
           </div>
           <div>
-            <p className="text-[9px] sm:text-[10px] text-gray-500 font-bold uppercase tracking-wide">Risk Analysis</p>
-            <p className="text-xs sm:text-sm font-black text-gray-900">Analysis Ready</p>
+            <p className="text-[9px] sm:text-[10px] text-gray-500 font-bold uppercase tracking-wide">AI Research</p>
+            <p className="text-xs sm:text-sm font-black text-gray-900">Data Ready</p>
           </div>
         </div>
       </motion.div>

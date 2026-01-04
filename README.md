@@ -1,16 +1,21 @@
-# 🚀 IPO Tracker Website
+# 🚀 FINNOTIA - IPO & Market Data Platform
 
-A modern, AI-powered stock market analysis platform built with Next.js 14, Tailwind CSS, and Framer Motion.
+A modern, AI-powered financial data platform built with Next.js 14, Tailwind CSS, and Framer Motion.
 
 ## ✨ Features
 
-- 🤖 AI-powered IPO predictions with 95% accuracy
-- 📊 Real-time stock market data and analysis
-- 🔔 Smart alerts for IPO launches and price movements
-- 📱 Mobile-first, responsive design
-- 🎨 Beautiful animations with Framer Motion
-- ⚡ Lightning-fast performance with Next.js 14
-- 🎯 SEO optimized
+- 🤖 **Smart IPO Tracking:** Real-time GMP, Subscription status, and Listing details.
+- 📊 **Market Intelligence:** Live stock market data and financial metrics aggregation.
+- 🔔 **Smart Alerts:** Instant notifications for IPO openings and major market news.
+- 📱 **Mobile-First:** Fully responsive design optimized for all devices.
+- 🎨 **Fluid UX:** Beautiful animations powered by Framer Motion.
+- ⚡ **High Performance:** Lightning-fast page loads with Next.js 14.
+- 🎯 **SEO Optimized:** Best practices for search engine visibility.
+
+## ⚠️ Important Disclaimer
+
+**Finnotia is NOT registered with SEBI.**
+This platform is strictly for **educational and informational purposes only**. We do not provide investment advice, buy/sell recommendations, or stock predictions. All data is aggregated from public sources to assist in market tracking.
 
 ## 🛠️ Tech Stack
 
@@ -24,85 +29,5 @@ A modern, AI-powered stock market analysis platform built with Next.js 14, Tailw
 
 1. Clone the repository:
 ```bash
-git clone <your-repo-url>
-cd ipo-tracker-website
-```
-
-2. Install dependencies:
-```bash
-npm install
-```
-
-3. Run the development server:
-```bash
-npm run dev
-```
-
-4. Open [http://localhost:3000](http://localhost:3000) in your browser.
-
-## 📁 Project Structure
-
-```
-ipo-tracker-website/
-├── public/                 # Static assets
-├── src/
-│   ├── app/               # Next.js app directory
-│   │   ├── layout.js      # Root layout
-│   │   ├── page.js        # Home page
-│   │   ├── globals.css    # Global styles
-│   │   ├── about/         # About page
-│   │   ├── contact/       # Contact page
-│   │   └── ...
-│   ├── components/        # React components
-│   │   ├── layout/        # Layout components (Header, Footer)
-│   │   ├── home/          # Home page sections
-│   │   └── ...
-│   └── lib/               # Utility functions
-├── tailwind.config.js     # Tailwind configuration
-├── next.config.js         # Next.js configuration
-└── package.json           # Dependencies
-```
-
-## 🎨 Customization
-
-### Colors
-
-Edit the color scheme in `tailwind.config.js` and `src/app/globals.css`:
-
-```css
-:root {
-  --primary: #3b82f6;
-  --secondary: #8b5cf6;
-  --accent: #10b981;
-}
-```
-
-### Content
-
-- Update text content in component files under `src/components/`
-- Modify page content in `src/app/*/page.js`
-
-## 🚀 Build for Production
-
-```bash
-npm run build
-npm start
-```
-
-## 📝 License
-
-MIT License - feel free to use this project for personal or commercial purposes.
-
-## 🤝 Contributing
-
-Contributions are welcome! Feel free to open issues or submit pull requests.
-
-## 📧 Contact
-
-For questions or support, reach out to:
-- Email: support@ipotracker.com
-- Website: [ipotracker.com](https://ipotracker.com)
-
----
-
-Made with ❤️ by IPO Tracker Team
+git clone [https://github.com/Dev-AkashShukla/finnotia-web.git](https://github.com/Dev-AkashShukla/finnotia-web.git)
+cd finnotia-web

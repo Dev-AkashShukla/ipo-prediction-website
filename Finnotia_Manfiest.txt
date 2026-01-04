@@ -1,7 +1,7 @@
 {
-  "name": "FINNOTIA - AI IPO Predictions",
+  "name": "FINNOTIA - IPO & Market Data",
   "short_name": "FINNOTIA",
-  "description": "AI-powered IPO predictions and stock market analysis for Indian investors",
+  "description": "Smart IPO tracking, GMP updates, and financial market data for Indian investors",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",

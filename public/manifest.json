@@ -1,7 +1,7 @@
 {
-  "name": "FINNOTIA - AI IPO Predictions",
+  "name": "FINNOTIA - AI Market Research",
   "short_name": "FINNOTIA",
-  "description": "AI-powered IPO predictions and stock market analysis for Indian investors",
+  "description": "AI-powered market research app for IPOs, Stocks, Mutual Funds & News. Free for Indian investors.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",

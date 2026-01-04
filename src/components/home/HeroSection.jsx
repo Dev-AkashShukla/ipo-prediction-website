@@ -30,13 +30,13 @@ export default function HeroSection() {
             </span>
           </motion.div>
 
-          {/* Heading */}
+          {/* Heading - Updated here */}
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 leading-tight"
           >
-            Understand IPOs & Markets with{" "}
+            Master Financial Markets with{" "}
             <GradientText>AI-Curated Data</GradientText>
           </motion.h1>
 
@@ -48,7 +48,7 @@ export default function HeroSection() {
             className="text-xs sm:text-sm lg:text-base text-gray-600 mb-6 max-w-2xl mx-auto leading-relaxed"
           >
             Track IPOs, stocks, mutual funds, and market news using real-time
-            data and  structured AI-curated information — built to help you understand market
+            data and structured AI-curated information — built to help you understand market
             trends clearly and confidently.
           </motion.p>
 
@@ -87,7 +87,7 @@ export default function HeroSection() {
             </a>
 
           </div>
-          {/* ✅ ADDED: Small disclaimer */}
+          {/* Disclaimer */}
           <p className="text-[10px] text-gray-400">
             For educational purposes only. Not SEBI registered.
           </p>

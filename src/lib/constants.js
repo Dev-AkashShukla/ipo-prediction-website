@@ -5,8 +5,8 @@ export const APP_NAME = 'FINNOTIA';
 export const APP_DESCRIPTION = 'AI-Powered IPO Tracker & Market Data Platform';
 
 // ✅ Play Store Link - Single source of truth
-// export const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.finnotia';
-export const PLAY_STORE_URL = '/download';
+export const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.ipo.ipopredictor';
+//export const PLAY_STORE_URL = '/download';
 
 // Google Recaptcha
 export const RECAPTCHA_SITE_KEY = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || '';

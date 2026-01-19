@@ -87,6 +87,11 @@ const nextConfig = {
       },
     ];
   },
+
+  // Experimental features for better performance
+  experimental: {
+    optimizePackageImports: ['lucide-react', 'framer-motion'],
+  },
 };
 
 module.exports = nextConfig;

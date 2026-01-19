@@ -1,9 +1,10 @@
 'use client';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, ChevronDown } from 'lucide-react';
 import Image from 'next/image';
-import { PLAY_STORE_URL, APP_NAME, GRADIENTS } from '../../lib/constants'; // Path check kar lena
+import { PLAY_STORE_URL, APP_STORE_URL, APP_NAME, GRADIENTS } from '../../lib/constants';
+import { AndroidIcon, AppleIcon } from '../ui/PlatformIcons';
 
 const navLinks = [
   { name: 'Home', href: '/' },
@@ -15,27 +16,23 @@ const navLinks = [
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [showDownload, setShowDownload] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
     };
-
-    // ✅ FIXED: Check scroll position immediately on load
     handleScroll();
-
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Block body scroll when menu is open
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'unset';
     }
-    
     return () => {
       document.body.style.overflow = 'unset';
     };
@@ -43,7 +40,6 @@ export default function Header() {
 
   return (
     <>
-      {/* Backdrop Blur Overlay */}
       {isOpen && (
         <div 
           className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 md:hidden"
@@ -58,9 +54,9 @@ export default function Header() {
       >
         <nav className="container mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
-            {/* Logo */}
-            <Link href="/" className="flex items-center gap-2 group">
-              <div className="w-10 h-10 relative flex-shrink-0">
+            {/* Logo - Left */}
+            <Link href="/" className="flex items-center gap-2 group flex-shrink-0">
+              <div className="w-10 h-10 relative">
                 <Image 
                   src="/finnotia-logo.png" 
                   alt={`${APP_NAME} Logo`}
@@ -74,8 +70,8 @@ export default function Header() {
               </span>
             </Link>
 
-            {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center gap-6">
+            {/* Desktop Navigation - Center */}
+            <div className="hidden md:flex items-center gap-6 absolute left-1/2 transform -translate-x-1/2">
               {navLinks.map((link) => (
                 <Link
                   key={link.name}
@@ -87,17 +83,60 @@ export default function Header() {
                 </Link>
               ))}
             </div>
+              
+            {/* Download Dropdown - Right */}
+            <div className="hidden md:block flex-shrink-0">
+              <div className="relative">
+                <button
+                  onClick={() => setShowDownload(!showDownload)}
+                  className={`flex items-center gap-2 bg-gradient-to-r ${GRADIENTS.primary} text-white px-5 py-2 rounded-lg text-sm font-semibold hover:shadow-lg transition-all duration-300`}
+                >
+                  Download
+                  <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${showDownload ? 'rotate-180' : ''}`} />
+                </button>
 
-            {/* Download Button */}
-            <div className="hidden md:block">
-              <a
-                href={PLAY_STORE_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`bg-gradient-to-r ${GRADIENTS.primary} text-white px-5 py-2 rounded-lg text-sm font-semibold hover:shadow-lg hover:scale-105 transition-all duration-300`}
-              >
-                Download App
-              </a>
+                {showDownload && (
+                  <>
+                    <div 
+                      className="fixed inset-0 z-10" 
+                      onClick={() => setShowDownload(false)}
+                    />
+                    <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden z-20">
+                      {/* Android - Working Link */}
+                      <a
+                        href={PLAY_STORE_URL}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-3 px-4 py-3 hover:bg-blue-50 transition-colors"
+                        onClick={() => setShowDownload(false)}
+                      >
+                        <div className="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center">
+                          <AndroidIcon className="w-6 h-6" />
+                        </div>
+                        <div className="flex-1">
+                          <div className="text-sm font-bold text-gray-900">Android</div>
+                          <div className="text-xs text-green-600">Download Now</div>
+                        </div>
+                      </a>
+
+                      {/* iOS - Download Page Link */}
+                      <Link
+                        href={APP_STORE_URL}
+                        className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors"
+                        onClick={() => setShowDownload(false)}
+                      >
+                        <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
+                          <AppleIcon className="w-6 h-6 text-gray-700" />
+                        </div>
+                        <div className="flex-1">
+                          <div className="text-sm font-bold text-gray-700">iOS</div>
+                          <div className="text-xs text-gray-500">Coming Soon</div>
+                        </div>
+                      </Link>
+                    </div>
+                  </>
+                )}
+              </div>
             </div>
 
             {/* Mobile Menu Button */}
@@ -122,15 +161,36 @@ export default function Header() {
                   {link.name}
                 </Link>
               ))}
-              <div className="pt-3 border-t border-gray-200">
+              
+              {/* Mobile Download Section */}
+              <div className="pt-3 border-t border-gray-200 space-y-2">
+                {/* Android */}
                 <a
                   href={PLAY_STORE_URL}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={`block text-center bg-gradient-to-r ${GRADIENTS.primary} text-white px-5 py-2.5 rounded-lg text-sm font-semibold hover:shadow-lg transition-all duration-300`}
+                  className={`flex items-center gap-3 bg-gradient-to-r ${GRADIENTS.primary} text-white px-4 py-3 rounded-lg font-semibold hover:shadow-lg transition-all duration-300`}
+                  onClick={() => setIsOpen(false)}
                 >
-                  Download App
+                  <AndroidIcon className="w-6 h-6" />
+                  <div className="flex-1 text-left">
+                    <div className="text-sm font-bold">Download for Android</div>
+                    <div className="text-xs opacity-80">Available Now</div>
+                  </div>
                 </a>
+
+                {/* iOS */}
+                <Link
+                  href={APP_STORE_URL}
+                  className="flex items-center gap-3 bg-white text-gray-700 px-4 py-3 rounded-lg font-semibold border-2 border-gray-200 hover:bg-gray-50 transition-all duration-300"
+                  onClick={() => setIsOpen(false)}
+                >
+                  <AppleIcon className="w-6 h-6 text-gray-700" />
+                  <div className="flex-1 text-left">
+                    <div className="text-sm font-bold">Download for iOS</div>
+                    <div className="text-xs text-gray-500">Coming Soon</div>
+                  </div>
+                </Link>
               </div>
             </div>
           )}

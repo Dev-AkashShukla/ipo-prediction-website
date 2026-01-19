@@ -4,8 +4,9 @@ export const APP_NAME = 'FINNOTIA';
 // ✅ FIXED: Removed "Analysis" and "Research"
 export const APP_DESCRIPTION = 'AI-Powered IPO Tracker & Market Data Platform';
 
-// ✅ Play Store Link - Single source of truth
+// ✅ Download Links - Single source of truth
 export const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.ipo.ipopredictor';
+export const APP_STORE_URL = '/download'; // iOS coming soon page
 //export const PLAY_STORE_URL = '/download';
 
 // Google Recaptcha

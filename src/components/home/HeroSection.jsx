@@ -1,14 +1,15 @@
 'use client';
 import { motion } from 'framer-motion';
-import { Sparkles, Download, TrendingUp, Shield, Zap } from 'lucide-react';
-import { PLAY_STORE_URL, GRADIENTS } from '../../lib/constants';
+import { Sparkles, TrendingUp, Shield, Zap } from 'lucide-react';
 import GradientText from '../ui/GradientText';
+import DownloadSection from '../ui/DownloadSection';
 
 export default function HeroSection() {
   return (
-    <section className="relative flex justify-center overflow-hidden bg-gradient-to-br from-blue-50 via-indigo-50 to-blue-100 pt-20 pb-10">
-      {/* Animated Background */}
-      <div className="absolute inset-0 overflow-hidden">
+    <section className="relative flex justify-center overflow-hidden bg-gradient-to-br from-blue-50 via-indigo-50 to-blue-100 pt-20 pb-6">
+      
+      {/* Animated Background - Optimized */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-20 left-10 w-64 h-64 bg-[#4A90E2] rounded-full mix-blend-multiply blur-3xl opacity-20 animate-blob" />
         <div className="absolute top-40 right-10 w-64 h-64 bg-[#2E5CB8] rounded-full mix-blend-multiply blur-3xl opacity-20 animate-blob animation-delay-2000" />
         <div className="absolute -bottom-8 left-1/2 w-64 h-64 bg-[#3B82F6] rounded-full mix-blend-multiply blur-3xl opacity-20 animate-blob animation-delay-4000" />
@@ -30,7 +31,7 @@ export default function HeroSection() {
             </span>
           </motion.div>
 
-          {/* Heading - Updated here */}
+          {/* Heading */}
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -53,7 +54,12 @@ export default function HeroSection() {
           </motion.p>
 
           {/* Feature Pills */}
-          <div className="flex flex-wrap justify-center gap-2 mb-8">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3 }}
+            className="flex flex-wrap justify-center gap-2 mb-6"
+          >
             <span className="px-3 py-1 bg-blue-100 text-[#2E5CB8] rounded-full text-xs font-semibold flex items-center gap-1">
               <TrendingUp className="w-3 h-3" />
               Market Information
@@ -66,31 +72,16 @@ export default function HeroSection() {
               <Shield className="w-3 h-3" />
               Verified Sources
             </span>
-          </div>
+          </motion.div>
 
-          {/* CTA */}
-          <div className="flex flex-col sm:flex-row gap-3 justify-center mb-8">
-            <a
-              href={PLAY_STORE_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={`group bg-gradient-to-r ${GRADIENTS.primary} text-white px-6 py-2.5 rounded-lg font-semibold text-sm hover:shadow-lg hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2`}
-            >
-              Download from PlayStore
-              <Download className="w-4 h-4" />
-            </a>
-            <a
-              href="#features"
-              className="bg-white text-gray-700 px-6 py-2.5 rounded-lg font-semibold text-sm border-2 border-gray-200 hover:border-[#2E5CB8] hover:text-[#2E5CB8]"
-            >
-              Learn More
-            </a>
-
-          </div>
-          {/* Disclaimer */}
-          <p className="text-[10px] text-gray-400">
-            For educational purposes only. Not SEBI registered.
-          </p>
+          {/* Download Section - Reusable Component */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+          >
+            <DownloadSection variant="hero" />
+          </motion.div>
         </div>
       </div>
     </section>

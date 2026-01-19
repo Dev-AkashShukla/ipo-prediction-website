@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Home, ArrowLeft, Search } from 'lucide-react';
 import { PLAY_STORE_URL, GRADIENTS } from '../lib/constants';
-import AndroidIcon from '../components/ui/AndroidIcon';
+import { AndroidIcon } from '../components/ui/PlatformIcons';
 
 export default function NotFound() {
   return (

@@ -1,5 +1,6 @@
 // src/app/layout.js - SEBI Compliant Version
 import { Inter } from 'next/font/google';
+import Script from 'next/script'; // ✅ IMPORT ADDED
 import './globals.css';
 import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
@@ -84,7 +85,7 @@ export const metadata = {
   },
   
   verification: {
-    google: 'your-google-verification-code',
+    google: 'your-google-verification-code', // ⚠️ Search Console verify karne ke baad uska code yahan daal dena
   },
   
   alternates: {
@@ -142,6 +143,22 @@ export default function RootLayout({ children }) {
         <link rel="dns-prefetch" href="https://play.google.com" />
       </head>
       <body className={inter.className}>
+        
+        {/* ✅ Google Analytics Code Added Here */}
+        <Script
+          strategy="afterInteractive"
+          src="https://www.googletagmanager.com/gtag/js?id=G-DCP4LJJF64"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-DCP4LJJF64');
+          `}
+        </Script>
+        {/* ✅ End of Google Analytics Code */}
+
         <Header />
         <main className="min-h-fitcontent">
           {children}

@@ -1,5 +1,6 @@
 // FILE: app/about/page.js (UPDATED)
 // Changes: Made "Akash Shukla" a clickable link to /founder page
+// Text alignment set to justify for better readability
 
 import { pageMetadata, seoConfig } from '../../lib/seo-metadata';
 import { APP_NAME, GRADIENTS } from '../../lib/constants';
@@ -89,7 +90,7 @@ export default function AboutPage() {
             {/* Content */}
             <article className="space-y-8 text-gray-700">
 
-              <p className="text-base sm:text-lg font-medium text-gray-600 leading-relaxed">
+              <p className="text-base sm:text-lg font-medium text-gray-600 leading-relaxed text-justify">
                 {APP_NAME} is an AI-powered Indian market information platform
                 designed to help users track IPOs, stocks, mutual funds, and
                 financial news using real-time data and AI-curated information.
@@ -102,7 +103,7 @@ export default function AboutPage() {
                   <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">
                     Our Mission
                   </h2>
-                  <p className="text-sm sm:text-base leading-relaxed text-gray-600">
+                  <p className="text-sm sm:text-base leading-relaxed text-gray-600 text-justify">
                     Our mission is to simplify complex market data using AI and
                     present clear, unbiased, and structured information so users
                     can understand market behavior without hype, rumors, or
@@ -119,9 +120,9 @@ export default function AboutPage() {
                     {offerings.map((item, index) => (
                       <li
                         key={index}
-                        className="flex items-start gap-2.5 text-sm sm:text-base"
+                        className="flex items-start gap-2.5 text-sm sm:text-base text-justify"
                       >
-                        <span className="text-[#4A90E2] font-bold mt-0.5">•</span>
+                        <span className="text-[#4A90E2] font-bold mt-0.5 flex-shrink-0">•</span>
                         <span>{item}</span>
                       </li>
                     ))}
@@ -133,7 +134,7 @@ export default function AboutPage() {
                   <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">
                     Why {APP_NAME}?
                   </h2>
-                  <p className="text-sm sm:text-base leading-relaxed text-gray-600">
+                  <p className="text-sm sm:text-base leading-relaxed text-gray-600 text-justify">
                     All information on {APP_NAME} is generated using verified data
                     sources, defined market logic, and continuous performance
                     tracking — helping users understand markets with clarity and
@@ -149,7 +150,7 @@ export default function AboutPage() {
                     <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">
                       Our Team
                     </h2>
-                    <p className="text-sm sm:text-base leading-relaxed text-gray-600">
+                    <p className="text-sm sm:text-base leading-relaxed text-gray-600 text-justify">
                       {APP_NAME} is built by a technology-driven team focused on
                       applying AI, automation, and data systems to solve
                       real-world problems in the Indian financial markets with
@@ -162,7 +163,7 @@ export default function AboutPage() {
                     <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">
                       Founder
                     </h2>
-                    <p className="text-sm sm:text-base leading-relaxed text-gray-600">
+                    <p className="text-sm sm:text-base leading-relaxed text-gray-600 text-justify">
                       {/* ✅ CLICKABLE LINK TO FOUNDER PAGE */}
                       <Link
                         href="/founder"
@@ -175,14 +176,14 @@ export default function AboutPage() {
                       users.
                     </p>
 
-                    <p className="text-sm sm:text-base leading-relaxed text-gray-600 mt-3">
+                    <p className="text-sm sm:text-base leading-relaxed text-gray-600 mt-3 text-justify">
                       With experience in full-stack development and AI-powered
                       systems, Akash built {APP_NAME} to simplify complex market
                       data and present it in a clear, structured, and unbiased
                       way.
                     </p>
 
-                    <p className="text-sm sm:text-base leading-relaxed text-gray-600 mt-3">
+                    <p className="text-sm sm:text-base leading-relaxed text-gray-600 mt-3 text-justify">
                       The goal behind {APP_NAME} is to help users understand IPOs,
                       stocks, mutual funds, and market news using real-time data
                       and AI-curated information — without hype or misleading
@@ -209,7 +210,7 @@ export default function AboutPage() {
                 <h3 className="text-sm font-bold text-red-900 mb-2">
                   ⚠️ IMPORTANT DISCLAIMER
                 </h3>
-                <p className="text-xs text-red-800 leading-relaxed font-medium">
+                <p className="text-xs text-red-800 leading-relaxed font-medium text-justify">
                   <strong>{APP_NAME} provides AI-curated market information for
                   informational and educational purposes only. We are NOT SEBI
                   registered. This is NOT investment advice. Market investments

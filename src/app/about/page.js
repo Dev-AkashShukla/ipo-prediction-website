@@ -1,5 +1,9 @@
+// FILE: app/about/page.js (UPDATED)
+// Changes: Made "Akash Shukla" a clickable link to /founder page
+
 import { pageMetadata, seoConfig } from '../../lib/seo-metadata';
 import { APP_NAME, GRADIENTS } from '../../lib/constants';
+import Link from 'next/link';
 
 export const metadata = {
   title: pageMetadata.about.title,
@@ -24,7 +28,6 @@ export const metadata = {
 };
 
 export default function AboutPage() {
-  // ✅ FIXED: Safe offerings list
   const offerings = [
     'AI-curated IPO data using GMP, subscription status & market conditions',
     'IPO listing updates with post-listing performance tracking',
@@ -33,14 +36,12 @@ export default function AboutPage() {
     'Verified market news with curated alerts and notifications',
   ];
 
-  // ✅ FIXED: Safe JSON-LD
   const aboutJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'AboutPage',
     mainEntity: {
       '@type': 'Organization',
       name: APP_NAME,
-      // ✅ FIXED: Changed "analysis" to "information"
       description:
         'AI-powered Indian market information platform for IPOs, stocks, mutual funds, and verified financial news.',
       foundingDate: '2024',
@@ -49,8 +50,14 @@ export default function AboutPage() {
       areaServed: 'IN',
       founder: {
         '@type': 'Person',
+        '@id': `${seoConfig.siteUrl}/founder#akash-shukla`,
         name: 'Akash Shukla',
+        url: `${seoConfig.siteUrl}/founder`,
         jobTitle: 'Founder',
+        sameAs: [
+          'https://www.youtube.com/@atrangimemer',
+          'https://www.linkedin.com/in/akash-shukla-finnotia/',
+        ],
       },
     },
   };
@@ -82,7 +89,6 @@ export default function AboutPage() {
             {/* Content */}
             <article className="space-y-8 text-gray-700">
 
-              {/* ✅ FIXED: Intro - Changed "analyze" to "track", "intelligence" to "information" */}
               <p className="text-base sm:text-lg font-medium text-gray-600 leading-relaxed">
                 {APP_NAME} is an AI-powered Indian market information platform
                 designed to help users track IPOs, stocks, mutual funds, and
@@ -91,7 +97,7 @@ export default function AboutPage() {
 
               <div className="space-y-10">
 
-                {/* ✅ FIXED: Mission - Changed "insights" to "information", "investors" to "users" */}
+                {/* Mission */}
                 <section>
                   <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">
                     Our Mission
@@ -122,7 +128,7 @@ export default function AboutPage() {
                   </ul>
                 </section>
 
-                {/* ✅ FIXED: Why Finnotia - Changed "insight" to "information", "analyze" to "understand" */}
+                {/* Why Finnotia */}
                 <section>
                   <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">
                     Why {APP_NAME}?
@@ -151,15 +157,22 @@ export default function AboutPage() {
                     </p>
                   </section>
 
-                  {/* ✅ FIXED: Founder - Changed "investors" to "users", "analysis" to "information" */}
+                  {/* Founder - NOW WITH CLICKABLE LINK */}
                   <section>
                     <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">
                       Founder
                     </h2>
                     <p className="text-sm sm:text-base leading-relaxed text-gray-600">
-                      <strong>Akash Shukla</strong> is the founder of {APP_NAME} and
-                      a software developer focused on building practical,
-                      data-driven financial tools for Indian users.
+                      {/* ✅ CLICKABLE LINK TO FOUNDER PAGE */}
+                      <Link
+                        href="/founder"
+                        className={`font-bold bg-gradient-to-r ${GRADIENTS.primary} bg-clip-text text-transparent hover:underline`}
+                      >
+                        Akash Shukla
+                      </Link>{' '}
+                      is the founder of {APP_NAME} and a software developer focused
+                      on building practical, data-driven financial tools for Indian
+                      users.
                     </p>
 
                     <p className="text-sm sm:text-base leading-relaxed text-gray-600 mt-3">
@@ -175,12 +188,23 @@ export default function AboutPage() {
                       and AI-curated information — without hype or misleading
                       tips.
                     </p>
+
+                    {/* ✅ LEARN MORE LINK */}
+                    <Link
+                      href="/founder"
+                      className="inline-flex items-center gap-2 mt-4 text-sm font-medium text-blue-600 hover:text-blue-700"
+                    >
+                      Learn more about Akash
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </Link>
                   </section>
 
                 </div>
               </div>
 
-              {/* ✅ FIXED: Disclaimer - Changed "analysis" to "information" */}
+              {/* Disclaimer */}
               <section className="mt-10 p-4 bg-red-50 rounded-lg border border-red-200">
                 <h3 className="text-sm font-bold text-red-900 mb-2">
                   ⚠️ IMPORTANT DISCLAIMER

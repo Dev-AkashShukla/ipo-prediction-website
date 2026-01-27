@@ -1,5 +1,5 @@
 {
-  "name": "FINNOTIA - AI Market Research",
+  "name": "FINNOTIA - Stock Market & IPO Tracker",
   "short_name": "FINNOTIA",
   "description": "AI-powered market research app for IPOs, Stocks, Mutual Funds & News. Free for Indian investors.",
   "start_url": "/",
@@ -12,17 +12,30 @@
       "src": "/finnotia-logo.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
     },
     {
       "src": "/finnotia-logo.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "/finnotia-logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/finnotia-logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ],
   "categories": ["finance", "business"],
   "lang": "en-IN",
   "dir": "ltr",
-  "scope": "/"
+  "scope": "/",
+  "prefer_related_applications": false
 }

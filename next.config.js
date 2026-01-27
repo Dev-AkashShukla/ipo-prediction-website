@@ -1,4 +1,62 @@
 /** @type {import('next').NextConfig} */
+
+// ✅ PWA Configuration
+const withPWA = require('next-pwa')({
+  dest: 'public',
+  register: true,
+  skipWaiting: true,
+  disable: process.env.NODE_ENV === 'development',
+  buildExcludes: [/middleware-manifest\.json$/],
+  publicExcludes: ['!robots.txt', '!sitemap*.xml'],
+  runtimeCaching: [
+    {
+      urlPattern: /^https:\/\/fonts\.(?:googleapis|gstatic)\.com\/.*/i,
+      handler: 'CacheFirst',
+      options: {
+        cacheName: 'google-fonts',
+        expiration: {
+          maxEntries: 10,
+          maxAgeSeconds: 365 * 24 * 60 * 60
+        }
+      }
+    },
+    {
+      urlPattern: /\.(?:jpg|jpeg|gif|png|svg|ico|webp|avif)$/i,
+      handler: 'CacheFirst',
+      options: {
+        cacheName: 'static-images',
+        expiration: {
+          maxEntries: 100,
+          maxAgeSeconds: 30 * 24 * 60 * 60
+        }
+      }
+    },
+    {
+      urlPattern: /^https:\/\/api\.finnotia\.com\/.*$/i,
+      handler: 'NetworkFirst',
+      options: {
+        cacheName: 'api-cache',
+        expiration: {
+          maxEntries: 50,
+          maxAgeSeconds: 5 * 60
+        },
+        networkTimeoutSeconds: 10
+      }
+    },
+    {
+      urlPattern: /.*/i,
+      handler: 'NetworkFirst',
+      options: {
+        cacheName: 'others',
+        expiration: {
+          maxEntries: 50,
+          maxAgeSeconds: 24 * 60 * 60
+        }
+      }
+    }
+  ]
+});
+
 const nextConfig = {
   // Image optimization
   images: {
@@ -22,7 +80,6 @@ const nextConfig = {
   // Security & Caching Headers
   async headers() {
     return [
-      // Security headers for all routes
       {
         source: '/:path*',
         headers: [
@@ -56,7 +113,6 @@ const nextConfig = {
           },
         ],
       },
-      // Cache static assets
       {
         source: '/:all*(svg|jpg|jpeg|png|gif|ico|webp|avif)',
         headers: [
@@ -75,7 +131,6 @@ const nextConfig = {
           },
         ],
       },
-      // Cache fonts
       {
         source: '/fonts/:path*',
         headers: [
@@ -85,13 +140,21 @@ const nextConfig = {
           },
         ],
       },
+      {
+        source: '/manifest.json',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=604800, must-revalidate',
+          },
+        ],
+      },
     ];
   },
 
-  // Experimental features for better performance
   experimental: {
     optimizePackageImports: ['lucide-react', 'framer-motion'],
   },
 };
 
-module.exports = nextConfig;
+module.exports = withPWA(nextConfig);

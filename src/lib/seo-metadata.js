@@ -4,8 +4,8 @@
 export const seoConfig = {
   siteName: 'FINNOTIA',
   siteUrl: 'https://finnotia.com',
-  defaultTitle: 'FINNOTIA - All-in-One Stock Market, IPO & Mutual Fund Tracker',
-  defaultDescription: 'Track Indian Stock Market (NSE/BSE), IPO GMP, Mutual Funds, and Indices. AI-powered financial data platform for smart market insights. 100% Free & No Registration.',
+  defaultTitle: 'FINNOTIA - Stock Market, IPO & Mutual Fund Tracker',
+  defaultDescription: 'Track Indian Stock Market, IPO GMP, Mutual Funds & Indices. AI-powered financial data platform for smart market insights. 100% Free, No Registration.',
   defaultKeywords: [
     // Core Market Keywords (High Volume)
     'Stock market app India',

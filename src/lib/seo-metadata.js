@@ -164,11 +164,17 @@ export const structuredData = {
       availableLanguage: ['English', 'Hindi'],
       areaServed: 'IN',
     },
+    // ✅ COMPANY ke official social pages
     sameAs: [
       'https://twitter.com/finnotia',
-      'https://instagram.com/finnotia',
-      // Add LinkedIn or Facebook if you have them
+      'https://www.instagram.com/finnotia/',
     ],
+    // ✅ Founder connection - Google Knowledge Graph ke liye
+    founder: {
+      '@type': 'Person',
+      name: 'Akash Shukla',
+      url: 'https://finnotia.com/founder',
+    },
   },
   
   mobileApp: {
@@ -183,7 +189,7 @@ export const structuredData = {
       priceCurrency: 'INR',
     },
     description: 'Comprehensive market tracking app. Features include Live Stock Updates, IPO GMP, Mutual Fund Data, and Market News. Free to use, no registration needed.',
-    screenshot: 'https://finnotia.com/app-screenshot.png', // Make sure this image exists
+    screenshot: 'https://finnotia.com/app-screenshot.png',
     softwareVersion: '1.0.0',
     datePublished: '2024-01-01',
     author: {
@@ -228,7 +234,6 @@ export const structuredData = {
   ],
 };
 
-// Helper function remains the same, but essential for Next.js 13+
 export function generateMetadata(page) {
   const meta = pageMetadata[page];
   if (!meta) return null;
@@ -246,7 +251,7 @@ export function generateMetadata(page) {
       locale: 'en_IN',
       images: [
         {
-          url: 'https://finnotia.com/og-image.png', // Ensure you have a default OG image
+          url: 'https://finnotia.com/og-image.png',
           width: 1200,
           height: 630,
           alt: meta.title,

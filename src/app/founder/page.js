@@ -35,7 +35,7 @@ export const metadata = {
     profile: {
       firstName: 'Akash',
       lastName: 'Shukla',
-      username: 'akashshukladev',
+      username: 'i_amakashs',
     },
   },
   twitter: {
@@ -68,8 +68,10 @@ export default function FounderPage() {
       name: 'Finnotia',
       url: seoConfig.siteUrl,
     },
+    // ✅ PERSONAL social links - dono YouTube URLs (username + channel ID)
     sameAs: [
-      'https://www.youtube.com/@akashshukladev',
+      'https://www.youtube.com/@i_amakashs',
+      'https://www.youtube.com/channel/UCBGPCsbo4DHW8AplgzlWJmw',
       'https://www.linkedin.com/in/akash-shukla-dev/',
       'https://www.instagram.com/i_amakashs/',
     ],
@@ -256,11 +258,11 @@ export default function FounderPage() {
                   • Developer • Creator
                 </p>
 
-                {/* Social Links */}
+                {/* Social Links - ✅ UPDATED YouTube URL */}
                 <div className="flex flex-wrap justify-center md:justify-start gap-2 sm:gap-3 mt-4">
                   {/* YouTube */}
                   <a
-                    href="https://www.youtube.com/@akashshukladev"
+                    href="https://www.youtube.com/@i_amakashs"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-red-500 text-white rounded-full text-xs sm:text-sm font-medium hover:bg-red-600 transition-colors"
@@ -396,7 +398,7 @@ export default function FounderPage() {
           </div>
         </section>
 
-        {/* Connect Section */}
+        {/* Connect Section - ✅ UPDATED YouTube link */}
         <section className="py-12 sm:py-16 px-4 sm:px-6">
           <div className="container mx-auto max-w-4xl text-center">
             <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-3 sm:mb-4">
@@ -408,7 +410,7 @@ export default function FounderPage() {
             </p>
             <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-3 sm:gap-4">
               <a
-                href="https://www.youtube.com/@akashshukladev"
+                href="https://www.youtube.com/@i_amakashs"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="px-5 sm:px-6 py-2.5 sm:py-3 bg-gray-900 text-white rounded-lg sm:rounded-xl text-sm sm:text-base font-medium hover:bg-gray-800 transition-colors"

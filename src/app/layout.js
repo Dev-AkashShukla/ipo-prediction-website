@@ -84,10 +84,6 @@ export const metadata = {
     apple: '/apple-touch-icon.png',
   },
   
-  verification: {
-    google: 'your-google-verification-code', // ⚠️ Search Console verify karne ke baad uska code yahan daal dena
-  },
-  
   alternates: {
     canonical: seoConfig.siteUrl,
   },

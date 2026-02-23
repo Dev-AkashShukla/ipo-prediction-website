@@ -18,7 +18,7 @@ export default function TermsConditions() {
           <p className="text-gray-600 text-xs md:text-sm">
             Read these terms carefully before using FINNOTIA
           </p>
-          <p className="text-xs text-gray-500 mt-1">Last Updated: November 18, 2025</p>
+          <p className="text-xs text-gray-500 mt-1">Last Updated: February 23, 2026</p>
         </div>
 
         {/* Critical Disclaimer */}
@@ -55,7 +55,7 @@ export default function TermsConditions() {
               </div>
               <div className="pl-8 space-y-1.5 text-gray-700 text-xs">
                 <p className="text-xs">
-                  By accessing FINNOTIA ("the Platform"), you agree to these Terms and Conditions. If you disagree, you must not use our services.
+                  By accessing FINNOTIA (&quot;the Platform&quot;), you agree to these Terms and Conditions. If you disagree, you must not use our services.
                 </p>
                 <p className="text-xs">
                   These terms are legally binding. Continued use = acceptance of modifications.
@@ -150,7 +150,7 @@ export default function TermsConditions() {
                 </div>
                 <p className="font-semibold text-gray-900 text-xs">You agree that:</p>
                 <ul className="list-disc pl-4 space-y-1 text-xs">
-                  <li><strong>Sole Responsibility:</strong> You're solely responsible for investment decisions</li>
+                  <li><strong>Sole Responsibility:</strong> You&apos;re solely responsible for investment decisions</li>
                   <li><strong>Independent Verification:</strong> You must verify all information</li>
                   <li><strong>Professional Consultation:</strong> Consult SEBI-registered advisors</li>
                   <li><strong>No Guarantees:</strong> No guarantees on returns or gains</li>
@@ -181,7 +181,7 @@ export default function TermsConditions() {
                   <strong>Data Delays:</strong> Market data may be delayed. Verify from official exchanges (NSE, BSE).
                 </p>
                 <p className="text-xs">
-                  <strong>No Warranty:</strong> Info provided "as is" without warranty.
+                  <strong>No Warranty:</strong> Info provided &quot;as is&quot; without warranty.
                 </p>
               </div>
             </section>
@@ -227,7 +227,7 @@ export default function TermsConditions() {
                   <li>Provide accurate, complete information</li>
                   <li>Maintain account confidentiality</li>
                   <li>Must be 18+ years old</li>
-                  <li>Don't share credentials</li>
+                  <li>Don&apos;t share credentials</li>
                   <li>Liable for all account activities</li>
                   <li>Notify us of unauthorized access</li>
                 </ul>
@@ -260,17 +260,48 @@ export default function TermsConditions() {
               </div>
             </section>
 
-            {/* Section 9 */}
+            {/* ✅ NEW: Section 9 - Advertising */}
             <section>
               <div className="flex items-start gap-2 mb-2">
                 <div className="flex-shrink-0 w-6 h-6 bg-[#4A90E2] text-white rounded text-xs flex items-center justify-center font-bold">
                   9
                 </div>
+                <h2 className="text-base md:text-lg font-bold text-gray-900">Advertising</h2>
+              </div>
+              <div className="pl-8 space-y-1.5 text-gray-700 text-xs">
+                <p className="text-xs">
+                  FINNOTIA is a free, ad-supported application. By using the Platform, you agree to the following:
+                </p>
+                <ul className="list-disc pl-4 space-y-0.5 text-xs">
+                  <li>The app displays advertisements served by <strong>Google AdMob</strong></li>
+                  <li>Ads may appear as interstitial ads between content pages or as rewarded video ads for optional premium features</li>
+                  <li>Ad content is provided by third-party advertisers and does not constitute endorsement by FINNOTIA</li>
+                  <li>FINNOTIA is not responsible for the accuracy, content, or offers presented in advertisements</li>
+                  <li>Interacting with advertisements is entirely at your own discretion and risk</li>
+                </ul>
+                <div className="bg-blue-50 border-l-2 border-[#4A90E2] p-2 rounded-r mt-1.5">
+                  <p className="text-xs text-[#2E5AAD]">
+                    <strong>Rewarded Ads:</strong> You may optionally watch rewarded video ads to unlock premium features for a limited time. This is entirely voluntary and not required to use core app features.
+                  </p>
+                </div>
+                <p className="text-xs mt-1">
+                  For details on data collected for advertising, please refer to our{' '}
+                  <a href="/privacy" className="text-blue-600 underline font-semibold">Privacy Policy</a>.
+                </p>
+              </div>
+            </section>
+
+            {/* Section 10 (was 9) */}
+            <section>
+              <div className="flex items-start gap-2 mb-2">
+                <div className="flex-shrink-0 w-6 h-6 bg-[#4A90E2] text-white rounded text-xs flex items-center justify-center font-bold">
+                  10
+                </div>
                 <h2 className="text-base md:text-lg font-bold text-gray-900">Intellectual Property</h2>
               </div>
               <div className="pl-8 space-y-1.5 text-gray-700 text-xs">
                 <p className="text-xs">
-                  All content, features, and functionality (text, graphics, logos, images, software, AI models) are FINNOTIA's exclusive property, protected by copyright and IP laws.
+                  All content, features, and functionality (text, graphics, logos, images, software, AI models) are FINNOTIA&apos;s exclusive property, protected by copyright and IP laws.
                 </p>
                 <p className="text-xs">
                   You may not reproduce, distribute, modify, or exploit content without written permission.
@@ -278,11 +309,11 @@ export default function TermsConditions() {
               </div>
             </section>
 
-            {/* Section 10 */}
+            {/* Section 11 (was 10) */}
             <section>
               <div className="flex items-start gap-2 mb-2">
                 <div className="flex-shrink-0 w-6 h-6 bg-[#4A90E2] text-white rounded text-xs flex items-center justify-center font-bold">
-                  10
+                  11
                 </div>
                 <h2 className="text-base md:text-lg font-bold text-gray-900">Governing Law</h2>
               </div>
@@ -299,11 +330,11 @@ export default function TermsConditions() {
               </div>
             </section>
 
-            {/* Section 11 */}
+            {/* Section 12 (was 11) */}
             <section>
               <div className="flex items-start gap-2 mb-2">
                 <div className="flex-shrink-0 w-6 h-6 bg-[#4A90E2] text-white rounded text-xs flex items-center justify-center font-bold">
-                  11
+                  12
                 </div>
                 <h2 className="text-base md:text-lg font-bold text-gray-900">Modifications</h2>
               </div>
@@ -320,11 +351,11 @@ export default function TermsConditions() {
               </div>
             </section>
 
-            {/* Section 12 */}
+            {/* Section 13 (was 12) */}
             <section>
               <div className="flex items-start gap-2 mb-2">
                 <div className="flex-shrink-0 w-6 h-6 bg-[#4A90E2] text-white rounded text-xs flex items-center justify-center font-bold">
-                  12
+                  13
                 </div>
                 <h2 className="text-base md:text-lg font-bold text-gray-900">Indemnification</h2>
               </div>
@@ -342,11 +373,11 @@ export default function TermsConditions() {
               </div>
             </section>
 
-            {/* Section 13 */}
+            {/* Section 14 (was 13) */}
             <section>
               <div className="flex items-start gap-2 mb-2">
                 <div className="flex-shrink-0 w-6 h-6 bg-[#4A90E2] text-white rounded text-xs flex items-center justify-center font-bold">
-                  13
+                  14
                 </div>
                 <h2 className="text-base md:text-lg font-bold text-gray-900">Severability</h2>
               </div>
@@ -369,17 +400,13 @@ export default function TermsConditions() {
                   Questions about these Terms? Contact us:
                 </p>
                 <div className="space-y-1 text-xs">
-                  {/* <p>
-                    <strong>Email:</strong>{' '}
-                    <a href="mailto:legal@finnotia.com" className="underline">legal@finnotia.com</a>
-                  </p> */}
                   <p>
                     <strong>Support:</strong>{' '}
                     <a href="mailto:support@finnotia.com" className="underline">support@finnotia.com</a>
                   </p>
                 </div>
                 <p className="text-xs opacity-80 mt-2">
-                  <strong>Effective:</strong> November 18, 2025
+                  <strong>Effective:</strong> February 23, 2026
                 </p>
               </div>
             </div>

@@ -74,6 +74,7 @@ export default function FounderPage() {
       'https://www.youtube.com/channel/UCBGPCsbo4DHW8AplgzlWJmw',
       'https://www.linkedin.com/in/akash-shukla-dev/',
       'https://www.instagram.com/i_amakashs/',
+      'https://www.wikidata.org/wiki/Q138456571',
     ],
     knowsAbout: [
       'Full Stack Development',

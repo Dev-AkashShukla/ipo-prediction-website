@@ -27,7 +27,7 @@ export default function DownloadSection({
       description: 'text-sm sm:text-base',
     },
     hero: {
-      container: 'py-6',
+      container: 'py-3 sm:py-6',
       title: 'text-xl sm:text-2xl',
       description: 'text-xs sm:text-sm',
     },
@@ -75,38 +75,38 @@ export default function DownloadSection({
             </motion.p>
           )}
 
-          {/* Download Buttons */}
+          {/* Download Buttons - ALWAYS side by side */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
-            className="flex flex-col sm:flex-row gap-3 justify-center items-center mb-6"
+            className="flex flex-row gap-2 sm:gap-3 justify-center items-center mb-3 sm:mb-6"
           >
-            {/* Android Button - Active */}
+            {/* Android Button */}
             <a
               href={PLAY_STORE_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className={`group flex items-center gap-3 bg-gradient-to-r ${GRADIENTS.primary} text-white px-6 py-3 rounded-xl font-semibold shadow-xl hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 min-w-[200px] justify-center`}
+              className={`group flex items-center gap-2 sm:gap-3 bg-gradient-to-r ${GRADIENTS.primary} text-white px-3 sm:px-6 py-2.5 sm:py-3 rounded-xl font-semibold shadow-xl hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 flex-1 sm:flex-none sm:min-w-[200px] max-w-[200px] justify-center`}
             >
-              <AndroidIcon className="w-6 h-6 group-hover:rotate-12 transition-transform" />
+              <AndroidIcon className="w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0 group-hover:rotate-12 transition-transform" />
               <div className="text-left">
-                <div className="text-[10px] opacity-80 leading-tight">Download for</div>
-                <div className="text-sm font-bold leading-tight">Android</div>
+                <div className="text-[8px] sm:text-[10px] opacity-80 leading-tight">Download for</div>
+                <div className="text-xs sm:text-sm font-bold leading-tight">Android</div>
               </div>
-              <Download className="w-4 h-4 ml-auto group-hover:translate-y-0.5 transition-transform" />
+              <Download className="w-3.5 h-3.5 sm:w-4 sm:h-4 ml-auto group-hover:translate-y-0.5 transition-transform hidden sm:block" />
             </a>
 
-            {/* iOS Button - Links to Download Page */}
+            {/* iOS Button */}
             <Link
               href={APP_STORE_URL}
-              className="group flex items-center gap-3 bg-white text-gray-700 px-6 py-3 rounded-xl font-semibold border-2 border-gray-200 hover:border-gray-300 hover:bg-gray-50 hover:scale-105 active:scale-95 transition-all duration-300 min-w-[200px] justify-center shadow-md"
+              className="group flex items-center gap-2 sm:gap-3 bg-white text-gray-700 px-3 sm:px-6 py-2.5 sm:py-3 rounded-xl font-semibold border-2 border-gray-200 hover:border-gray-300 hover:bg-gray-50 hover:scale-105 active:scale-95 transition-all duration-300 flex-1 sm:flex-none sm:min-w-[200px] max-w-[200px] justify-center shadow-md"
             >
-              <AppleIcon className="w-6 h-6 text-gray-700 group-hover:text-gray-900 transition-colors" />
+              <AppleIcon className="w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0 text-gray-700 group-hover:text-gray-900 transition-colors" />
               <div className="text-left">
-                <div className="text-[10px] leading-tight text-gray-600">Coming Soon for</div>
-                <div className="text-sm font-bold leading-tight">iOS</div>
+                <div className="text-[8px] sm:text-[10px] leading-tight text-gray-600">Coming Soon for</div>
+                <div className="text-xs sm:text-sm font-bold leading-tight">iOS</div>
               </div>
             </Link>
           </motion.div>
@@ -117,22 +117,22 @@ export default function DownloadSection({
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ delay: 0.3 }}
-            className="flex flex-wrap items-center justify-center gap-4 text-xs"
+            className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 text-[10px] sm:text-xs"
           >
-            <div className={`flex items-center gap-1.5 ${variant === 'full' ? 'text-white/80' : 'text-gray-600'}`}>
-              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+            <div className={`flex items-center gap-1 ${variant === 'full' ? 'text-white/80' : 'text-gray-600'}`}>
+              <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/>
               </svg>
               <span className="font-medium">100% Free</span>
             </div>
-            <div className={`flex items-center gap-1.5 ${variant === 'full' ? 'text-white/80' : 'text-gray-600'}`}>
-              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+            <div className={`flex items-center gap-1 ${variant === 'full' ? 'text-white/80' : 'text-gray-600'}`}>
+              <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/>
               </svg>
               <span className="font-medium">Quick Sign Up</span>
             </div>
-            <div className={`flex items-center gap-1.5 ${variant === 'full' ? 'text-white/80' : 'text-gray-600'}`}>
-              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+            <div className={`flex items-center gap-1 ${variant === 'full' ? 'text-white/80' : 'text-gray-600'}`}>
+              <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/>
               </svg>
               <span className="font-medium">Educational Tool</span>
@@ -141,7 +141,7 @@ export default function DownloadSection({
 
           {/* Small Disclaimer */}
           {variant !== 'compact' && (
-            <p className={`mt-4 text-[10px] ${variant === 'full' ? 'text-white/60' : 'text-gray-400'}`}>
+            <p className={`mt-2 sm:mt-4 text-[9px] sm:text-[10px] ${variant === 'full' ? 'text-white/60' : 'text-gray-400'}`}>
               For educational purposes only • Not SEBI registered
             </p>
           )}

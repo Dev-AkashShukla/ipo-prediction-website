@@ -2,10 +2,10 @@
 module.exports = {
   siteUrl: 'https://finnotia.com',
   generateRobotsTxt: true,
-  changefreq: 'daily',
+  changefreq: 'weekly',
   priority: 0.7,
   sitemapSize: 5000,
-  exclude: ['/api/*', '/_next/*', '/sitemap.xml'],
+  exclude: ['/api/*', '/_next/*'],
 
   robotsTxtOptions: {
     policies: [
@@ -15,9 +15,10 @@ module.exports = {
         disallow: ['/api/', '/_next/'],
       },
     ],
+    additionalSitemaps: [],
   },
 
-  // ✅ Page-wise priority & changefreq
+  // Page-wise priority & changefreq
   transform: async (config, path) => {
     // Homepage - highest priority
     if (path === '/') {
@@ -30,7 +31,27 @@ module.exports = {
     }
 
     // Important pages
-    if (['/download', '/founder', '/about'].includes(path)) {
+    if (['/download', '/about'].includes(path)) {
+      return {
+        loc: path,
+        changefreq: 'weekly',
+        priority: 0.8,
+        lastmod: new Date().toISOString(),
+      };
+    }
+
+    // Founder page - important for SEO/branding
+    if (path === '/founder') {
+      return {
+        loc: path,
+        changefreq: 'monthly',
+        priority: 0.7,
+        lastmod: new Date().toISOString(),
+      };
+    }
+
+    // Features page
+    if (path === '/features') {
       return {
         loc: path,
         changefreq: 'weekly',

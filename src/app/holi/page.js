@@ -1,6 +1,7 @@
 // src/app/holi/page.js
 import { seoConfig } from '../../lib/seo-metadata';
 import HoliClient from './HoliClient';
+import { Suspense } from 'react';
 
 export const metadata = {
   title: 'Happy Holi 2026 🎨 | Send Free Colorful Wishes | FINNOTIA',
@@ -50,5 +51,9 @@ export const metadata = {
 };
 
 export default function HoliPage() {
-  return <HoliClient />;
+  return (
+    <Suspense fallback={<div className="flex items-center justify-center h-screen">Loading...</div>}>
+      <HoliClient />
+    </Suspense>
+  );
 }

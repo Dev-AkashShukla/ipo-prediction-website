@@ -1,0 +1,122 @@
+/* src/app/holi/holi.css */
+
+/* ─── Holi Gradient Text ────────────────────────────────────────── */
+.holi-gradient-text {
+  background: linear-gradient(135deg, #FF1744, #F50057, #D500F9, #FF9100, #FFEA00, #00E676);
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: holiGradientShift 4s ease-in-out infinite;
+}
+
+/* ─── Holi Gradient Background ──────────────────────────────────── */
+.holi-gradient-bg {
+  background: linear-gradient(135deg, #FF1744, #F50057, #D500F9, #FF9100);
+  background-size: 200% 200%;
+  animation: holiGradientShift 5s ease-in-out infinite;
+}
+
+/* ─── Color Splash Animation ────────────────────────────────────── */
+.holi-splash {
+  position: fixed;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 5;
+  animation: splashExpand 0.7s ease-out forwards;
+}
+
+@keyframes splashExpand {
+  0% {
+    transform: scale(0);
+    opacity: 0.85;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+}
+
+/* ─── Particle Animation ────────────────────────────────────────── */
+.holi-particle {
+  position: fixed;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 6;
+  opacity: 0;
+  animation: particleFly 0.6s ease-out forwards;
+}
+
+@keyframes particleFly {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--tx), var(--ty)) scale(0);
+  }
+}
+
+/* ─── Floating Gulal ────────────────────────────────────────────── */
+.holi-gulal {
+  position: fixed;
+  bottom: -40px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  animation: gulalFloat linear infinite;
+}
+
+@keyframes gulalFloat {
+  0% {
+    transform: translateY(0) rotate(0deg) scale(1);
+    opacity: 0;
+  }
+  8% {
+    opacity: var(--opacity, 0.15);
+  }
+  85% {
+    opacity: var(--opacity, 0.15);
+  }
+  100% {
+    transform: translateY(-110vh) rotate(360deg) scale(0.3);
+    opacity: 0;
+  }
+}
+
+/* ─── Gradient Shift ────────────────────────────────────────────── */
+@keyframes holiGradientShift {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+/* ─── Ad Container ──────────────────────────────────────────────── */
+.ad-container {
+  min-height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ─── Responsive Tweaks ─────────────────────────────────────────── */
+@media (max-width: 380px) {
+  .holi-gradient-text {
+    font-size: inherit;
+  }
+}
+
+/* ─── Smooth touch for mobile ────────────────────────────────────  */
+@media (hover: none) {
+  .holi-splash {
+    animation-duration: 0.5s;
+  }
+}

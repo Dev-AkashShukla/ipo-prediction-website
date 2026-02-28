@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Menu, X, ChevronDown } from 'lucide-react';
 import Image from 'next/image';
+import { usePathname } from 'next/navigation';
 import { PLAY_STORE_URL, APP_STORE_URL, APP_NAME, GRADIENTS } from '../../lib/constants';
 import { AndroidIcon, AppleIcon } from '../ui/PlatformIcons';
 
@@ -18,6 +19,9 @@ export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [showDownload, setShowDownload] = useState(false);
+
+  const pathname = usePathname();                    // ← ADD
+  if (pathname === '/holi') return null;  
 
   useEffect(() => {
     const handleScroll = () => {

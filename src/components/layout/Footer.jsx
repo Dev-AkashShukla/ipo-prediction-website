@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { usePathname } from 'next/navigation';
 import { Mail, AlertTriangle } from 'lucide-react';
 import { APP_NAME, PLAY_STORE_URL, CONTACT_INFO } from '../../lib/constants';
 
@@ -26,6 +27,9 @@ const footerLinks = {
 
 export default function Footer() {
   const [year, setYear] = useState(2024);
+
+  const pathname = usePathname();                    // ← ADD
+  if (pathname === '/holi') return null; 
   
   useEffect(() => {
     setYear(new Date().getFullYear());

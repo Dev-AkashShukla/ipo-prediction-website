@@ -109,7 +109,9 @@
 
 /* ─── Screen Vertical Shift (push content upward) ───────────────── */
 .holi-screen-shift {
-  padding-bottom: 12vh;
+  /* Shift content upward without causing scroll overflow */
+  padding-bottom: 0;
+  margin-top: -14vh;
 }
 
 /* ─── Responsive Tweaks ─────────────────────────────────────────── */

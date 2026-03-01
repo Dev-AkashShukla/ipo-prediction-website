@@ -11,26 +11,49 @@ import HoliCanvas from './HoliCanvas';
 import { ShareModal } from './HoliShare';
 import './holi.css';
 
-// ─── Adsterra Banner ─────────────────────────────────────────────────────────
-// Apna Adsterra script yahan paste karo:
-// 1. Adsterra Dashboard → Sites → Add Zone → Display Banner (300×250)
-// 2. Jo script milega usse AdsTerraBanner ke andar daalo
+// ─── Adsterra Banner 300×250 ──────────────────────────────────────────────────
 function AdsTerraBanner() {
   const ref = useRef(null);
+  const loaded = useRef(false);
+
   useEffect(() => {
-    if (!ref.current || ref.current.childNodes.length > 0) return;
-    // === APNA ADSTERRA SCRIPT YAHAN PASTE KARO ===
-    // Example:
-    // const s = document.createElement('script');
-    // s.src = 'https://pl28821916.effectivegatecpm.com/YOUR_BANNER_ID/invoke.js';
-    // s.async = true; s.setAttribute('data-cfasync','false');
-    // const d = document.createElement('div');
-    // d.id = 'container-YOUR_BANNER_ID';
-    // ref.current.appendChild(d);
-    // ref.current.appendChild(s);
-    // =============================================
+    if (!ref.current || loaded.current) return;
+    loaded.current = true;
+
+    // atOptions config
+    const cfg = document.createElement('script');
+    cfg.text = `
+      atOptions = {
+        'key' : 'bbb0c68a66049f3caf07b7fab691789d',
+        'format' : 'iframe',
+        'height' : 250,
+        'width' : 300,
+        'params' : {}
+      };
+    `;
+    ref.current.appendChild(cfg);
+
+    // invoke script
+    const inv = document.createElement('script');
+    inv.src = 'https://www.highperformanceformat.com/bbb0c68a66049f3caf07b7fab691789d/invoke.js';
+    inv.async = true;
+    ref.current.appendChild(inv);
   }, []);
-  return <div ref={ref} style={{ minHeight: 0 }} />;
+
+  return (
+    <div
+      ref={ref}
+      style={{
+        width: 300,
+        height: 250,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 12,
+        overflow: 'hidden',
+      }}
+    />
+  );
 }
 
 const WISH_MESSAGES = [

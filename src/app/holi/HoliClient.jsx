@@ -6,55 +6,12 @@ import { useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Share2, Sparkles, ArrowRight, Heart, PartyPopper, Gift } from 'lucide-react';
 import Image from 'next/image';
+import Script from 'next/script';
 import { APP_NAME, PLAY_STORE_URL } from '../../lib/constants';
 import HoliCanvas from './HoliCanvas';
 import { ShareModal } from './HoliShare';
+import AdUnit, { ADSENSE_PUB_ID } from './AdUnit';
 import './holi.css';
-
-// ─── Adsterra Banner 300×250 ──────────────────────────────────────────────────
-function AdsTerraBanner() {
-  const ref = useRef(null);
-  const loaded = useRef(false);
-
-  useEffect(() => {
-    if (!ref.current || loaded.current) return;
-    loaded.current = true;
-
-    // atOptions config
-    const cfg = document.createElement('script');
-    cfg.text = `
-      atOptions = {
-        'key' : 'bbb0c68a66049f3caf07b7fab691789d',
-        'format' : 'iframe',
-        'height' : 250,
-        'width' : 300,
-        'params' : {}
-      };
-    `;
-    ref.current.appendChild(cfg);
-
-    // invoke script
-    const inv = document.createElement('script');
-    inv.src = 'https://www.highperformanceformat.com/bbb0c68a66049f3caf07b7fab691789d/invoke.js';
-    inv.async = true;
-    ref.current.appendChild(inv);
-  }, []);
-
-  return (
-    <div
-      ref={ref}
-      style={{
-        width: 300,
-        height: 250,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderRadius: 12,
-        overflow: 'hidden',
-      }}
-    />
-  );
-}
 
 const WISH_MESSAGES = [
   { text: 'Spread colors with love and joy!', emoji: '🎨' },
@@ -109,7 +66,6 @@ export default function HoliClient() {
   const [copied, setCopied] = useState(false);
   const [showInterstitial, setShowInterstitial] = useState(false);
   const [interstitialCountdown, setInterstitialCountdown] = useState(5);
-  const popLoadedRef = useRef(false); 
   const canvasRef = useRef(null);
 
   useEffect(() => {
@@ -124,43 +80,13 @@ export default function HoliClient() {
     }
   }, [searchParams]);
 
-  // Countdown: auto-decrements but does NOT auto-navigate
-  // User must click the button to proceed (so Popunder fires on that click)
   useEffect(() => {
     if (!showInterstitial) return;
-    if (interstitialCountdown <= 0) return; // stop at 0, wait for user click
+    if (interstitialCountdown <= 0) { setShowInterstitial(false); setScreen('greeting'); return; }
     const t = setTimeout(() => setInterstitialCountdown((c) => c - 1), 1000);
     return () => clearTimeout(t);
   }, [showInterstitial, interstitialCountdown]);
 
-  const handleOpenWish = () => {
-    // Popunder fires on THIS click (intentional user action)
-    // Then we navigate to greeting — gulal screen clicks are safe after this
-    setShowInterstitial(false);
-    setScreen('greeting');
-  };
-
-
-  useEffect(() => {
-  if (!showInterstitial) return;
-  if (typeof window === "undefined") return;
-  if (popLoadedRef.current) return;
-
-  const timer = setTimeout(() => {
-    if (document.querySelector('script[data-adsterra-pop]')) return;
-
-    const script = document.createElement("script");
-    script.src = "https://pl28821916.effectivegatecpm.com/33/62/bd/3362bd1b58d491f14c58fa6085b909fa.js";
-    script.async = true;
-    script.setAttribute("data-adsterra-pop", "true");
-
-    document.body.appendChild(script);
-
-    popLoadedRef.current = true;
-  }, 1200);
-
-  return () => clearTimeout(timer);
-}, [showInterstitial]);
 
   useEffect(() => {
     if (screen !== 'greeting') return;
@@ -221,91 +147,24 @@ const handleCreate = () => {
     if (typeof window !== 'undefined') window.history.replaceState({}, '', '/holi');
   };
 
+  const adScript = (
+    <Script async src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_PUB_ID}`} crossOrigin="anonymous" strategy="afterInteractive" />
+  );
+
   if (showInterstitial) {
     return (
-      <div
-        className="min-h-screen flex flex-col items-center justify-center px-4 py-8"
-        style={{ background: 'linear-gradient(180deg, #FFFDF0 0%, #F0FFF6 50%, #FFF8F0 100%)' }}
-      >
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center max-w-sm w-full flex flex-col items-center gap-5"
-        >
-          {/* Top: Name + emoji */}
-          <div>
-            <div className="text-5xl mb-3 animate-bounce">🎨</div>
-            <h2 className="text-xl font-bold text-gray-900 mb-1">
-              A special wish for{' '}
-              <span className="holi-gradient-text">{receiverName}</span>
-            </h2>
-            <p className="text-sm text-gray-400">Your Holi wish is on its way...</p>
+      <div className="min-h-screen flex flex-col items-center justify-center px-4 py-8"
+        style={{ background: 'linear-gradient(180deg, #FFFDF0 0%, #F0FFF6 50%, #FFF8F0 100%)' }}>
+        {adScript}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center max-w-sm w-full">
+          <div className="text-4xl mb-3 animate-bounce">🎨</div>
+          <h2 className="text-lg font-bold text-gray-900 mb-1">A special wish for <span className="holi-gradient-text">{receiverName}</span></h2>
+          <p className="text-sm text-gray-500 mb-6">Your Holi wish is on its way...</p>
+          <AdUnit className="mb-6 min-h-[250px]" />
+          <div className="flex items-center justify-center gap-3">
+            <div className="w-10 h-10 rounded-full border-[3px] border-gray-200 border-t-[#FF1744] animate-spin" />
+            <span className="text-sm text-gray-400">{interstitialCountdown > 0 ? `Opening in ${interstitialCountdown}s...` : 'Opening...'}</span>
           </div>
-
-          {/* Color dots decoration */}
-          <div className="flex gap-2 justify-center">
-            {['#FF1744','#FF9100','#FFEA00','#00E676','#2979FF','#D500F9'].map((c) => (
-              <div
-                key={c}
-                className="w-3 h-3 rounded-full animate-bounce"
-                style={{ background: c, animationDelay: `${Math.random() * 0.5}s` }}
-              />
-            ))}
-          </div>
-
-          {/* ── Adsterra Banner (300×250) ── paste your script in AdsTerraBanner above */}
-          <AdsTerraBanner />
-
-          {/* Finnotia promo card */}
-          <a
-            href={PLAY_STORE_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl shadow-md hover:scale-[1.02] active:scale-95 transition-all"
-            style={{ background: 'linear-gradient(135deg, #0f1f3d 0%, #1a3a6b 100%)' }}
-          >
-            <div className="text-2xl">📊</div>
-            <div className="flex-1 text-left">
-              <div className="text-[9px] text-white/50 uppercase tracking-wide">Powered by</div>
-              <div className="text-xs font-bold text-white">{APP_NAME} — Free IPO & Stock Tracker</div>
-            </div>
-            <div
-              className="text-[10px] font-bold px-3 py-1.5 rounded-full text-gray-900 whitespace-nowrap"
-              style={{ background: 'linear-gradient(135deg, #FFEA00, #FF9100)' }}
-            >
-              Free →
-            </div>
-          </a>
-
-          {/* Open button — Popunder fires on this click, then gulal screen is safe */}
-          <button
-            onClick={handleOpenWish}
-            disabled={interstitialCountdown > 0}
-            className="w-full py-4 rounded-2xl font-bold text-base flex items-center justify-center gap-2 transition-all duration-300"
-            style={
-              interstitialCountdown > 0
-                ? { background: '#e5e7eb', color: '#9ca3af', cursor: 'not-allowed' }
-                : {
-                    background: 'linear-gradient(135deg, #FF1744, #FF6D00)',
-                    color: '#fff',
-                    boxShadow: '0 8px 24px rgba(255,23,68,0.35)',
-                    transform: 'scale(1)',
-                  }
-            }
-          >
-            {interstitialCountdown > 0 ? (
-              <>
-                <div className="w-4 h-4 rounded-full border-2 border-gray-400 border-t-transparent animate-spin" />
-                <span>Wait {interstitialCountdown}s...</span>
-              </>
-            ) : (
-              <>
-                <span>🎨</span>
-                <span>Open Your Holi Wish!</span>
-                <span>→</span>
-              </>
-            )}
-          </button>
         </motion.div>
       </div>
     );
@@ -320,6 +179,8 @@ const handleCreate = () => {
         background: 'linear-gradient(180deg, #FFFDF0 0%, #F0FFF6 50%, #FFF8F0 100%)',
       }}
     >
+      {adScript}
+
       {/* Canvas — fixed inset-0, pointerEvents:none, always mounted */}
       <HoliCanvas ref={canvasRef} active={screen === 'greeting'} />
 

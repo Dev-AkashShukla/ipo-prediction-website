@@ -114,11 +114,14 @@ export default function HoliClient() {
     return `${base}/holi?w=${encodeURIComponent(encodeNames(receiverName.trim(), senderName.trim()))}`;
   };
 
-  const handleCreate = () => {
-    if (!senderName.trim() || !receiverName.trim()) return;
-    setScreen('loading');
-    setTimeout(() => setShowShare(true), 1200);
-  };
+const handleCreate = () => {
+  if (!senderName.trim() || !receiverName.trim()) return;
+  setScreen('loading');
+  setTimeout(() => {
+    setScreen('home');   // ← yeh ek line add kar
+    setShowShare(true);
+  }, 1200);
+};
 
   const handleShare = (platform) => {
     const link = generateLink();

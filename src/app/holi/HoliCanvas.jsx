@@ -1,4 +1,5 @@
 // src/app/holi/HoliCanvas.jsx
+// ✅ OPTIMIZED — No per-frame RadialGradient, proper pause/resume, ultra-low-end skip
 'use client';
 
 import { useEffect, useRef, useCallback, forwardRef, useImperativeHandle } from 'react';
@@ -19,37 +20,45 @@ function hexToRgb(hex) {
   return { r, g, b };
 }
 
-// ── Detect low-end device ─────────────────────────────────────────────────
-function isLowEnd() {
-  if (typeof navigator === 'undefined') return false;
+// ── Device tier detection ─────────────────────────────────────────
+function getDeviceTier() {
+  if (typeof navigator === 'undefined') return 'mid';
   const cores = navigator.hardwareConcurrency || 2;
-  const mem = navigator.deviceMemory || 2; // GB, Chrome only
-  return cores <= 4 || mem <= 2;
+  const mem = navigator.deviceMemory || 2;
+  // Ultra low — skip canvas entirely (or minimal)
+  if (cores <= 2 || mem <= 1) return 'ultra-low';
+  // Low — reduced particles, frame skip
+  if (cores <= 4 || mem <= 2) return 'low';
+  // Mid — moderate particles
+  if (cores <= 6 || mem <= 4) return 'mid';
+  // High — full experience
+  return 'high';
 }
 
-const LOW_END = isLowEnd();
+const TIER = getDeviceTier();
 
-// ── Particle caps ─────────────────────────────────────────────────────────
-const MAX_PARTICLES = LOW_END ? 120 : 280;
-const GULAL_COUNT   = LOW_END ? 14  : 26;   // per tap
-const DUST_INTERVAL = LOW_END ? 700 : 400;
-const PICH_INTERVAL = LOW_END ? 3200 : 2200;
+// ── Tier-based config ─────────────────────────────────────────────
+const CONFIG = {
+  'ultra-low': { maxParticles: 40,  gulalCount: 6,   dustInterval: 1500, pichInterval: 5000, seedDust: 5,  pichDrops: 6,  frameSkip: 2 },
+  'low':       { maxParticles: 80,  gulalCount: 10,  dustInterval: 900,  pichInterval: 3500, seedDust: 10, pichDrops: 10, frameSkip: 1 },
+  'mid':       { maxParticles: 160, gulalCount: 18,  dustInterval: 500,  pichInterval: 2500, seedDust: 20, pichDrops: 16, frameSkip: 0 },
+  'high':      { maxParticles: 280, gulalCount: 26,  dustInterval: 400,  pichInterval: 2200, seedDust: 30, pichDrops: 22, frameSkip: 0 },
+}[TIER];
 
-// ─── GulalPuff — powdery cloud particle (NO ctx.filter for perf) ──────────
+// ─── GulalPuff — simple circle + globalAlpha (NO gradient per frame) ──
 class GulalPuff {
   constructor(x, y, color) {
-    const rgb = hexToRgb(color);
+    this.rgb = hexToRgb(color);
     this.x = x + rnd(-20, 20);
     this.y = y + rnd(-8, 8);
-    this.r = rnd(14, LOW_END ? 28 : 42);
+    this.r = rnd(12, TIER === 'ultra-low' ? 22 : 38);
     this.vx = rnd(-2.2, 2.2);
-    this.vy = rnd(-4.5, -1.8);   // more upward → nicer gulal feel
+    this.vy = rnd(-4.5, -1.8);
     this.ax = rnd(-0.03, 0.03);
-    this.ay = -0.07;              // stronger lift
-    this.alpha = rnd(0.65, 0.9);
-    this.decay = rnd(0.012, 0.020);
-    this.rDecay = rnd(0.05, 0.12);
-    this.rgb = rgb;
+    this.ay = -0.07;
+    this.alpha = rnd(0.55, 0.8);
+    this.decay = rnd(0.014, 0.024);
+    this.rDecay = rnd(0.06, 0.14);
     this.done = false;
   }
 
@@ -64,40 +73,50 @@ class GulalPuff {
   }
 
   draw(ctx) {
-    // Radial gradient gives soft powder look without expensive blur filter
-    const grad = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, Math.max(this.r, 0.1));
+    if (this.done) return;
     const { r, g, b } = this.rgb;
-    grad.addColorStop(0,   `rgba(${r},${g},${b},${this.alpha})`);
-    grad.addColorStop(0.55,`rgba(${r},${g},${b},${this.alpha * 0.45})`);
-    grad.addColorStop(1,   `rgba(${r},${g},${b},0)`);
+    const rad = Math.max(this.r, 0.5);
+
+    // ✅ FIX: Simple filled circle with globalAlpha — no RadialGradient creation
+    // Draw two concentric circles for soft edge effect (much cheaper than gradient)
+    ctx.globalAlpha = this.alpha * 0.3;
     ctx.beginPath();
-    ctx.arc(this.x, this.y, Math.max(this.r, 0.1), 0, Math.PI * 2);
-    ctx.fillStyle = grad;
+    ctx.arc(this.x, this.y, rad * 1.4, 0, Math.PI * 2);
+    ctx.fillStyle = `rgb(${r},${g},${b})`;
     ctx.fill();
+
+    ctx.globalAlpha = this.alpha;
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, rad * 0.6, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.globalAlpha = 1;
   }
 }
 
-// ─── PichkariDrop — water arc droplet (trail trimmed for perf) ───────────
+// ─── PichkariDrop — simplified water droplet ─────────────────────
 class PichkariDrop {
   constructor(x, y, angle, speed, color) {
-    const rgb = hexToRgb(color);
+    this.rgb = hexToRgb(color);
     this.x = x;
     this.y = y;
     this.vx = Math.cos(angle) * speed;
     this.vy = Math.sin(angle) * speed;
     this.gravity = 0.18;
-    this.r = rnd(5.5, 10);
-    this.alpha = rnd(0.55, 0.8);
-    this.decay = rnd(0.009, 0.016);
-    this.rgb = rgb;
+    this.r = rnd(5, 9);
+    this.alpha = rnd(0.5, 0.75);
+    this.decay = rnd(0.01, 0.018);
+    // ✅ Trail simplified — store only last 3-4 positions, no objects
     this.trail = [];
-    this.maxTrail = LOW_END ? 4 : 7;
+    this.maxTrail = TIER === 'ultra-low' ? 2 : (TIER === 'low' ? 3 : 5);
     this.done = false;
   }
 
   update(W, H) {
-    this.trail.push({ x: this.x, y: this.y });
-    if (this.trail.length > this.maxTrail) this.trail.shift();
+    this.trail.push(this.x, this.y); // flat array: [x1,y1,x2,y2,...]
+    if (this.trail.length > this.maxTrail * 2) {
+      this.trail.splice(0, 2);
+    }
     this.vy += this.gravity;
     this.x += this.vx;
     this.y += this.vy;
@@ -106,33 +125,42 @@ class PichkariDrop {
   }
 
   draw(ctx) {
+    if (this.done) return;
     const { r, g, b } = this.rgb;
-    for (let i = 0; i < this.trail.length; i++) {
-      const t = this.trail[i];
-      const frac = i / this.trail.length;
+    const colorStr = `rgb(${r},${g},${b})`;
+
+    // Trail — simple dots
+    const len = this.trail.length / 2;
+    for (let i = 0; i < len; i++) {
+      const frac = (i + 1) / (len + 1);
+      ctx.globalAlpha = this.alpha * frac * 0.4;
       ctx.beginPath();
-      ctx.arc(t.x, t.y, Math.max(this.r * frac * 0.7, 0.1), 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(${r},${g},${b},${this.alpha * frac * 0.5})`;
+      ctx.arc(this.trail[i * 2], this.trail[i * 2 + 1], this.r * frac * 0.5, 0, Math.PI * 2);
+      ctx.fillStyle = colorStr;
       ctx.fill();
     }
+
+    // Main drop
+    ctx.globalAlpha = this.alpha;
     ctx.beginPath();
-    ctx.arc(this.x, this.y, Math.max(this.r, 0.1), 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(${r},${g},${b},${this.alpha})`;
+    ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+    ctx.fillStyle = colorStr;
     ctx.fill();
+
+    ctx.globalAlpha = 1;
   }
 }
 
-// ─── FloatingDust — ambient gulal powder drifting upward (no blur) ────────
+// ─── FloatingDust — ambient powder (simplified) ───────────────────
 class FloatingDust {
   constructor(W, H) {
-    const color = pick(HOLI_COLORS);
-    const rgb = hexToRgb(color);
+    const rgb = hexToRgb(pick(HOLI_COLORS));
     this.x = rnd(0, W);
     this.y = rnd(H * 0.2, H + 60);
-    this.r = rnd(5, LOW_END ? 14 : 20);
+    this.r = rnd(5, TIER === 'ultra-low' ? 10 : 18);
     this.vx = rnd(-0.35, 0.35);
     this.vy = rnd(-0.55, -0.12);
-    this.alpha = rnd(0.07, 0.2);
+    this.alpha = rnd(0.06, 0.18);
     this.decay = rnd(0.0003, 0.0008);
     this.rgb = rgb;
     this.wobble = rnd(0, Math.PI * 2);
@@ -149,42 +177,55 @@ class FloatingDust {
   }
 
   draw(ctx) {
-    // Simple circle — radial gradient replaces blur
-    const grad = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, Math.max(this.r, 0.1));
+    if (this.done) return;
     const { r, g, b } = this.rgb;
-    grad.addColorStop(0, `rgba(${r},${g},${b},${this.alpha})`);
-    grad.addColorStop(1, `rgba(${r},${g},${b},0)`);
+    // ✅ Simple circle — no gradient
+    ctx.globalAlpha = this.alpha;
     ctx.beginPath();
-    ctx.arc(this.x, this.y, Math.max(this.r, 0.1), 0, Math.PI * 2);
-    ctx.fillStyle = grad;
+    ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgb(${r},${g},${b})`;
     ctx.fill();
+
+    // Soft halo (one extra circle, still cheaper than gradient)
+    ctx.globalAlpha = this.alpha * 0.3;
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.r * 1.6, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.globalAlpha = 1;
   }
 }
 
-// ─── Main Canvas Component ────────────────────────────────────────────────
+// ─── Main Canvas Component ────────────────────────────────────────
 const HoliCanvas = forwardRef(function HoliCanvas({ active }, ref) {
   const canvasRef = useRef(null);
   const particlesRef = useRef([]);
   const rafRef = useRef(null);
   const pichkariTimerRef = useRef(null);
   const dustTimerRef = useRef(null);
+  const activeRef = useRef(active);
+  const frameCountRef = useRef(0);
+  const isRunningRef = useRef(false);
+
+  // Keep activeRef in sync
+  useEffect(() => { activeRef.current = active; }, [active]);
 
   const addParticles = useCallback((newOnes) => {
     const arr = particlesRef.current;
-    // Enforce cap — drop oldest if over limit
     const total = arr.length + newOnes.length;
-    if (total > MAX_PARTICLES) {
-      arr.splice(0, total - MAX_PARTICLES);
+    if (total > CONFIG.maxParticles) {
+      arr.splice(0, total - CONFIG.maxParticles);
     }
     arr.push(...newOnes);
+    // ✅ FIX: If loop was paused (no particles + not active), restart it
+    startLoop();
   }, []);
 
   const spawnGulalAt = useCallback((x, y) => {
     const color = pick(HOLI_COLORS);
     const batch = [];
-    for (let i = 0; i < GULAL_COUNT; i++) {
+    for (let i = 0; i < CONFIG.gulalCount; i++) {
       batch.push(new GulalPuff(x, y, color));
-      // Every 4th particle gets a second colour accent
       if (i % 4 === 0) batch.push(new GulalPuff(x, y, pick(HOLI_COLORS)));
     }
     addParticles(batch);
@@ -200,14 +241,11 @@ const HoliCanvas = forwardRef(function HoliCanvas({ active }, ref) {
     const W = canvas.width;
     const H = canvas.height;
     const color = pick(HOLI_COLORS);
-    // Spawn from bottom of screen, arc upward — fully on screen
     const ox = rnd(W * 0.1, W * 0.9);
     const oy = rnd(H * 0.75, H * 0.92);
-    // Angle range: shoots upward in a wide arc
     const angleBase = rnd(-Math.PI * 0.85, -Math.PI * 0.15);
-    const dropCount = LOW_END ? 14 : 22;
     const batch = [];
-    for (let i = 0; i < dropCount; i++) {
+    for (let i = 0; i < CONFIG.pichDrops; i++) {
       const angle = angleBase + rnd(-0.22, 0.22);
       const speed = rnd(5, 12);
       batch.push(new PichkariDrop(ox, oy, angle, speed, color));
@@ -221,60 +259,117 @@ const HoliCanvas = forwardRef(function HoliCanvas({ active }, ref) {
     addParticles([new FloatingDust(canvas.width, canvas.height)]);
   }, [addParticles]);
 
-  // ── Render loop ──
-  useEffect(() => {
+  // ── Smart render loop — pauses when nothing to render ──
+  const startLoop = useCallback(() => {
+    if (isRunningRef.current) return;
+    isRunningRef.current = true;
+
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    if (!canvas) { isRunningRef.current = false; return; }
     const ctx = canvas.getContext('2d', { alpha: true });
 
-    const resize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    };
-    resize();
-    window.addEventListener('resize', resize);
-
-    // Seed initial ambient dust (fewer on low-end)
-    const seedCount = LOW_END ? 15 : 30;
-    for (let i = 0; i < seedCount; i++) {
-      particlesRef.current.push(new FloatingDust(canvas.width, canvas.height));
-    }
-
     const loop = () => {
+      const particles = particlesRef.current;
+
+      // ✅ FIX: If no particles and not active, STOP the loop entirely
+      if (particles.length === 0 && !activeRef.current) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        isRunningRef.current = false;
+        return; // Don't schedule next frame
+      }
+
+      frameCountRef.current++;
+
+      // ✅ Frame skip for ultra-low / low devices
+      if (CONFIG.frameSkip > 0 && frameCountRef.current % (CONFIG.frameSkip + 1) !== 0) {
+        rafRef.current = requestAnimationFrame(loop);
+        return;
+      }
+
       const W = canvas.width;
       const H = canvas.height;
       ctx.clearRect(0, 0, W, H);
+
       const alive = [];
-      for (const p of particlesRef.current) {
+      for (let i = 0; i < particles.length; i++) {
+        const p = particles[i];
         if (p instanceof PichkariDrop) p.update(W, H); else p.update();
-        if (!p.done) { p.draw(ctx); alive.push(p); }
+        if (!p.done) {
+          p.draw(ctx);
+          alive.push(p);
+        }
       }
       particlesRef.current = alive;
+
       rafRef.current = requestAnimationFrame(loop);
     };
+
     rafRef.current = requestAnimationFrame(loop);
+  }, []);
+
+  // ── Setup canvas + resize ──
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const resize = () => {
+      // ✅ Use devicePixelRatio for sharp rendering but cap at 2x for performance
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      canvas.width = w * dpr;
+      canvas.height = h * dpr;
+      canvas.style.width = w + 'px';
+      canvas.style.height = h + 'px';
+      const ctx = canvas.getContext('2d');
+      ctx.scale(dpr, dpr);
+    };
+    resize();
+
+    // ✅ Debounced resize — don't fire on every pixel
+    let resizeTimer;
+    const debouncedResize = () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(resize, 150);
+    };
+    window.addEventListener('resize', debouncedResize);
 
     return () => {
       cancelAnimationFrame(rafRef.current);
-      window.removeEventListener('resize', resize);
+      clearTimeout(resizeTimer);
+      window.removeEventListener('resize', debouncedResize);
+      isRunningRef.current = false;
     };
   }, []);
 
-  // ── Auto pichkari + dust: only when greeting screen active ──
+  // ── Auto effects: only when greeting screen active ──
   useEffect(() => {
     if (active) {
+      // Seed dust
+      const canvas = canvasRef.current;
+      if (canvas) {
+        const w = canvas.width / (Math.min(window.devicePixelRatio || 1, 2));
+        const h = canvas.height / (Math.min(window.devicePixelRatio || 1, 2));
+        for (let i = 0; i < CONFIG.seedDust; i++) {
+          particlesRef.current.push(new FloatingDust(w, h));
+        }
+      }
+
+      // Start loop + auto effects
+      startLoop();
       spawnPichkari();
-      pichkariTimerRef.current = setInterval(spawnPichkari, PICH_INTERVAL);
-      dustTimerRef.current    = setInterval(spawnDust, DUST_INTERVAL);
+      pichkariTimerRef.current = setInterval(spawnPichkari, CONFIG.pichInterval);
+      dustTimerRef.current = setInterval(spawnDust, CONFIG.dustInterval);
     } else {
       clearInterval(pichkariTimerRef.current);
       clearInterval(dustTimerRef.current);
+      // Loop will auto-stop when particles die out
     }
     return () => {
       clearInterval(pichkariTimerRef.current);
       clearInterval(dustTimerRef.current);
     };
-  }, [active, spawnPichkari, spawnDust]);
+  }, [active, spawnPichkari, spawnDust, startLoop]);
 
   return (
     <canvas

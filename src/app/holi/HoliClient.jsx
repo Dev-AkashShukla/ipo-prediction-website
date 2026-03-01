@@ -1,17 +1,21 @@
 // src/app/holi/HoliClient.jsx
+// ✅ OPTIMIZED — Timestamp-based countdown (never stuck), lazy canvas mount
 'use client';
 
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, lazy, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Share2, Sparkles, ArrowRight, Heart, PartyPopper, Gift } from 'lucide-react';
 import Image from 'next/image';
 import Script from 'next/script';
 import { APP_NAME, PLAY_STORE_URL } from '../../lib/constants';
-import HoliCanvas from './HoliCanvas';
 import { ShareModal } from './HoliShare';
 import AdUnit, { ADSENSE_PUB_ID } from './AdUnit';
 import './holi.css';
+
+// ✅ FIX 1: Lazy load HoliCanvas — don't load on interstitial screen
+// This alone saves ~50KB parse + prevents canvas running during countdown
+const HoliCanvas = lazy(() => import('./HoliCanvas'));
 
 const WISH_MESSAGES = [
   { text: 'Spread colors with love and joy!', emoji: '🎨' },
@@ -22,6 +26,8 @@ const WISH_MESSAGES = [
   { text: 'May your life be filled with a thousand colors!', emoji: '🌈' },
   { text: 'Paint the world bright and wash away all sorrows!', emoji: '✨' },
 ];
+
+const COUNTDOWN_SECONDS = 5;
 
 function encodeNames(to, from) {
   try { return btoa(unescape(encodeURIComponent(JSON.stringify({ t: to, f: from })))); }
@@ -65,9 +71,11 @@ export default function HoliClient() {
   const [showShare, setShowShare] = useState(false);
   const [copied, setCopied] = useState(false);
   const [showInterstitial, setShowInterstitial] = useState(false);
-  const [interstitialCountdown, setInterstitialCountdown] = useState(5);
+  const [interstitialCountdown, setInterstitialCountdown] = useState(COUNTDOWN_SECONDS);
+  const [canvasReady, setCanvasReady] = useState(false); // ✅ Track if canvas should mount
   const canvasRef = useRef(null);
 
+  // ── Decode URL params ──
   useEffect(() => {
     const token = searchParams.get('w');
     if (token) {
@@ -80,14 +88,48 @@ export default function HoliClient() {
     }
   }, [searchParams]);
 
+  // ── ✅ FIX 2: Timestamp-based countdown — NEVER gets stuck ──
+  // Old approach: setTimeout chain that freezes when main thread is busy
+  // New approach: Record start time, use rAF to check elapsed time
   useEffect(() => {
     if (!showInterstitial) return;
-    if (interstitialCountdown <= 0) { setShowInterstitial(false); setScreen('greeting'); return; }
-    const t = setTimeout(() => setInterstitialCountdown((c) => c - 1), 1000);
-    return () => clearTimeout(t);
-  }, [showInterstitial, interstitialCountdown]);
 
+    const startTime = Date.now();
+    let raf;
 
+    const tick = () => {
+      const elapsed = (Date.now() - startTime) / 1000;
+      const remaining = Math.max(0, COUNTDOWN_SECONDS - Math.floor(elapsed));
+
+      setInterstitialCountdown(remaining);
+
+      if (remaining <= 0) {
+        // ✅ Countdown done — transition to greeting
+        setShowInterstitial(false);
+        setCanvasReady(true); // Now mount the canvas
+        setScreen('greeting');
+        return;
+      }
+
+      raf = requestAnimationFrame(tick);
+    };
+
+    raf = requestAnimationFrame(tick);
+
+    // ✅ Fallback: If rAF somehow stalls, force transition after max wait
+    const fallbackTimer = setTimeout(() => {
+      setShowInterstitial(false);
+      setCanvasReady(true);
+      setScreen('greeting');
+    }, (COUNTDOWN_SECONDS + 2) * 1000); // Extra 2s grace
+
+    return () => {
+      cancelAnimationFrame(raf);
+      clearTimeout(fallbackTimer);
+    };
+  }, [showInterstitial]);
+
+  // ── Wish message rotation ──
   useEffect(() => {
     if (screen !== 'greeting') return;
     const iv = setInterval(() => setWishIdx((i) => (i + 1) % WISH_MESSAGES.length), 3500);
@@ -115,14 +157,14 @@ export default function HoliClient() {
     return `${base}/holi?w=${encodeURIComponent(encodeNames(receiverName.trim(), senderName.trim()))}`;
   };
 
-const handleCreate = () => {
-  if (!senderName.trim() || !receiverName.trim()) return;
-  setScreen('loading');
-  setTimeout(() => {
-    setScreen('home');   // ← yeh ek line add kar
-    setShowShare(true);
-  }, 1200);
-};
+  const handleCreate = () => {
+    if (!senderName.trim() || !receiverName.trim()) return;
+    setScreen('loading');
+    setTimeout(() => {
+      setScreen('home');
+      setShowShare(true);
+    }, 1200);
+  };
 
   const handleShare = (platform) => {
     const link = generateLink();
@@ -143,7 +185,7 @@ const handleCreate = () => {
 
   const resetHome = () => {
     setScreen('home'); setSenderName(''); setReceiverName('');
-    setShowShare(false); setColorCount(0);
+    setShowShare(false); setColorCount(0); setCanvasReady(false);
     if (typeof window !== 'undefined') window.history.replaceState({}, '', '/holi');
   };
 
@@ -151,27 +193,45 @@ const handleCreate = () => {
     <Script async src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_PUB_ID}`} crossOrigin="anonymous" strategy="afterInteractive" />
   );
 
+  // ═══ INTERSTITIAL ═══
   if (showInterstitial) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center px-4 py-8"
         style={{ background: 'linear-gradient(180deg, #FFFDF0 0%, #F0FFF6 50%, #FFF8F0 100%)' }}>
         {adScript}
+        {/* ✅ FIX 3: No canvas running during interstitial — just simple UI */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center max-w-sm w-full">
           <div className="text-4xl mb-3 animate-bounce">🎨</div>
-          <h2 className="text-lg font-bold text-gray-900 mb-1">A special wish for <span className="holi-gradient-text">{receiverName}</span></h2>
+          <h2 className="text-lg font-bold text-gray-900 mb-1">
+            A special wish for <span className="holi-gradient-text">{receiverName}</span>
+          </h2>
           <p className="text-sm text-gray-500 mb-6">Your Holi wish is on its way...</p>
           <AdUnit className="mb-6 min-h-[250px]" />
           <div className="flex items-center justify-center gap-3">
             <div className="w-10 h-10 rounded-full border-[3px] border-gray-200 border-t-[#FF1744] animate-spin" />
-            <span className="text-sm text-gray-400">{interstitialCountdown > 0 ? `Opening in ${interstitialCountdown}s...` : 'Opening...'}</span>
+            <span className="text-sm text-gray-400">
+              {interstitialCountdown > 0 ? `Opening in ${interstitialCountdown}s...` : 'Opening...'}
+            </span>
           </div>
+          {/* ✅ FIX 4: Skip button — user can bypass if they don't want to wait */}
+          {interstitialCountdown <= 3 && (
+            <button
+              onClick={() => {
+                setShowInterstitial(false);
+                setCanvasReady(true);
+                setScreen('greeting');
+              }}
+              className="mt-4 text-xs text-gray-400 underline hover:text-gray-600 transition-colors"
+            >
+              Skip →
+            </button>
+          )}
         </motion.div>
       </div>
     );
   }
 
   return (
-    // Outer wrapper — sirf home/loading ke liye background aur min height
     <div
       className="relative overflow-hidden"
       style={{
@@ -181,8 +241,12 @@ const handleCreate = () => {
     >
       {adScript}
 
-      {/* Canvas — fixed inset-0, pointerEvents:none, always mounted */}
-      <HoliCanvas ref={canvasRef} active={screen === 'greeting'} />
+      {/* ✅ FIX 5: Canvas only mounts when needed (greeting screen or after interstitial) */}
+      {canvasReady && (
+        <Suspense fallback={null}>
+          <HoliCanvas ref={canvasRef} active={screen === 'greeting'} />
+        </Suspense>
+      )}
 
       {/* ═══ HOME ═══ */}
       {screen === 'home' && (
@@ -244,15 +308,7 @@ const handleCreate = () => {
         </div>
       )}
 
-      {/* ═══ GREETING ═══
-          FINAL FIX:
-          - position: fixed + inset: 0 → Header/Footer ki height matter nahi karti, pura screen milta hai
-          - z-index: 20 → Header (z-10 typically) ke upar render hoga
-          - overflow-y: auto → agar content zyada ho toh scroll kar sake
-          - onClick + onTouchStart seedha is div pe → pura 100vw × 100vh clickable
-          - Interactive children pe stopPropagation → buttons/card pe gulal nahi udega
-      -->
-      */}
+      {/* ═══ GREETING ═══ */}
       {screen === 'greeting' && (
         <div
           className="flex flex-col items-center justify-start px-4 pt-5 pb-4 overflow-y-auto"
@@ -265,7 +321,6 @@ const handleCreate = () => {
           onClick={handleWrapperClick}
           onTouchStart={handleWrapperTouch}
         >
-          {/* Inner content — max width centered */}
           <div className="w-full max-w-lg mx-auto flex flex-col items-center">
 
             {/* Counter badge */}

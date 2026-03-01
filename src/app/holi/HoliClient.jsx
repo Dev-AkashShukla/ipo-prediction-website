@@ -108,7 +108,7 @@ export default function HoliClient() {
   const [showShare, setShowShare] = useState(false);
   const [copied, setCopied] = useState(false);
   const [showInterstitial, setShowInterstitial] = useState(false);
-  const [interstitialCountdown, setInterstitialCountdown] = useState(7);
+  const [interstitialCountdown, setInterstitialCountdown] = useState(5);
   const popLoadedRef = useRef(false); 
   const canvasRef = useRef(null);
 

@@ -6,12 +6,32 @@ import { useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Share2, Sparkles, ArrowRight, Heart, PartyPopper, Gift } from 'lucide-react';
 import Image from 'next/image';
-import Script from 'next/script';
 import { APP_NAME, PLAY_STORE_URL } from '../../lib/constants';
 import HoliCanvas from './HoliCanvas';
 import { ShareModal } from './HoliShare';
-import AdUnit, { ADSENSE_PUB_ID } from './AdUnit';
 import './holi.css';
+
+// ─── Adsterra Banner ─────────────────────────────────────────────────────────
+// Apna Adsterra script yahan paste karo:
+// 1. Adsterra Dashboard → Sites → Add Zone → Display Banner (300×250)
+// 2. Jo script milega usse AdsTerraBanner ke andar daalo
+function AdsTerraBanner() {
+  const ref = useRef(null);
+  useEffect(() => {
+    if (!ref.current || ref.current.childNodes.length > 0) return;
+    // === APNA ADSTERRA SCRIPT YAHAN PASTE KARO ===
+    // Example:
+    // const s = document.createElement('script');
+    // s.src = 'https://pl28821916.effectivegatecpm.com/YOUR_BANNER_ID/invoke.js';
+    // s.async = true; s.setAttribute('data-cfasync','false');
+    // const d = document.createElement('div');
+    // d.id = 'container-YOUR_BANNER_ID';
+    // ref.current.appendChild(d);
+    // ref.current.appendChild(s);
+    // =============================================
+  }, []);
+  return <div ref={ref} style={{ minHeight: 0 }} />;
+}
 
 const WISH_MESSAGES = [
   { text: 'Spread colors with love and joy!', emoji: '🎨' },
@@ -169,23 +189,68 @@ const handleCreate = () => {
     if (typeof window !== 'undefined') window.history.replaceState({}, '', '/holi');
   };
 
-  const adScript = (
-    <Script async src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_PUB_ID}`} crossOrigin="anonymous" strategy="afterInteractive" />
-  );
-
   if (showInterstitial) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center px-4 py-8"
-        style={{ background: 'linear-gradient(180deg, #FFFDF0 0%, #F0FFF6 50%, #FFF8F0 100%)' }}>
-        {adScript}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center max-w-sm w-full">
-          <div className="text-4xl mb-3 animate-bounce">🎨</div>
-          <h2 className="text-lg font-bold text-gray-900 mb-1">A special wish for <span className="holi-gradient-text">{receiverName}</span></h2>
-          <p className="text-sm text-gray-500 mb-6">Your Holi wish is on its way...</p>
-          <AdUnit className="mb-6 min-h-[250px]" />
+      <div
+        className="min-h-screen flex flex-col items-center justify-center px-4 py-8"
+        style={{ background: 'linear-gradient(180deg, #FFFDF0 0%, #F0FFF6 50%, #FFF8F0 100%)' }}
+      >
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center max-w-sm w-full flex flex-col items-center gap-5"
+        >
+          {/* Top: Name + emoji */}
+          <div>
+            <div className="text-5xl mb-3 animate-bounce">🎨</div>
+            <h2 className="text-xl font-bold text-gray-900 mb-1">
+              A special wish for{' '}
+              <span className="holi-gradient-text">{receiverName}</span>
+            </h2>
+            <p className="text-sm text-gray-400">Your Holi wish is on its way...</p>
+          </div>
+
+          {/* Color dots decoration */}
+          <div className="flex gap-2 justify-center">
+            {['#FF1744','#FF9100','#FFEA00','#00E676','#2979FF','#D500F9'].map((c) => (
+              <div
+                key={c}
+                className="w-3 h-3 rounded-full animate-bounce"
+                style={{ background: c, animationDelay: `${Math.random() * 0.5}s` }}
+              />
+            ))}
+          </div>
+
+          {/* ── Adsterra Banner (300×250) ── paste your script in AdsTerraBanner above */}
+          <AdsTerraBanner />
+
+          {/* Finnotia promo card */}
+          <a
+            href={PLAY_STORE_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl shadow-md hover:scale-[1.02] active:scale-95 transition-all"
+            style={{ background: 'linear-gradient(135deg, #0f1f3d 0%, #1a3a6b 100%)' }}
+          >
+            <div className="text-2xl">📊</div>
+            <div className="flex-1 text-left">
+              <div className="text-[9px] text-white/50 uppercase tracking-wide">Powered by</div>
+              <div className="text-xs font-bold text-white">{APP_NAME} — Free IPO & Stock Tracker</div>
+            </div>
+            <div
+              className="text-[10px] font-bold px-3 py-1.5 rounded-full text-gray-900 whitespace-nowrap"
+              style={{ background: 'linear-gradient(135deg, #FFEA00, #FF9100)' }}
+            >
+              Free →
+            </div>
+          </a>
+
+          {/* Countdown */}
           <div className="flex items-center justify-center gap-3">
-            <div className="w-10 h-10 rounded-full border-[3px] border-gray-200 border-t-[#FF1744] animate-spin" />
-            <span className="text-sm text-gray-400">{interstitialCountdown > 0 ? `Opening in ${interstitialCountdown}s...` : 'Opening...'}</span>
+            <div className="w-9 h-9 rounded-full border-[3px] border-gray-200 border-t-[#FF1744] animate-spin" />
+            <span className="text-sm font-medium text-gray-500">
+              {interstitialCountdown > 0 ? `Opening in ${interstitialCountdown}s...` : 'Opening...'}
+            </span>
           </div>
         </motion.div>
       </div>
@@ -201,8 +266,6 @@ const handleCreate = () => {
         background: 'linear-gradient(180deg, #FFFDF0 0%, #F0FFF6 50%, #FFF8F0 100%)',
       }}
     >
-      {adScript}
-
       {/* Canvas — fixed inset-0, pointerEvents:none, always mounted */}
       <HoliCanvas ref={canvasRef} active={screen === 'greeting'} />
 

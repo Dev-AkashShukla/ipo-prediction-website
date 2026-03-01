@@ -1,12 +1,11 @@
 // src/app/layout.js - SEBI Compliant Version
 import { Inter } from 'next/font/google';
-import Script from 'next/script'; // ✅ IMPORT ADDED
+import Script from 'next/script';
 import './globals.css';
 import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
 import { seoConfig, structuredData } from '../lib/seo-metadata';
 
-// Font optimization with display swap
 const inter = Inter({ 
   subsets: ['latin'],
   display: 'swap',
@@ -23,13 +22,9 @@ export const metadata = {
   },
   
   description: seoConfig.defaultDescription,
-  
   keywords: seoConfig.defaultKeywords,
-  
   authors: [{ name: 'FINNOTIA Team' }],
-  
   creator: 'FINNOTIA',
-  
   publisher: 'FINNOTIA',
   
   formatDetection: {
@@ -50,7 +45,6 @@ export const metadata = {
         url: '/og-image.png',
         width: 1200,
         height: 630,
-        // ✅ FIXED: Changed "Predictions" to "Tracker"
         alt: 'FINNOTIA - AI-Powered IPO Tracker & Market Data',
       },
     ],
@@ -91,6 +85,14 @@ export const metadata = {
   category: 'finance',
 };
 
+// ✅ YAHI MISSING THA — viewport alag export karna padta hai Next.js 14 App Router mein
+// Bina iske mobile browser 980px desktop width assume karta hai → sab unstyled dikhta hai
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+};
+
 export default function RootLayout({ children }) {
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -124,23 +126,17 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en-IN" className="scroll-smooth">
       <head>
-        {/* Structured Data */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-        
-        {/* Preconnect for faster loading */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        
-        {/* DNS Prefetch */}
         <link rel="dns-prefetch" href="https://www.google-analytics.com" />
         <link rel="dns-prefetch" href="https://play.google.com" />
       </head>
       <body className={inter.className}>
         
-        {/* ✅ Google Analytics Code Added Here */}
         <Script
           strategy="afterInteractive"
           src="https://www.googletagmanager.com/gtag/js?id=G-DCP4LJJF64"
@@ -153,7 +149,6 @@ export default function RootLayout({ children }) {
             gtag('config', 'G-DCP4LJJF64');
           `}
         </Script>
-        {/* ✅ End of Google Analytics Code */}
 
         <Header />
         <main className="min-h-fitcontent">

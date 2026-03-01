@@ -201,7 +201,8 @@ export default function HoliClient() {
                   className="w-full px-4 py-3 rounded-xl border-2 border-gray-100 bg-gray-50/50 text-gray-900 text-sm font-medium placeholder:text-gray-300 focus:outline-none focus:border-orange-300 focus:bg-white focus:ring-2 focus:ring-orange-100 transition-all duration-200" />
               </div>
               <button onClick={handleCreate} disabled={!senderName.trim() || !receiverName.trim()}
-                className={`w-full py-3.5 rounded-xl text-white font-bold text-sm flex items-center justify-center gap-2 transition-all duration-300 ${senderName.trim() && receiverName.trim() ? 'holi-gradient-bg hover:shadow-xl hover:scale-[1.02] active:scale-95 cursor-pointer' : 'bg-gray-200 text-gray-400 cursor-not-allowed'}`}>
+                className={`w-full py-3.5 rounded-xl text-white font-bold text-sm flex items-center justify-center gap-2 transition-all duration-300 ${senderName.trim() && receiverName.trim() ? 'hover:shadow-xl hover:scale-[1.02] active:scale-95 cursor-pointer' : 'bg-gray-200 text-gray-400 cursor-not-allowed'}`}
+                style={senderName.trim() && receiverName.trim() ? { background: 'linear-gradient(135deg, #FF1744, #FF6D00, #E64A00)' } : {}}>
                 <PartyPopper className="w-4 h-4" /><span>Create & Send Wish!</span><ArrowRight className="w-4 h-4" />
               </button>
             </div>

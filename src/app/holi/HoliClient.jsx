@@ -93,14 +93,20 @@ export default function HoliClient() {
     return () => clearInterval(iv);
   }, [screen]);
 
-  const onCanvasInteract = useCallback((cx, cy) => {
-    if (screen !== 'greeting') return;
-    canvasRef.current?.spawnGulal(cx, cy);
+  const spawnGulal = useCallback((clientX, clientY) => {
+    canvasRef.current?.spawnGulal(clientX, clientY);
     setColorCount((c) => c + 1);
-  }, [screen]);
+  }, []);
 
-  const onTouch = useCallback((e) => { e.preventDefault(); onCanvasInteract(e.touches[0].clientX, e.touches[0].clientY); }, [onCanvasInteract]);
-  const onClick = useCallback((e) => { onCanvasInteract(e.clientX, e.clientY); }, [onCanvasInteract]);
+  const handleWrapperClick = useCallback((e) => {
+    spawnGulal(e.clientX, e.clientY);
+  }, [spawnGulal]);
+
+  const handleWrapperTouch = useCallback((e) => {
+    spawnGulal(e.touches[0].clientX, e.touches[0].clientY);
+  }, [spawnGulal]);
+
+  const stopBubble = useCallback((e) => e.stopPropagation(), []);
 
   const generateLink = () => {
     if (!senderName.trim() || !receiverName.trim()) return '';
@@ -161,19 +167,22 @@ export default function HoliClient() {
   }
 
   return (
-    <div className="relative min-h-[80vh] overflow-hidden"
-      style={{ background: 'linear-gradient(180deg, #FFFDF0 0%, #F0FFF6 50%, #FFF8F0 100%)' }}
-      onTouchStart={screen === 'greeting' ? onTouch : undefined}
-      onClick={screen === 'greeting' ? onClick : undefined}
+    // Outer wrapper — sirf home/loading ke liye background aur min height
+    <div
+      className="relative overflow-hidden"
+      style={{
+        minHeight: screen === 'greeting' ? '0' : '100vh',
+        background: 'linear-gradient(180deg, #FFFDF0 0%, #F0FFF6 50%, #FFF8F0 100%)',
+      }}
     >
       {adScript}
 
-      {/* Canvas — always mounted, active only on greeting screen */}
+      {/* Canvas — fixed inset-0, pointerEvents:none, always mounted */}
       <HoliCanvas ref={canvasRef} active={screen === 'greeting'} />
 
       {/* ═══ HOME ═══ */}
       {screen === 'home' && (
-        <div className="holi-screen-shift h-screen relative z-10 max-w-lg mx-auto px-4 py-8 sm:py-12 flex flex-col items-center justify-center">
+        <div className="h-screen relative z-10 max-w-lg mx-auto px-4 py-8 sm:py-12 flex flex-col items-center justify-center">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-6">
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full mb-3" style={{ background: 'linear-gradient(135deg, #FFEA00, #FF9100)' }}>
               <Sparkles className="w-3.5 h-3.5 text-gray-900" />
@@ -224,68 +233,121 @@ export default function HoliClient() {
 
       {/* ═══ LOADING ═══ */}
       {screen === 'loading' && (
-        <div className="relative z-10 min-h-[60vh] flex flex-col items-center justify-center px-4">
+        <div className="relative z-10 min-h-screen flex flex-col items-center justify-center px-4">
           <motion.div initial={{ scale: 0 }} animate={{ scale: 1, rotate: 360 }} transition={{ duration: 0.6, type: 'spring' }} className="text-5xl mb-4">🎨</motion.div>
           <h2 className="text-lg font-bold text-gray-900 mb-1">Preparing Your Wish...</h2>
           <p className="text-xs text-gray-400">Mixing special colors just for <span className="font-semibold text-gray-600">{receiverName}</span>! 🌈</p>
         </div>
       )}
 
-      {/* ═══ GREETING ═══ */}
+      {/* ═══ GREETING ═══
+          FINAL FIX:
+          - position: fixed + inset: 0 → Header/Footer ki height matter nahi karti, pura screen milta hai
+          - z-index: 20 → Header (z-10 typically) ke upar render hoga
+          - overflow-y: auto → agar content zyada ho toh scroll kar sake
+          - onClick + onTouchStart seedha is div pe → pura 100vw × 100vh clickable
+          - Interactive children pe stopPropagation → buttons/card pe gulal nahi udega
+      -->
+      */}
       {screen === 'greeting' && (
-        <div className="holi-screen-shift h-screen relative z-10 max-w-lg mx-auto px-4 py-6 sm:py-8 flex flex-col items-center justify-center">
-          <div className="fixed top-16 right-3 z-30 px-3 py-1.5 rounded-full bg-white/90 backdrop-blur-md shadow-md border border-gray-100 text-xs font-bold text-gray-700">
-            🎨 {colorCount}
-          </div>
+        <div
+          className="flex flex-col items-center justify-start px-4 pt-5 pb-4 overflow-y-auto"
+          style={{
+            position: 'fixed',
+            inset: 0,
+            zIndex: 20,
+            background: 'linear-gradient(180deg, #FFFDF0 0%, #F0FFF6 50%, #FFF8F0 100%)',
+          }}
+          onClick={handleWrapperClick}
+          onTouchStart={handleWrapperTouch}
+        >
+          {/* Inner content — max width centered */}
+          <div className="w-full max-w-lg mx-auto flex flex-col items-center">
 
-          <motion.div initial={{ opacity: 0, scale: 0.85 }} animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6, type: 'spring', stiffness: 120 }}
-            className="w-full bg-white/85 backdrop-blur-md rounded-2xl shadow-xl border border-white/60 overflow-hidden mb-4">
-            <div className="holi-gradient-bg px-5 py-4 text-center text-white relative overflow-hidden">
-              <div className="absolute -top-4 -left-4 w-16 h-16 bg-white/10 rounded-full" />
-              <div className="absolute -bottom-6 -right-6 w-20 h-20 bg-white/10 rounded-full" />
-              <div className="text-3xl mb-1">🎉</div>
-              <h1 className="text-2xl sm:text-3xl font-black tracking-tight">Happy Holi!</h1>
-              <p className="text-xs opacity-80 mt-0.5">Festival of Colors 2026</p>
+            {/* Counter badge */}
+            <div
+              className="fixed top-5 right-3 z-30 px-3 py-1.5 rounded-full bg-white/90 backdrop-blur-md shadow-md border border-gray-100 text-xs font-bold text-gray-700"
+              onClick={stopBubble}
+              onTouchStart={stopBubble}
+            >
+              🎨 {colorCount}
             </div>
-            <div className="px-5 py-5 text-center">
-              <p className="text-sm text-gray-500 mb-1">Dear</p>
-              <h2 className="text-2xl font-black holi-gradient-text mb-3">{receiverName} ✨</h2>
-              <p className="text-sm text-gray-600 leading-relaxed mb-4">
-                May this Holi fill your life with countless colors — a splash of happiness and a shower of love! This special wish is just for you! 🌈💕
-              </p>
-              <AnimatePresence mode="wait">
-                <motion.div key={wishIdx} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}
-                  className="rounded-xl px-4 py-3 mb-4" style={{ background: 'linear-gradient(135deg, #FFF9C4, #FFE0B2)' }}>
-                  <span className="text-lg mr-1">{WISH_MESSAGES[wishIdx].emoji}</span>
-                  <span className="text-sm font-semibold text-gray-700">{WISH_MESSAGES[wishIdx].text}</span>
-                </motion.div>
-              </AnimatePresence>
-              <div className="flex flex-col items-center">
-                <span className="text-xs text-gray-400">With love from</span>
-                <span className="text-xl font-extrabold text-[#FF1744] mt-0.5">
-                  {senderName} <Heart className="inline w-4 h-4 fill-current" />
-                </span>
+
+            {/* Wish card */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.85 }} animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.6, type: 'spring', stiffness: 120 }}
+              className="w-full bg-white/85 backdrop-blur-md rounded-2xl shadow-xl border border-white/60 overflow-hidden mb-4"
+              onClick={stopBubble}
+              onTouchStart={stopBubble}
+            >
+              <div className="holi-gradient-bg px-5 py-4 text-center text-white relative overflow-hidden">
+                <div className="absolute -top-4 -left-4 w-16 h-16 bg-white/10 rounded-full" />
+                <div className="absolute -bottom-6 -right-6 w-20 h-20 bg-white/10 rounded-full" />
+                <div className="text-3xl mb-1">🎉</div>
+                <h1 className="text-2xl sm:text-3xl font-black tracking-tight">Happy Holi!</h1>
+                <p className="text-xs opacity-80 mt-0.5">Festival of Colors 2026</p>
               </div>
+              <div className="px-5 py-5 text-center">
+                <p className="text-sm text-gray-500 mb-1">Dear</p>
+                <h2 className="text-2xl font-black holi-gradient-text mb-3">{receiverName} ✨</h2>
+                <p className="text-sm text-gray-600 leading-relaxed mb-4">
+                  May this Holi fill your life with countless colors — a splash of happiness and a shower of love! This special wish is just for you! 🌈💕
+                </p>
+                <AnimatePresence mode="wait">
+                  <motion.div key={wishIdx} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}
+                    className="rounded-xl px-4 py-3 mb-4" style={{ background: 'linear-gradient(135deg, #FFF9C4, #FFE0B2)' }}>
+                    <span className="text-lg mr-1">{WISH_MESSAGES[wishIdx].emoji}</span>
+                    <span className="text-sm font-semibold text-gray-700">{WISH_MESSAGES[wishIdx].text}</span>
+                  </motion.div>
+                </AnimatePresence>
+                <div className="flex flex-col items-center">
+                  <span className="text-xs text-gray-400">With love from</span>
+                  <span className="text-xl font-extrabold text-[#FF1744] mt-0.5">
+                    {senderName} <Heart className="inline w-4 h-4 fill-current" />
+                  </span>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Tap hint */}
+            <motion.p
+              animate={{ opacity: [0.4, 0.9, 0.4] }} transition={{ duration: 2, repeat: Infinity }}
+              className="text-xs text-gray-500 mb-3 text-center font-semibold drop-shadow-sm"
+            >
+              💦 Tap anywhere below to throw gulal!
+            </motion.p>
+
+            {/* Buttons */}
+            <div
+              className="flex gap-2.5 w-full mb-4"
+              onClick={stopBubble}
+              onTouchStart={stopBubble}
+            >
+              <button
+                onClick={resetHome}
+                className="flex-1 py-3 rounded-xl border-2 border-gray-200 bg-white/80 backdrop-blur text-gray-700 font-semibold text-sm flex items-center justify-center gap-1.5 hover:border-gray-300 active:scale-95 transition-all"
+              >
+                <Gift className="w-4 h-4" /> Create Your Own
+              </button>
+              <button
+                onClick={() => setShowShare(true)}
+                className="flex-1 py-3 rounded-xl holi-gradient-bg text-white font-semibold text-sm flex items-center justify-center gap-1.5 hover:shadow-lg active:scale-95 transition-all"
+              >
+                <Share2 className="w-4 h-4" /> Share
+              </button>
             </div>
-          </motion.div>
 
-          <motion.p animate={{ opacity: [0.4, 0.9, 0.4] }} transition={{ duration: 2, repeat: Infinity }}
-            className="text-xs text-gray-600 mb-3 text-center font-semibold drop-shadow-sm">
-            💦 Tap anywhere to throw gulal!
-          </motion.p>
+            {/* Finnotia strip */}
+            <div
+              className="w-full"
+              onClick={stopBubble}
+              onTouchStart={stopBubble}
+            >
+              <FinnotiaStrip />
+            </div>
 
-          <div className="flex gap-2.5 w-full mb-4">
-            <button onClick={(e) => { e.stopPropagation(); resetHome(); }}
-              className="flex-1 py-3 rounded-xl border-2 border-gray-200 bg-white/80 backdrop-blur text-gray-700 font-semibold text-sm flex items-center justify-center gap-1.5 hover:border-gray-300 active:scale-95 transition-all">
-              <Gift className="w-4 h-4" /> Create Your Own
-            </button>
-            <button onClick={(e) => { e.stopPropagation(); setShowShare(true); }}
-              className="flex-1 py-3 rounded-xl holi-gradient-bg text-white font-semibold text-sm flex items-center justify-center gap-1.5 hover:shadow-lg active:scale-95 transition-all">
-              <Share2 className="w-4 h-4" /> Share
-            </button>
           </div>
-          <FinnotiaStrip />
         </div>
       )}
 

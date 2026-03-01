@@ -7,7 +7,7 @@ import { AndroidIcon } from '../components/ui/PlatformIcons';
 
 export default function NotFound() {
   return (
-    <div className="min-h-[60vh] sm:min-h-[65vh] bg-white flex items-center justify-center px-4 py-8 sm:py-10">
+    <div className="h-screen h-[65vh] bg-white flex items-center justify-center px-4 py-8 sm:py-10">
       <div className="max-w-xl mt-8 mx-auto text-center">
         {/* 404 Animated Number */}
         <motion.div

@@ -1,6 +1,7 @@
 'use client';
 import { motion } from 'framer-motion';
 import { Sparkles, TrendingUp, Shield, Zap } from 'lucide-react';
+import Link from 'next/link';
 import GradientText from '../ui/GradientText';
 import DownloadSection from '../ui/DownloadSection';
 
@@ -17,6 +18,30 @@ export default function HeroSection() {
 
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-4xl mx-auto text-center">
+
+          {/* ── Holi Festive Banner ── */}
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="mb-3 sm:mb-4"
+          >
+            <Link
+              href="/holi"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-gradient-to-r from-pink-500 via-orange-400 to-yellow-400 text-white shadow-lg hover:shadow-xl hover:scale-[1.03] active:scale-95 transition-all duration-300 group"
+            >
+              <span className="text-lg">🎨</span>
+              <div className="text-left">
+                <div className="text-[10px] opacity-80 leading-tight">Festival of Colors 2026</div>
+                <div className="text-xs sm:text-sm font-bold leading-tight">
+                  Send a Happy Holi Wish! 🥳
+                </div>
+              </div>
+              <span className="text-xs font-semibold bg-white/20 rounded-full px-2 py-0.5 ml-1 group-hover:bg-white/30 transition-colors">
+                Free →
+              </span>
+            </Link>
+          </motion.div>
 
           {/* Badge */}
           <motion.div

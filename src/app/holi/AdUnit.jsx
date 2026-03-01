@@ -3,26 +3,37 @@
 import { useEffect, useRef } from 'react';
 
 export const ADSENSE_PUB_ID = 'ca-pub-2959591975768653';
-const ADSENSE_SLOT = '2791524991'; // Holi Banne — Responsive Display Ad
+const ADSENSE_SLOT = '2791524991';
+
+const pushed = new Set();
 
 export default function AdUnit({ className = '', style = {} }) {
-  const ref = useRef(null);
+  const insRef = useRef(null);
 
   useEffect(() => {
-    const el = ref.current?.querySelector('.adsbygoogle');
-    if (!el || el.getAttribute('data-adsbygoogle-status')) return;
+    const el = insRef.current;
+    if (!el) return;
+
+    // Use the DOM node itself as unique key — works across StrictMode double-mount
+    if (pushed.has(el)) return;
+    pushed.add(el);
+
     try {
       (window.adsbygoogle = window.adsbygoogle || []).push({});
     } catch (e) {}
+
+    return () => {
+      pushed.delete(el);
+    };
   }, []);
 
   return (
     <div
-      ref={ref}
       className={`ad-container ${className}`}
       style={{ minWidth: '300px', width: '100%', overflow: 'hidden', ...style }}
     >
       <ins
+        ref={insRef}
         className="adsbygoogle"
         style={{ display: 'block' }}
         data-ad-client={ADSENSE_PUB_ID}

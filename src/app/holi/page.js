@@ -46,7 +46,7 @@ export const metadata = {
     images: ['/og-holi.png'],
   },
   alternates: {
-    canonical: `${seoConfig.siteUrl}/holi`,
+    canonical: `${seoConfig.siteUrl}/holi-2026`,
   },
 };
 

@@ -12,6 +12,7 @@ import {
   PartyPopper,
   Gift,
 } from 'lucide-react';
+import Image from 'next/image';
 import Script from 'next/script';
 import { APP_NAME, PLAY_STORE_URL, GRADIENTS } from '../../lib/constants';
 import { HOLI_COLORS, ColorSplash, Particle, FloatingGulal } from './HoliAnimations';
@@ -28,6 +29,49 @@ const WISH_MESSAGES = [
   { text: 'May your life be filled with a thousand colors!', emoji: '🌈' },
   { text: 'Paint the world bright and wash away all sorrows!', emoji: '✨' },
 ];
+
+// ── Subtle branded footer — logo + soft pill, not a loud banner ──
+function FinnotiaStrip() {
+  return (
+    <a
+      href={PLAY_STORE_URL}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="group relative flex items-center gap-3 w-full px-4 py-3 rounded-2xl overflow-hidden hover:scale-[1.02] active:scale-95 transition-all duration-300 shadow-md hover:shadow-xl"
+      style={{ background: 'linear-gradient(135deg, #e0e0ea 0%, #5371c4 50%, #0f3460 100%)' }}
+    >
+      {/* Holi color blobs */}
+      <div className="absolute top-0 right-10 w-16 h-16 rounded-full opacity-40 blur-xl pointer-events-none" style={{ background: '#FF1744' }} />
+      <div className="absolute bottom-0 right-24 w-12 h-12 rounded-full opacity-30 blur-lg pointer-events-none" style={{ background: '#FF9100' }} />
+      <div className="absolute top-0 right-2 w-10 h-10 rounded-full opacity-25 blur-lg pointer-events-none" style={{ background: '#D500F9' }} />
+
+      {/* Logo */}
+      <div className="relative flex-shrink-0 w-9 h-9 rounded-xl overflow-hidden border border-white/20 shadow-lg">
+        <Image
+          src="/finnotia-logo.png"
+          alt="Finnotia"
+          width={36}
+          height={36}
+          className="w-full h-full object-contain"
+        />
+      </div>
+
+      {/* Text */}
+      <div className="relative flex-1 text-left min-w-0">
+        <div className="text-[9px] text-white/50 leading-tight uppercase tracking-wide">Powered by</div>
+        <div className="text-xs font-bold text-white leading-tight truncate">{APP_NAME} — Stock & IPO Tracker 📊</div>
+      </div>
+
+      {/* CTA pill */}
+      <div
+        className="relative flex-shrink-0 text-[10px] font-bold px-3 py-1.5 rounded-full text-white whitespace-nowrap group-hover:scale-105 transition-transform duration-200"
+        style={{ background: 'linear-gradient(135deg, #FF1744, #FF9100)' }}
+      >
+        Download Free →
+      </div>
+    </a>
+  );
+}
 
 export default function HoliClient() {
   const searchParams = useSearchParams();
@@ -111,9 +155,10 @@ export default function HoliClient() {
     setTimeout(() => setShowShare(true), 1200);
   };
 
+  // ── Share text: no Finnotia push, organic & friendly ──
   const handleShare = (platform) => {
     const link = generateLink();
-    const txt = `🎨🥳 *Happy Holi 2026!*\n\n${senderName} has sent a special Holi wish for ${receiverName}!\n\n👉 View it here: ${link}\n\n_Create yours too - FREE!_ 🌈`;
+    const txt = `🎨🥳 *Happy Holi 2026!*\n\n${senderName} ne tumhare liye ek special Holi wish bheja hai! 🌈\n\n👉 ${link}\n\nTum bhi apna wish banao — FREE! 🎉`;
     const encoded = encodeURIComponent(txt);
     switch (platform) {
       case 'whatsapp':
@@ -147,7 +192,6 @@ export default function HoliClient() {
     }
   };
 
-  // ── AdSense Script (once globally) ──
   const adScript = (
     <Script
       async
@@ -278,7 +322,7 @@ export default function HoliClient() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3 }}
-            className="flex items-center gap-4 text-center"
+            className="flex items-center gap-4 text-center mb-5"
           >
             <div>
               <div className="text-base font-extrabold text-gray-900">10K+</div>
@@ -296,24 +340,15 @@ export default function HoliClient() {
             </div>
           </motion.div>
 
-          <AdUnit className="mt-5" />
+          <AdUnit className="mb-4" />
 
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4 }}
-            className="mt-5 w-full"
+            className="w-full"
           >
-            <a
-              href={PLAY_STORE_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={`block w-full p-3 rounded-xl bg-gradient-to-r ${GRADIENTS.primary} text-white text-center hover:shadow-lg transition-all duration-300`}
-            >
-              <div className="text-[10px] opacity-80 mb-0.5">Brought to you by</div>
-              <div className="text-sm font-bold">{APP_NAME} — Free Stock & IPO Tracker 📊</div>
-              <div className="text-[10px] opacity-70 mt-0.5">Download Now on Play Store →</div>
-            </a>
+            <FinnotiaStrip />
           </motion.div>
         </div>
       )}
@@ -415,16 +450,7 @@ export default function HoliClient() {
           </div>
 
           <AdUnit className="mb-3" />
-
-          <a
-            href={PLAY_STORE_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={`block w-full p-3 rounded-xl bg-gradient-to-r ${GRADIENTS.primary} text-white text-center hover:shadow-lg transition-all`}
-          >
-            <div className="text-[10px] opacity-80 mb-0.5">Powered by</div>
-            <div className="text-xs font-bold">{APP_NAME} — Stock & IPO Tracker 📊</div>
-          </a>
+          <FinnotiaStrip />
         </div>
       )}
 

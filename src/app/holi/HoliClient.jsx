@@ -108,7 +108,7 @@ export default function HoliClient() {
   const [showShare, setShowShare] = useState(false);
   const [copied, setCopied] = useState(false);
   const [showInterstitial, setShowInterstitial] = useState(false);
-  const [interstitialCountdown, setInterstitialCountdown] = useState(5);
+  const [interstitialCountdown, setInterstitialCountdown] = useState(7);
   const popLoadedRef = useRef(false); 
   const canvasRef = useRef(null);
 
@@ -124,12 +124,21 @@ export default function HoliClient() {
     }
   }, [searchParams]);
 
+  // Countdown: auto-decrements but does NOT auto-navigate
+  // User must click the button to proceed (so Popunder fires on that click)
   useEffect(() => {
     if (!showInterstitial) return;
-    if (interstitialCountdown <= 0) { setShowInterstitial(false); setScreen('greeting'); return; }
+    if (interstitialCountdown <= 0) return; // stop at 0, wait for user click
     const t = setTimeout(() => setInterstitialCountdown((c) => c - 1), 1000);
     return () => clearTimeout(t);
   }, [showInterstitial, interstitialCountdown]);
+
+  const handleOpenWish = () => {
+    // Popunder fires on THIS click (intentional user action)
+    // Then we navigate to greeting — gulal screen clicks are safe after this
+    setShowInterstitial(false);
+    setScreen('greeting');
+  };
 
 
   useEffect(() => {
@@ -268,13 +277,35 @@ const handleCreate = () => {
             </div>
           </a>
 
-          {/* Countdown */}
-          <div className="flex items-center justify-center gap-3">
-            <div className="w-9 h-9 rounded-full border-[3px] border-gray-200 border-t-[#FF1744] animate-spin" />
-            <span className="text-sm font-medium text-gray-500">
-              {interstitialCountdown > 0 ? `Opening in ${interstitialCountdown}s...` : 'Opening...'}
-            </span>
-          </div>
+          {/* Open button — Popunder fires on this click, then gulal screen is safe */}
+          <button
+            onClick={handleOpenWish}
+            disabled={interstitialCountdown > 0}
+            className="w-full py-4 rounded-2xl font-bold text-base flex items-center justify-center gap-2 transition-all duration-300"
+            style={
+              interstitialCountdown > 0
+                ? { background: '#e5e7eb', color: '#9ca3af', cursor: 'not-allowed' }
+                : {
+                    background: 'linear-gradient(135deg, #FF1744, #FF6D00)',
+                    color: '#fff',
+                    boxShadow: '0 8px 24px rgba(255,23,68,0.35)',
+                    transform: 'scale(1)',
+                  }
+            }
+          >
+            {interstitialCountdown > 0 ? (
+              <>
+                <div className="w-4 h-4 rounded-full border-2 border-gray-400 border-t-transparent animate-spin" />
+                <span>Wait {interstitialCountdown}s...</span>
+              </>
+            ) : (
+              <>
+                <span>🎨</span>
+                <span>Open Your Holi Wish!</span>
+                <span>→</span>
+              </>
+            )}
+          </button>
         </motion.div>
       </div>
     );

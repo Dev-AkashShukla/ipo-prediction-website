@@ -197,7 +197,7 @@ export default function HoliClient() {
               </div>
               <div>
                 <label className="text-xs font-semibold text-gray-500 mb-1 block">Who are you wishing? 💕</label>
-                <input type="text" placeholder="Friend / Crush / Family name..." value={receiverName} onChange={(e) => setReceiverName(e.target.value)} maxLength={25}
+                <input type="text" placeholder="Enter the name you want to surprise..." value={receiverName} onChange={(e) => setReceiverName(e.target.value)} maxLength={25}
                   className="w-full px-4 py-3 rounded-xl border-2 border-gray-100 bg-gray-50/50 text-gray-900 text-sm font-medium placeholder:text-gray-300 focus:outline-none focus:border-orange-300 focus:bg-white focus:ring-2 focus:ring-orange-100 transition-all duration-200" />
               </div>
               <button onClick={handleCreate} disabled={!senderName.trim() || !receiverName.trim()}

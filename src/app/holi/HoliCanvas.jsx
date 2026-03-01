@@ -19,22 +19,37 @@ function hexToRgb(hex) {
   return { r, g, b };
 }
 
-// ─── GulalPuff — powdery cloud particle on tap ────────────────────────────
+// ── Detect low-end device ─────────────────────────────────────────────────
+function isLowEnd() {
+  if (typeof navigator === 'undefined') return false;
+  const cores = navigator.hardwareConcurrency || 2;
+  const mem = navigator.deviceMemory || 2; // GB, Chrome only
+  return cores <= 4 || mem <= 2;
+}
+
+const LOW_END = isLowEnd();
+
+// ── Particle caps ─────────────────────────────────────────────────────────
+const MAX_PARTICLES = LOW_END ? 120 : 280;
+const GULAL_COUNT   = LOW_END ? 14  : 26;   // per tap
+const DUST_INTERVAL = LOW_END ? 700 : 400;
+const PICH_INTERVAL = LOW_END ? 3200 : 2200;
+
+// ─── GulalPuff — powdery cloud particle (NO ctx.filter for perf) ──────────
 class GulalPuff {
   constructor(x, y, color) {
     const rgb = hexToRgb(color);
-    this.x = x + rnd(-18, 18);
-    this.y = y + rnd(-10, 10);
-    this.r = rnd(6, 22);
-    this.vx = rnd(-2.5, 2.5);
-    this.vy = rnd(-3.5, -0.8);
-    this.ax = rnd(-0.05, 0.05);
-    this.ay = -0.04;
-    this.alpha = rnd(0.55, 0.8);
-    this.decay = rnd(0.012, 0.022);
-    this.rDecay = rnd(0.08, 0.18);
+    this.x = x + rnd(-20, 20);
+    this.y = y + rnd(-8, 8);
+    this.r = rnd(8, LOW_END ? 18 : 26);
+    this.vx = rnd(-1.8, 1.8);
+    this.vy = rnd(-3.2, -1.2);   // more upward → nicer gulal feel
+    this.ax = rnd(-0.03, 0.03);
+    this.ay = -0.06;              // stronger lift
+    this.alpha = rnd(0.5, 0.75);
+    this.decay = rnd(0.014, 0.024);
+    this.rDecay = rnd(0.06, 0.14);
     this.rgb = rgb;
-    this.blur = rnd(3, 9);
     this.done = false;
   }
 
@@ -49,21 +64,20 @@ class GulalPuff {
   }
 
   draw(ctx) {
-    ctx.save();
-    ctx.filter = `blur(${this.blur}px)`;
-    const grad = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.r);
-    grad.addColorStop(0, `rgba(${this.rgb.r},${this.rgb.g},${this.rgb.b},${this.alpha})`);
-    grad.addColorStop(0.5, `rgba(${this.rgb.r},${this.rgb.g},${this.rgb.b},${this.alpha * 0.5})`);
-    grad.addColorStop(1, `rgba(${this.rgb.r},${this.rgb.g},${this.rgb.b},0)`);
+    // Radial gradient gives soft powder look without expensive blur filter
+    const grad = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, Math.max(this.r, 0.1));
+    const { r, g, b } = this.rgb;
+    grad.addColorStop(0,   `rgba(${r},${g},${b},${this.alpha})`);
+    grad.addColorStop(0.55,`rgba(${r},${g},${b},${this.alpha * 0.45})`);
+    grad.addColorStop(1,   `rgba(${r},${g},${b},0)`);
     ctx.beginPath();
     ctx.arc(this.x, this.y, Math.max(this.r, 0.1), 0, Math.PI * 2);
     ctx.fillStyle = grad;
     ctx.fill();
-    ctx.restore();
   }
 }
 
-// ─── PichkariDrop — water arc droplet with gravity + trail ───────────────
+// ─── PichkariDrop — water arc droplet (trail trimmed for perf) ───────────
 class PichkariDrop {
   constructor(x, y, angle, speed, color) {
     const rgb = hexToRgb(color);
@@ -72,12 +86,12 @@ class PichkariDrop {
     this.vx = Math.cos(angle) * speed;
     this.vy = Math.sin(angle) * speed;
     this.gravity = 0.18;
-    this.r = rnd(2.5, 5.5);
-    this.alpha = rnd(0.6, 0.85);
-    this.decay = rnd(0.008, 0.015);
+    this.r = rnd(2.5, 5);
+    this.alpha = rnd(0.55, 0.8);
+    this.decay = rnd(0.009, 0.016);
     this.rgb = rgb;
     this.trail = [];
-    this.maxTrail = 8;
+    this.maxTrail = LOW_END ? 4 : 7;
     this.done = false;
   }
 
@@ -92,60 +106,58 @@ class PichkariDrop {
   }
 
   draw(ctx) {
+    const { r, g, b } = this.rgb;
     for (let i = 0; i < this.trail.length; i++) {
       const t = this.trail[i];
-      const a = (this.alpha * (i / this.trail.length)) * 0.5;
-      const r = this.r * (i / this.trail.length) * 0.7;
+      const frac = i / this.trail.length;
       ctx.beginPath();
-      ctx.arc(t.x, t.y, Math.max(r, 0.1), 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(${this.rgb.r},${this.rgb.g},${this.rgb.b},${a})`;
+      ctx.arc(t.x, t.y, Math.max(this.r * frac * 0.7, 0.1), 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${r},${g},${b},${this.alpha * frac * 0.5})`;
       ctx.fill();
     }
-    ctx.save();
-    ctx.filter = 'blur(1px)';
     ctx.beginPath();
     ctx.arc(this.x, this.y, Math.max(this.r, 0.1), 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(${this.rgb.r},${this.rgb.g},${this.rgb.b},${this.alpha})`;
+    ctx.fillStyle = `rgba(${r},${g},${b},${this.alpha})`;
     ctx.fill();
-    ctx.restore();
   }
 }
 
-// ─── FloatingDust — ambient gulal powder drifting upward ─────────────────
+// ─── FloatingDust — ambient gulal powder drifting upward (no blur) ────────
 class FloatingDust {
   constructor(W, H) {
     const color = pick(HOLI_COLORS);
     const rgb = hexToRgb(color);
     this.x = rnd(0, W);
     this.y = rnd(H * 0.2, H + 60);
-    this.r = rnd(4, 18);
-    this.vx = rnd(-0.4, 0.4);
-    this.vy = rnd(-0.6, -0.15);
-    this.alpha = rnd(0.08, 0.25);
+    this.r = rnd(5, LOW_END ? 14 : 20);
+    this.vx = rnd(-0.35, 0.35);
+    this.vy = rnd(-0.55, -0.12);
+    this.alpha = rnd(0.07, 0.2);
     this.decay = rnd(0.0003, 0.0008);
     this.rgb = rgb;
-    this.blur = rnd(4, 12);
     this.wobble = rnd(0, Math.PI * 2);
-    this.wobbleSpeed = rnd(0.01, 0.03);
+    this.wobbleSpeed = rnd(0.012, 0.03);
     this.done = false;
   }
 
   update() {
     this.wobble += this.wobbleSpeed;
-    this.x += this.vx + Math.sin(this.wobble) * 0.3;
+    this.x += this.vx + Math.sin(this.wobble) * 0.28;
     this.y += this.vy;
     this.alpha -= this.decay;
     if (this.alpha <= 0) this.done = true;
   }
 
   draw(ctx) {
-    ctx.save();
-    ctx.filter = `blur(${this.blur}px)`;
+    // Simple circle — radial gradient replaces blur
+    const grad = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, Math.max(this.r, 0.1));
+    const { r, g, b } = this.rgb;
+    grad.addColorStop(0, `rgba(${r},${g},${b},${this.alpha})`);
+    grad.addColorStop(1, `rgba(${r},${g},${b},0)`);
     ctx.beginPath();
     ctx.arc(this.x, this.y, Math.max(this.r, 0.1), 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(${this.rgb.r},${this.rgb.g},${this.rgb.b},${this.alpha})`;
+    ctx.fillStyle = grad;
     ctx.fill();
-    ctx.restore();
   }
 }
 
@@ -157,23 +169,29 @@ const HoliCanvas = forwardRef(function HoliCanvas({ active }, ref) {
   const pichkariTimerRef = useRef(null);
   const dustTimerRef = useRef(null);
 
-  // ✅ FIXED: spawnGulalAt defined FIRST before useImperativeHandle references it
-  const spawnGulalAt = useCallback((x, y) => {
-    const color = pick(HOLI_COLORS);
-    const count = 28 + Math.floor(Math.random() * 18);
-    for (let i = 0; i < count; i++) {
-      particlesRef.current.push(new GulalPuff(x, y, color));
-      if (i % 3 === 0) {
-        particlesRef.current.push(new GulalPuff(x, y, pick(HOLI_COLORS)));
-      }
+  const addParticles = useCallback((newOnes) => {
+    const arr = particlesRef.current;
+    // Enforce cap — drop oldest if over limit
+    const total = arr.length + newOnes.length;
+    if (total > MAX_PARTICLES) {
+      arr.splice(0, total - MAX_PARTICLES);
     }
+    arr.push(...newOnes);
   }, []);
 
-  // ✅ FIXED: dependency array [spawnGulalAt] added
+  const spawnGulalAt = useCallback((x, y) => {
+    const color = pick(HOLI_COLORS);
+    const batch = [];
+    for (let i = 0; i < GULAL_COUNT; i++) {
+      batch.push(new GulalPuff(x, y, color));
+      // Every 4th particle gets a second colour accent
+      if (i % 4 === 0) batch.push(new GulalPuff(x, y, pick(HOLI_COLORS)));
+    }
+    addParticles(batch);
+  }, [addParticles]);
+
   useImperativeHandle(ref, () => ({
-    spawnGulal(x, y) {
-      spawnGulalAt(x, y);
-    },
+    spawnGulal(x, y) { spawnGulalAt(x, y); },
   }), [spawnGulalAt]);
 
   const spawnPichkari = useCallback(() => {
@@ -182,40 +200,37 @@ const HoliCanvas = forwardRef(function HoliCanvas({ active }, ref) {
     const W = canvas.width;
     const H = canvas.height;
     const color = pick(HOLI_COLORS);
-
     const side = Math.random() < 0.5 ? 'left' : 'right';
     let ox, oy, angleBase;
     if (side === 'left') {
-      ox = rnd(-10, 30);
-      oy = rnd(H * 0.4, H + 10);
+      ox = rnd(-10, 30); oy = rnd(H * 0.4, H + 10);
       angleBase = rnd(-Math.PI * 0.55, -Math.PI * 0.25);
     } else {
-      ox = rnd(W - 30, W + 10);
-      oy = rnd(H * 0.4, H + 10);
+      ox = rnd(W - 30, W + 10); oy = rnd(H * 0.4, H + 10);
       angleBase = rnd(-Math.PI * 0.75, -Math.PI * 0.45);
     }
-
-    const dropCount = 18 + Math.floor(Math.random() * 12);
+    const dropCount = LOW_END ? 12 : 20;
+    const batch = [];
     for (let i = 0; i < dropCount; i++) {
       const angle = angleBase + rnd(-0.18, 0.18);
       const speed = rnd(5, 11);
-      setTimeout(() => {
-        particlesRef.current.push(new PichkariDrop(ox, oy, angle, speed, color));
-      }, i * 22);
+      batch.push(new PichkariDrop(ox, oy, angle, speed, color));
     }
-  }, []);
+    // Stagger without setTimeout — just push all, looks fine
+    addParticles(batch);
+  }, [addParticles]);
 
   const spawnDust = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    particlesRef.current.push(new FloatingDust(canvas.width, canvas.height));
-  }, []);
+    addParticles([new FloatingDust(canvas.width, canvas.height)]);
+  }, [addParticles]);
 
-  // ── Render loop — runs always ──
+  // ── Render loop ──
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', { alpha: true });
 
     const resize = () => {
       canvas.width = window.innerWidth;
@@ -224,8 +239,9 @@ const HoliCanvas = forwardRef(function HoliCanvas({ active }, ref) {
     resize();
     window.addEventListener('resize', resize);
 
-    // Seed initial ambient dust
-    for (let i = 0; i < 30; i++) {
+    // Seed initial ambient dust (fewer on low-end)
+    const seedCount = LOW_END ? 15 : 30;
+    for (let i = 0; i < seedCount; i++) {
       particlesRef.current.push(new FloatingDust(canvas.width, canvas.height));
     }
 
@@ -233,12 +249,12 @@ const HoliCanvas = forwardRef(function HoliCanvas({ active }, ref) {
       const W = canvas.width;
       const H = canvas.height;
       ctx.clearRect(0, 0, W, H);
-      particlesRef.current = particlesRef.current.filter(p => !p.done);
+      const alive = [];
       for (const p of particlesRef.current) {
-        if (p instanceof PichkariDrop) p.update(W, H);
-        else p.update();
-        p.draw(ctx);
+        if (p instanceof PichkariDrop) p.update(W, H); else p.update();
+        if (!p.done) { p.draw(ctx); alive.push(p); }
       }
+      particlesRef.current = alive;
       rafRef.current = requestAnimationFrame(loop);
     };
     rafRef.current = requestAnimationFrame(loop);
@@ -253,8 +269,8 @@ const HoliCanvas = forwardRef(function HoliCanvas({ active }, ref) {
   useEffect(() => {
     if (active) {
       spawnPichkari();
-      pichkariTimerRef.current = setInterval(spawnPichkari, 2200);
-      dustTimerRef.current = setInterval(spawnDust, 400);
+      pichkariTimerRef.current = setInterval(spawnPichkari, PICH_INTERVAL);
+      dustTimerRef.current    = setInterval(spawnDust, DUST_INTERVAL);
     } else {
       clearInterval(pichkariTimerRef.current);
       clearInterval(dustTimerRef.current);

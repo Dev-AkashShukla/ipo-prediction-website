@@ -20,8 +20,7 @@ export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [showDownload, setShowDownload] = useState(false);
 
-  const pathname = usePathname();                    // ← ADD
-  if (pathname === '/holi') return null;  
+  const pathname = usePathname();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -42,6 +41,9 @@ export default function Header() {
       document.body.style.overflow = 'unset';
     };
   }, [isOpen]);
+
+  // ✅ Early return AFTER all hooks
+  if (pathname === '/holi') return null;
 
   return (
     <>

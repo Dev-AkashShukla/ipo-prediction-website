@@ -28,12 +28,14 @@ const footerLinks = {
 export default function Footer() {
   const [year, setYear] = useState(2024);
 
-  const pathname = usePathname();                    // ← ADD
-  if (pathname === '/holi') return null; 
-  
+  const pathname = usePathname();
+
   useEffect(() => {
     setYear(new Date().getFullYear());
   }, []);
+
+  // ✅ Early return AFTER all hooks
+  if (pathname === '/holi') return null;
 
   return (
     <footer className="bg-black text-white pt-12 pb-6">

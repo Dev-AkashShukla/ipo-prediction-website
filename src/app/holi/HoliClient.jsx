@@ -66,6 +66,7 @@ export default function HoliClient() {
   const [copied, setCopied] = useState(false);
   const [showInterstitial, setShowInterstitial] = useState(false);
   const [interstitialCountdown, setInterstitialCountdown] = useState(5);
+  const popLoadedRef = useRef(false);
   const canvasRef = useRef(null);
 
   useEffect(() => {
@@ -80,12 +81,21 @@ export default function HoliClient() {
     }
   }, [searchParams]);
 
+  // ── Adsterra Popunder — fires 1.2s after interstitial screen shows ──
   useEffect(() => {
     if (!showInterstitial) return;
-    if (interstitialCountdown <= 0) { setShowInterstitial(false); setScreen('greeting'); return; }
-    const t = setTimeout(() => setInterstitialCountdown((c) => c - 1), 1000);
-    return () => clearTimeout(t);
-  }, [showInterstitial, interstitialCountdown]);
+    if (popLoadedRef.current) return;
+
+    const timer = setTimeout(() => {
+      const script = document.createElement('script');
+      script.src = 'https://pl28821916.effectivegatecpm.com/33/62/bd/3362bd1b58d491f14c58fa6085b909fa.js';
+      script.async = true;
+      document.body.appendChild(script);
+      popLoadedRef.current = true;
+    }, 1200);
+
+    return () => clearTimeout(timer);
+  }, [showInterstitial]);
 
   useEffect(() => {
     if (screen !== 'greeting') return;

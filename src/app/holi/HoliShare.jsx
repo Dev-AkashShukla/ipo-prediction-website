@@ -3,7 +3,6 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { Copy, Check, X } from 'lucide-react';
 import { APP_NAME, PLAY_STORE_URL, GRADIENTS } from '../../lib/constants';
-import AdUnit from './AdUnit';
 
 export function ShareButton({ icon: Icon, label, color, onClick }) {
   return (
@@ -95,8 +94,6 @@ export function ShareModal({ showShare, setShowShare, receiverName, copied, hand
                 <span>{copied ? 'Link Copied! ✅' : 'Copy Link'}</span>
               </button>
             </div>
-
-            <AdUnit className="mb-3" />
 
             <a
               href={PLAY_STORE_URL}

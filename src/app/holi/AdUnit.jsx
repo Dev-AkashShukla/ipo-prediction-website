@@ -1,41 +1,49 @@
 // src/app/holi/AdUnit.jsx
 'use client';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 export const ADSENSE_PUB_ID = 'ca-pub-2959591975768653';
 const ADSENSE_SLOT = '2791524991';
 
-const pushed = new Set();
-
 export default function AdUnit({ className = '', style = {} }) {
+  const containerRef = useRef(null);
   const insRef = useRef(null);
+  const didPush = useRef(false);
+  const [hasAd, setHasAd] = useState(false);
 
   useEffect(() => {
+    const container = containerRef.current;
     const el = insRef.current;
-    if (!el) return;
+    if (!el || didPush.current) return;
+    if (el.getAttribute('data-adsbygoogle-status')) return;
 
-    // Use the DOM node itself as unique key — works across StrictMode double-mount
-    if (pushed.has(el)) return;
-    pushed.add(el);
+    const width = container?.offsetWidth ?? 0;
+    if (width === 0) return;
 
+    didPush.current = true;
     try {
       (window.adsbygoogle = window.adsbygoogle || []).push({});
+      // Check after short delay if ad actually loaded
+      setTimeout(() => {
+        const status = el.getAttribute('data-adsbygoogle-status');
+        if (status === 'done' || el.querySelector('iframe')) {
+          setHasAd(true);
+        }
+      }, 2000);
     } catch (e) {}
-
-    return () => {
-      pushed.delete(el);
-    };
   }, []);
 
+  // On localhost / ad blocked — collapse to nothing, no empty space
   return (
     <div
-      className={`ad-container ${className}`}
-      style={{ minWidth: '300px', width: '100%', overflow: 'hidden', ...style }}
+      ref={containerRef}
+      className={`${hasAd ? className : ''}`}
+      style={hasAd ? { width: '100%', overflow: 'hidden', ...style } : { width: '100%' }}
     >
       <ins
         ref={insRef}
         className="adsbygoogle"
-        style={{ display: 'block' }}
+        style={{ display: 'block', minWidth: hasAd ? '300px' : '0', width: '100%' }}
         data-ad-client={ADSENSE_PUB_ID}
         data-ad-slot={ADSENSE_SLOT}
         data-ad-format="auto"

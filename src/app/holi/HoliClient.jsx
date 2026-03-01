@@ -15,7 +15,7 @@ import {
 import Image from 'next/image';
 import Script from 'next/script';
 import { APP_NAME, PLAY_STORE_URL, GRADIENTS } from '../../lib/constants';
-import { HOLI_COLORS, ColorSplash, Particle, FloatingGulal } from './HoliAnimations';
+import { HOLI_COLORS, ColorSplash, Particle } from './HoliAnimations';
 import { ShareModal } from './HoliShare';
 import AdUnit, { ADSENSE_PUB_ID } from './AdUnit';
 import './holi.css';
@@ -38,7 +38,7 @@ function FinnotiaStrip() {
       target="_blank"
       rel="noopener noreferrer"
       className="group relative flex items-center gap-3 w-full px-4 py-3 rounded-2xl overflow-hidden hover:scale-[1.02] active:scale-95 transition-all duration-300 shadow-md hover:shadow-xl"
-      style={{ background: 'linear-gradient(135deg, #e0e0ea 0%, #5371c4 50%, #0f3460 100%)' }}
+      style={{ background: 'linear-gradient(135deg, #0f1f3d 0%, #1a3a6b 60%, #0f2d5a 100%)' }}
     >
       {/* Holi color blobs */}
       <div className="absolute top-0 right-10 w-16 h-16 rounded-full opacity-40 blur-xl pointer-events-none" style={{ background: '#FF1744' }} />
@@ -64,8 +64,8 @@ function FinnotiaStrip() {
 
       {/* CTA pill */}
       <div
-        className="relative flex-shrink-0 text-[10px] font-bold px-3 py-1.5 rounded-full text-white whitespace-nowrap group-hover:scale-105 transition-transform duration-200"
-        style={{ background: 'linear-gradient(135deg, #FF1744, #FF9100)' }}
+        className="relative flex-shrink-0 text-[10px] font-bold px-3 py-1.5 rounded-full text-gray-900 whitespace-nowrap group-hover:scale-105 transition-transform duration-200"
+        style={{ background: 'linear-gradient(135deg, #FFEA00, #FF9100)' }}
       >
         Download Free →
       </div>
@@ -206,7 +206,7 @@ export default function HoliClient() {
     return (
       <div
         className="min-h-screen flex flex-col items-center justify-center px-4 py-8"
-        style={{ background: 'linear-gradient(180deg, #fff5f8 0%, #fff8f0 50%, #f5f0ff 100%)' }}
+        style={{ background: 'linear-gradient(180deg, #FFFDF0 0%, #F0FFF6 50%, #FFF8F0 100%)' }}
       >
         {adScript}
         <motion.div
@@ -234,28 +234,26 @@ export default function HoliClient() {
   return (
     <div
       className="relative min-h-[80vh] overflow-hidden"
-      style={{ background: 'linear-gradient(180deg, #fff5f8 0%, #fff8f0 50%, #f5f0ff 100%)' }}
+      style={{ background: 'linear-gradient(180deg, #FFFDF0 0%, #F0FFF6 50%, #FFF8F0 100%)' }}
       onTouchStart={screen === 'greeting' ? onTouch : undefined}
       onClick={screen === 'greeting' ? onClick : undefined}
     >
       {adScript}
-      <FloatingGulal />
       {splashes.map((s) => (<ColorSplash key={s.id} {...s} />))}
       {particles.map((p) => (<Particle key={p.id} {...p} />))}
 
       {/* ═══════ HOME SCREEN ═══════ */}
       {screen === 'home' && (
-        <div className="relative z-10 max-w-lg mx-auto px-4 py-8 sm:py-12 flex flex-col items-center">
-          <AdUnit className="mb-4" />
+        <div className="h-screen relative z-10 max-w-lg mx-auto px-4 py-8 sm:py-12 flex flex-col items-center justify-center">
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="text-center mb-6"
           >
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-gradient-to-r from-pink-100 to-orange-100 rounded-full mb-3">
-              <Sparkles className="w-3.5 h-3.5 text-pink-500" />
-              <span className="text-[10px] sm:text-xs font-semibold text-pink-700">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full mb-3" style={{ background: 'linear-gradient(135deg, #FFEA00, #FF9100)' }}>
+              <Sparkles className="w-3.5 h-3.5 text-gray-900" />
+              <span className="text-[10px] sm:text-xs font-semibold text-gray-900">
                 Festival of Colors 2026
               </span>
             </div>
@@ -286,7 +284,7 @@ export default function HoliClient() {
                   value={senderName}
                   onChange={(e) => setSenderName(e.target.value)}
                   maxLength={25}
-                  className="w-full px-4 py-3 rounded-xl border-2 border-gray-100 bg-gray-50/50 text-gray-900 text-sm font-medium placeholder:text-gray-300 focus:outline-none focus:border-pink-300 focus:bg-white focus:ring-2 focus:ring-pink-100 transition-all duration-200"
+                  className="w-full px-4 py-3 rounded-xl border-2 border-gray-100 bg-gray-50/50 text-gray-900 text-sm font-medium placeholder:text-gray-300 focus:outline-none focus:border-orange-400 focus:bg-white focus:ring-2 focus:ring-orange-100 transition-all duration-200"
                 />
               </div>
               <div>
@@ -340,8 +338,6 @@ export default function HoliClient() {
             </div>
           </motion.div>
 
-          <AdUnit className="mb-4" />
-
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -374,12 +370,10 @@ export default function HoliClient() {
 
       {/* ═══════ GREETING SCREEN ═══════ */}
       {screen === 'greeting' && (
-        <div className="h-screen relative z-10 max-w-lg mx-auto px-4 py-6 sm:py-8 flex flex-col items-center">
+        <div className="h-screen relative z-10 max-w-lg mx-auto px-4 py-6 sm:py-8 flex flex-col items-center justify-center">
           <div className="fixed top-16 right-3 z-30 px-3 py-1.5 rounded-full bg-white/90 backdrop-blur-md shadow-md border border-gray-100 text-xs font-bold text-gray-700">
             🎨 {colorCount}
           </div>
-
-          <AdUnit className="mb-4" />
 
           <motion.div
             initial={{ opacity: 0, scale: 0.85 }}
@@ -407,7 +401,7 @@ export default function HoliClient() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
-                  className="bg-gradient-to-r from-pink-50 to-orange-50 rounded-xl px-4 py-3 mb-4"
+                  className="rounded-xl px-4 py-3 mb-4" style={{ background: 'linear-gradient(135deg, #FFF9C4, #FFE0B2)' }}
                 >
                   <span className="text-lg mr-1">{WISH_MESSAGES[wishIdx].emoji}</span>
                   <span className="text-sm font-semibold text-gray-700">
@@ -449,7 +443,6 @@ export default function HoliClient() {
             </button>
           </div>
 
-          <AdUnit className="mb-3" />
           <FinnotiaStrip />
         </div>
       )}

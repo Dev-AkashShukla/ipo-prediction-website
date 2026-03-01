@@ -1,6 +1,6 @@
 // src/app/holi/HoliAnimations.jsx
 'use client';
-import { useMemo } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 
 export const HOLI_COLORS = [
   '#FF1744', '#F50057', '#D500F9', '#651FFF',
@@ -48,20 +48,30 @@ export function Particle({ x, y, color, delay }) {
   );
 }
 
+// ── Fixed: Math.random() only runs client-side after mount ──
 export function FloatingGulal() {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const gulals = useMemo(
     () =>
       Array.from({ length: 18 }, (_, i) => ({
         id: i,
         color: HOLI_COLORS[i % HOLI_COLORS.length],
         left: Math.random() * 100,
-        size: 40 + Math.random() * 80,
+        size: 50 + Math.random() * 70,
         duration: 6 + Math.random() * 10,
         delay: i * 0.4,
-        opacity: 0.25 + Math.random() * 0.20,
+        opacity: 0.55 + Math.random() * 0.25,
       })),
     []
   );
+
+  // Render nothing on server — avoids hydration mismatch
+  if (!mounted) return null;
 
   return (
     <>
@@ -77,7 +87,7 @@ export function FloatingGulal() {
             animationDuration: `${g.duration}s`,
             animationDelay: `${g.delay}s`,
             opacity: g.opacity,
-            filter: 'blur(12px)',
+            filter: 'blur(6px)',
           }}
         />
       ))}

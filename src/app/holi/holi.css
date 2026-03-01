@@ -2,7 +2,7 @@
 
 /* ─── Holi Gradient Text ────────────────────────────────────────── */
 .holi-gradient-text {
-  background: linear-gradient(135deg, #FF1744, #F50057, #D500F9, #FF9100, #FFEA00, #00E676);
+  background: linear-gradient(135deg, #FF1744, #FF6D00, #FFEA00, #00E676, #2979FF, #D500F9);
   background-size: 300% 300%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -12,7 +12,7 @@
 
 /* ─── Holi Gradient Background ──────────────────────────────────── */
 .holi-gradient-bg {
-  background: linear-gradient(135deg, #FF1744, #F50057, #D500F9, #FF9100);
+  background: linear-gradient(135deg, #FF1744, #FF6D00, #FFEA00, #00C853);
   background-size: 200% 200%;
   animation: holiGradientShift 5s ease-in-out infinite;
 }
@@ -77,10 +77,10 @@
     opacity: 0;
   }
   8% {
-    opacity: var(--opacity, 0.15);
+    opacity: 1;
   }
   85% {
-    opacity: var(--opacity, 0.15);
+    opacity: 0.8;
   }
   100% {
     transform: translateY(-110vh) rotate(360deg) scale(0.3);

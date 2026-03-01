@@ -107,6 +107,11 @@
   justify-content: center;
 }
 
+/* ─── Screen Vertical Shift (push content upward) ───────────────── */
+.holi-screen-shift {
+  padding-bottom: 22vh;
+}
+
 /* ─── Responsive Tweaks ─────────────────────────────────────────── */
 @media (max-width: 380px) {
   .holi-gradient-text {

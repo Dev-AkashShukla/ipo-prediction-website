@@ -41,14 +41,14 @@ class GulalPuff {
     const rgb = hexToRgb(color);
     this.x = x + rnd(-20, 20);
     this.y = y + rnd(-8, 8);
-    this.r = rnd(8, LOW_END ? 18 : 26);
-    this.vx = rnd(-1.8, 1.8);
-    this.vy = rnd(-3.2, -1.2);   // more upward → nicer gulal feel
+    this.r = rnd(14, LOW_END ? 28 : 42);
+    this.vx = rnd(-2.2, 2.2);
+    this.vy = rnd(-4.5, -1.8);   // more upward → nicer gulal feel
     this.ax = rnd(-0.03, 0.03);
-    this.ay = -0.06;              // stronger lift
-    this.alpha = rnd(0.5, 0.75);
-    this.decay = rnd(0.014, 0.024);
-    this.rDecay = rnd(0.06, 0.14);
+    this.ay = -0.07;              // stronger lift
+    this.alpha = rnd(0.65, 0.9);
+    this.decay = rnd(0.012, 0.020);
+    this.rDecay = rnd(0.05, 0.12);
     this.rgb = rgb;
     this.done = false;
   }
@@ -86,7 +86,7 @@ class PichkariDrop {
     this.vx = Math.cos(angle) * speed;
     this.vy = Math.sin(angle) * speed;
     this.gravity = 0.18;
-    this.r = rnd(2.5, 5);
+    this.r = rnd(5.5, 10);
     this.alpha = rnd(0.55, 0.8);
     this.decay = rnd(0.009, 0.016);
     this.rgb = rgb;
@@ -200,23 +200,18 @@ const HoliCanvas = forwardRef(function HoliCanvas({ active }, ref) {
     const W = canvas.width;
     const H = canvas.height;
     const color = pick(HOLI_COLORS);
-    const side = Math.random() < 0.5 ? 'left' : 'right';
-    let ox, oy, angleBase;
-    if (side === 'left') {
-      ox = rnd(-10, 30); oy = rnd(H * 0.4, H + 10);
-      angleBase = rnd(-Math.PI * 0.55, -Math.PI * 0.25);
-    } else {
-      ox = rnd(W - 30, W + 10); oy = rnd(H * 0.4, H + 10);
-      angleBase = rnd(-Math.PI * 0.75, -Math.PI * 0.45);
-    }
-    const dropCount = LOW_END ? 12 : 20;
+    // Spawn from bottom of screen, arc upward — fully on screen
+    const ox = rnd(W * 0.1, W * 0.9);
+    const oy = rnd(H * 0.75, H * 0.92);
+    // Angle range: shoots upward in a wide arc
+    const angleBase = rnd(-Math.PI * 0.85, -Math.PI * 0.15);
+    const dropCount = LOW_END ? 14 : 22;
     const batch = [];
     for (let i = 0; i < dropCount; i++) {
-      const angle = angleBase + rnd(-0.18, 0.18);
-      const speed = rnd(5, 11);
+      const angle = angleBase + rnd(-0.22, 0.22);
+      const speed = rnd(5, 12);
       batch.push(new PichkariDrop(ox, oy, angle, speed, color));
     }
-    // Stagger without setTimeout — just push all, looks fine
     addParticles(batch);
   }, [addParticles]);
 

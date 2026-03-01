@@ -173,7 +173,7 @@ export default function HoliClient() {
 
       {/* ═══ HOME ═══ */}
       {screen === 'home' && (
-        <div className="h-screen relative z-10 max-w-lg mx-auto px-4 py-8 sm:py-12 flex flex-col items-center justify-center">
+        <div className="holi-screen-shift h-screen relative z-10 max-w-lg mx-auto px-4 py-8 sm:py-12 flex flex-col items-center justify-center">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-6">
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full mb-3" style={{ background: 'linear-gradient(135deg, #FFEA00, #FF9100)' }}>
               <Sparkles className="w-3.5 h-3.5 text-gray-900" />
@@ -197,7 +197,7 @@ export default function HoliClient() {
               </div>
               <div>
                 <label className="text-xs font-semibold text-gray-500 mb-1 block">Who are you wishing? 💕</label>
-                <input type="text" placeholder="Enter the name you want to surprise..." value={receiverName} onChange={(e) => setReceiverName(e.target.value)} maxLength={25}
+                <input type="text" placeholder="Friend / Crush / Family name..." value={receiverName} onChange={(e) => setReceiverName(e.target.value)} maxLength={25}
                   className="w-full px-4 py-3 rounded-xl border-2 border-gray-100 bg-gray-50/50 text-gray-900 text-sm font-medium placeholder:text-gray-300 focus:outline-none focus:border-orange-300 focus:bg-white focus:ring-2 focus:ring-orange-100 transition-all duration-200" />
               </div>
               <button onClick={handleCreate} disabled={!senderName.trim() || !receiverName.trim()}
@@ -232,7 +232,7 @@ export default function HoliClient() {
 
       {/* ═══ GREETING ═══ */}
       {screen === 'greeting' && (
-        <div className="h-screen relative z-10 max-w-lg mx-auto px-4 py-6 sm:py-8 flex flex-col items-center justify-center">
+        <div className="holi-screen-shift h-screen relative z-10 max-w-lg mx-auto px-4 py-6 sm:py-8 flex flex-col items-center justify-center">
           <div className="fixed top-16 right-3 z-30 px-3 py-1.5 rounded-full bg-white/90 backdrop-blur-md shadow-md border border-gray-100 text-xs font-bold text-gray-700">
             🎨 {colorCount}
           </div>

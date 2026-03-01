@@ -173,7 +173,7 @@ export default function HoliClient() {
 
       {/* ═══ HOME ═══ */}
       {screen === 'home' && (
-        <div className="holi-screen-shift h-screen relative z-10 max-w-lg mx-auto px-4 py-8 sm:py-12 flex flex-col items-center justify-center">
+        <div className="holi-screen-shift h-full relative z-10 max-w-lg mx-auto px-4 py-8 sm:py-12 flex flex-col items-center justify-center">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-6">
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full mb-3" style={{ background: 'linear-gradient(135deg, #FFEA00, #FF9100)' }}>
               <Sparkles className="w-3.5 h-3.5 text-gray-900" />
@@ -232,7 +232,7 @@ export default function HoliClient() {
 
       {/* ═══ GREETING ═══ */}
       {screen === 'greeting' && (
-        <div className="holi-screen-shift h-screen relative z-10 max-w-lg mx-auto px-4 py-6 sm:py-8 flex flex-col items-center justify-center">
+        <div className="holi-screen-shift h-full relative z-10 max-w-lg mx-auto px-4 py-6 sm:py-8 flex flex-col items-center justify-center">
           <div className="fixed top-16 right-3 z-30 px-3 py-1.5 rounded-full bg-white/90 backdrop-blur-md shadow-md border border-gray-100 text-xs font-bold text-gray-700">
             🎨 {colorCount}
           </div>

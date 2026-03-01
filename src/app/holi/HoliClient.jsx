@@ -30,7 +30,25 @@ const WISH_MESSAGES = [
   { text: 'Paint the world bright and wash away all sorrows!', emoji: '✨' },
 ];
 
-// ── Subtle branded footer — logo + soft pill, not a loud banner ──
+// ── Simple encode/decode so names in URL aren't human-readable ──
+function encodeNames(to, from) {
+  try {
+    return btoa(unescape(encodeURIComponent(JSON.stringify({ t: to, f: from }))));
+  } catch {
+    return '';
+  }
+}
+
+function decodeNames(token) {
+  try {
+    const { t, f } = JSON.parse(decodeURIComponent(escape(atob(token))));
+    return { to: t, from: f };
+  } catch {
+    return null;
+  }
+}
+
+// ── Subtle branded footer ──
 function FinnotiaStrip() {
   return (
     <a
@@ -40,29 +58,19 @@ function FinnotiaStrip() {
       className="group relative flex items-center gap-3 w-full px-4 py-3 rounded-2xl overflow-hidden hover:scale-[1.02] active:scale-95 transition-all duration-300 shadow-md hover:shadow-xl"
       style={{ background: 'linear-gradient(135deg, #0f1f3d 0%, #1a3a6b 60%, #0f2d5a 100%)' }}
     >
-      {/* Holi color blobs */}
       <div className="absolute top-0 right-10 w-16 h-16 rounded-full opacity-40 blur-xl pointer-events-none" style={{ background: '#FF1744' }} />
       <div className="absolute bottom-0 right-24 w-12 h-12 rounded-full opacity-30 blur-lg pointer-events-none" style={{ background: '#FF9100' }} />
       <div className="absolute top-0 right-2 w-10 h-10 rounded-full opacity-25 blur-lg pointer-events-none" style={{ background: '#D500F9' }} />
 
-      {/* Logo */}
       <div className="relative flex-shrink-0 w-9 h-9 rounded-xl overflow-hidden border border-white/20 shadow-lg">
-        <Image
-          src="/finnotia-logo.png"
-          alt="Finnotia"
-          width={36}
-          height={36}
-          className="w-full h-full object-contain"
-        />
+        <Image src="/finnotia-logo.png" alt="Finnotia" width={36} height={36} className="w-full h-full object-contain" />
       </div>
 
-      {/* Text */}
       <div className="relative flex-1 text-left min-w-0">
         <div className="text-[9px] text-white/50 leading-tight uppercase tracking-wide">Powered by</div>
         <div className="text-xs font-bold text-white leading-tight truncate">{APP_NAME} — Stock & IPO Tracker 📊</div>
       </div>
 
-      {/* CTA pill */}
       <div
         className="relative flex-shrink-0 text-[10px] font-bold px-3 py-1.5 rounded-full text-gray-900 whitespace-nowrap group-hover:scale-105 transition-transform duration-200"
         style={{ background: 'linear-gradient(135deg, #FFEA00, #FF9100)' }}
@@ -91,13 +99,16 @@ export default function HoliClient() {
   const splashId = useRef(0);
   const particleId = useRef(0);
 
+  // ── Decode token from URL — prevents casual name tampering ──
   useEffect(() => {
-    const to = searchParams.get('to');
-    const from = searchParams.get('from');
-    if (to && from) {
-      setReceiverName(decodeURIComponent(to));
-      setSenderName(decodeURIComponent(from));
-      setShowInterstitial(true);
+    const token = searchParams.get('w');
+    if (token) {
+      const decoded = decodeNames(token);
+      if (decoded) {
+        setReceiverName(decoded.to);
+        setSenderName(decoded.from);
+        setShowInterstitial(true);
+      }
     }
   }, [searchParams]);
 
@@ -116,6 +127,40 @@ export default function HoliClient() {
     if (screen !== 'greeting') return;
     const iv = setInterval(() => setWishIdx((i) => (i + 1) % WISH_MESSAGES.length), 3500);
     return () => clearInterval(iv);
+  }, [screen]);
+
+  // ── Auto background splash on greeting screen ──
+  useEffect(() => {
+    if (screen !== 'greeting') return;
+
+    const fire = () => {
+      const x = Math.random() * window.innerWidth;
+      const y = Math.random() * window.innerHeight;
+      const color = HOLI_COLORS[Math.floor(Math.random() * HOLI_COLORS.length)];
+      const size = 80 + Math.random() * 130;
+      setSplashes((p) => [...p.slice(-15), { id: ++splashId.current, x, y, color, size }]);
+      // smaller burst of particles for bg splashes
+      const newP = Array.from({ length: 4 }, (_, i) => ({
+        id: ++particleId.current,
+        x,
+        y,
+        color: HOLI_COLORS[Math.floor(Math.random() * HOLI_COLORS.length)],
+        delay: i * 0.05,
+      }));
+      setParticles((p) => [...p.slice(-30), ...newP]);
+    };
+
+    // fire a few quickly at start, then settle into a rhythm
+    fire();
+    const burst = setTimeout(fire, 300);
+    const burst2 = setTimeout(fire, 600);
+    const iv = setInterval(fire, 1200);
+
+    return () => {
+      clearTimeout(burst);
+      clearTimeout(burst2);
+      clearInterval(iv);
+    };
   }, [screen]);
 
   const addSplash = useCallback(
@@ -143,10 +188,12 @@ export default function HoliClient() {
   };
   const onClick = (e) => addSplash(e.clientX, e.clientY);
 
+  // ── Generate link with encoded token instead of plain names ──
   const generateLink = () => {
     if (!senderName.trim() || !receiverName.trim()) return '';
     const base = typeof window !== 'undefined' ? window.location.origin : 'https://finnotia.com';
-    return `${base}/holi?to=${encodeURIComponent(receiverName.trim())}&from=${encodeURIComponent(senderName.trim())}`;
+    const token = encodeNames(receiverName.trim(), senderName.trim());
+    return `${base}/holi?w=${encodeURIComponent(token)}`;
   };
 
   const handleCreate = () => {
@@ -155,11 +202,19 @@ export default function HoliClient() {
     setTimeout(() => setShowShare(true), 1200);
   };
 
-  // ── Share text: no Finnotia push, organic & friendly ──
+  // ── Share text: English + humor ──
   const handleShare = (platform) => {
     const link = generateLink();
-    const txt = `🎨🥳 *Happy Holi 2026!*\n\n${senderName} ne tumhare liye ek special Holi wish bheja hai! 🌈\n\n👉 ${link}\n\nTum bhi apna wish banao — FREE! 🎉`;
+    const humourLines = [
+      `Warning: Opening this link may cause uncontrollable smiling. 😬`,
+      `${senderName} spent 3 seconds making this. Worth it? Click and judge. 😏`,
+      `This is a certified mood-lifter. Side effects: laughter, color cravings. 🎨`,
+    ];
+    const joke = humourLines[Math.floor(Math.random() * humourLines.length)];
+
+    const txt = `🎨 Happy Holi 2026! 🎉\n\n${senderName} has sent you a special Holi wish! 🌈\n\n${joke}\n\n👉 Open your surprise: ${link}\n\nCreate your own free Holi wish too! 🥳`;
     const encoded = encodeURIComponent(txt);
+
     switch (platform) {
       case 'whatsapp':
         window.open(`https://wa.me/?text=${encoded}`, '_blank');
@@ -423,7 +478,7 @@ export default function HoliClient() {
             transition={{ duration: 2, repeat: Infinity }}
             className="text-xs text-gray-400 mb-3 text-center"
           >
-            👆 Tap the screen to splash colors!
+            👆 Tap anywhere to splash more colors!
           </motion.p>
 
           <div className="flex gap-2.5 w-full mb-4">

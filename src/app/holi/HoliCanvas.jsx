@@ -1,5 +1,5 @@
 // src/app/holi/HoliCanvas.jsx
-// ✅ OPTIMIZED — No per-frame RadialGradient, proper pause/resume, ultra-low-end skip
+// ✅ Mobile-first — Only Gulal (tap) + Pichkari (auto). No dust/bubbles.
 'use client';
 
 import { useEffect, useRef, useCallback, forwardRef, useImperativeHandle } from 'react';
@@ -20,32 +20,31 @@ function hexToRgb(hex) {
   return { r, g, b };
 }
 
-// ── Device tier detection ─────────────────────────────────────────
+// ── Device tier ───────────────────────────────────────────────────
 function getDeviceTier() {
   if (typeof navigator === 'undefined') return 'mid';
   const cores = navigator.hardwareConcurrency || 2;
   const mem = navigator.deviceMemory || 2;
-  // Ultra low — skip canvas entirely (or minimal)
   if (cores <= 2 || mem <= 1) return 'ultra-low';
-  // Low — reduced particles, frame skip
   if (cores <= 4 || mem <= 2) return 'low';
-  // Mid — moderate particles
   if (cores <= 6 || mem <= 4) return 'mid';
-  // High — full experience
   return 'high';
 }
 
 const TIER = getDeviceTier();
 
-// ── Tier-based config ─────────────────────────────────────────────
 const CONFIG = {
-  'ultra-low': { maxParticles: 40,  gulalCount: 6,   dustInterval: 1500, pichInterval: 5000, seedDust: 5,  pichDrops: 6,  frameSkip: 2 },
-  'low':       { maxParticles: 80,  gulalCount: 10,  dustInterval: 900,  pichInterval: 3500, seedDust: 10, pichDrops: 10, frameSkip: 1 },
-  'mid':       { maxParticles: 160, gulalCount: 18,  dustInterval: 500,  pichInterval: 2500, seedDust: 20, pichDrops: 16, frameSkip: 0 },
-  'high':      { maxParticles: 280, gulalCount: 26,  dustInterval: 400,  pichInterval: 2200, seedDust: 30, pichDrops: 22, frameSkip: 0 },
+  'ultra-low': { maxParticles: 60,  gulalCount: 6,  pichInterval: 4000, pichDrops: 10,  frameSkip: 2 },
+  'low':       { maxParticles: 140, gulalCount: 10, pichInterval: 3000, pichDrops: 16, frameSkip: 1 },
+  'mid':       { maxParticles: 250, gulalCount: 18, pichInterval: 2200, pichDrops: 24, frameSkip: 0 },
+  'high':      { maxParticles: 400, gulalCount: 26, pichInterval: 1800, pichDrops: 32, frameSkip: 0 },
 }[TIER];
 
-// ─── GulalPuff — simple circle + globalAlpha (NO gradient per frame) ──
+// ── Store logical (CSS) size separately — never derive from canvas.width ──
+let logicalW = 0;
+let logicalH = 0;
+
+// ─── GulalPuff ────────────────────────────────────────────────────
 class GulalPuff {
   constructor(x, y, color) {
     this.rgb = hexToRgb(color);
@@ -77,8 +76,6 @@ class GulalPuff {
     const { r, g, b } = this.rgb;
     const rad = Math.max(this.r, 0.5);
 
-    // ✅ FIX: Simple filled circle with globalAlpha — no RadialGradient creation
-    // Draw two concentric circles for soft edge effect (much cheaper than gradient)
     ctx.globalAlpha = this.alpha * 0.3;
     ctx.beginPath();
     ctx.arc(this.x, this.y, rad * 1.4, 0, Math.PI * 2);
@@ -94,7 +91,7 @@ class GulalPuff {
   }
 }
 
-// ─── PichkariDrop — simplified water droplet ─────────────────────
+// ─── PichkariDrop ─────────────────────────────────────────────────
 class PichkariDrop {
   constructor(x, y, angle, speed, color) {
     this.rgb = hexToRgb(color);
@@ -102,18 +99,17 @@ class PichkariDrop {
     this.y = y;
     this.vx = Math.cos(angle) * speed;
     this.vy = Math.sin(angle) * speed;
-    this.gravity = 0.18;
-    this.r = rnd(5, 9);
-    this.alpha = rnd(0.5, 0.75);
-    this.decay = rnd(0.01, 0.018);
-    // ✅ Trail simplified — store only last 3-4 positions, no objects
+    this.gravity = 0.12;           // ✅ Lower gravity — water goes HIGHER before falling
+    this.r = rnd(6, 12);           // ✅ Bigger drops
+    this.alpha = rnd(0.55, 0.85);  // ✅ More visible
+    this.decay = rnd(0.006, 0.012); // ✅ Slower fade — stays on screen longer
     this.trail = [];
-    this.maxTrail = TIER === 'ultra-low' ? 2 : (TIER === 'low' ? 3 : 5);
+    this.maxTrail = TIER === 'ultra-low' ? 3 : (TIER === 'low' ? 5 : 8); // ✅ Longer trail
     this.done = false;
   }
 
-  update(W, H) {
-    this.trail.push(this.x, this.y); // flat array: [x1,y1,x2,y2,...]
+  update() {
+    this.trail.push(this.x, this.y);
     if (this.trail.length > this.maxTrail * 2) {
       this.trail.splice(0, 2);
     }
@@ -121,7 +117,9 @@ class PichkariDrop {
     this.x += this.vx;
     this.y += this.vy;
     this.alpha -= this.decay;
-    if (this.alpha <= 0 || this.y > H + 40 || this.x < -40 || this.x > W + 40) this.done = true;
+    if (this.alpha <= 0 || this.y > logicalH + 40 || this.x < -40 || this.x > logicalW + 40) {
+      this.done = true;
+    }
   }
 
   draw(ctx) {
@@ -129,67 +127,20 @@ class PichkariDrop {
     const { r, g, b } = this.rgb;
     const colorStr = `rgb(${r},${g},${b})`;
 
-    // Trail — simple dots
     const len = this.trail.length / 2;
     for (let i = 0; i < len; i++) {
       const frac = (i + 1) / (len + 1);
-      ctx.globalAlpha = this.alpha * frac * 0.4;
+      ctx.globalAlpha = this.alpha * frac * 0.5;  // ✅ More visible trail
       ctx.beginPath();
-      ctx.arc(this.trail[i * 2], this.trail[i * 2 + 1], this.r * frac * 0.5, 0, Math.PI * 2);
+      ctx.arc(this.trail[i * 2], this.trail[i * 2 + 1], this.r * frac * 0.7, 0, Math.PI * 2); // ✅ Bigger trail dots
       ctx.fillStyle = colorStr;
       ctx.fill();
     }
 
-    // Main drop
     ctx.globalAlpha = this.alpha;
     ctx.beginPath();
     ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
     ctx.fillStyle = colorStr;
-    ctx.fill();
-
-    ctx.globalAlpha = 1;
-  }
-}
-
-// ─── FloatingDust — ambient powder (simplified) ───────────────────
-class FloatingDust {
-  constructor(W, H) {
-    const rgb = hexToRgb(pick(HOLI_COLORS));
-    this.x = rnd(0, W);
-    this.y = rnd(H * 0.2, H + 60);
-    this.r = rnd(5, TIER === 'ultra-low' ? 10 : 18);
-    this.vx = rnd(-0.35, 0.35);
-    this.vy = rnd(-0.55, -0.12);
-    this.alpha = rnd(0.06, 0.18);
-    this.decay = rnd(0.0003, 0.0008);
-    this.rgb = rgb;
-    this.wobble = rnd(0, Math.PI * 2);
-    this.wobbleSpeed = rnd(0.012, 0.03);
-    this.done = false;
-  }
-
-  update() {
-    this.wobble += this.wobbleSpeed;
-    this.x += this.vx + Math.sin(this.wobble) * 0.28;
-    this.y += this.vy;
-    this.alpha -= this.decay;
-    if (this.alpha <= 0) this.done = true;
-  }
-
-  draw(ctx) {
-    if (this.done) return;
-    const { r, g, b } = this.rgb;
-    // ✅ Simple circle — no gradient
-    ctx.globalAlpha = this.alpha;
-    ctx.beginPath();
-    ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
-    ctx.fillStyle = `rgb(${r},${g},${b})`;
-    ctx.fill();
-
-    // Soft halo (one extra circle, still cheaper than gradient)
-    ctx.globalAlpha = this.alpha * 0.3;
-    ctx.beginPath();
-    ctx.arc(this.x, this.y, this.r * 1.6, 0, Math.PI * 2);
     ctx.fill();
 
     ctx.globalAlpha = 1;
@@ -202,13 +153,32 @@ const HoliCanvas = forwardRef(function HoliCanvas({ active }, ref) {
   const particlesRef = useRef([]);
   const rafRef = useRef(null);
   const pichkariTimerRef = useRef(null);
-  const dustTimerRef = useRef(null);
   const activeRef = useRef(active);
   const frameCountRef = useRef(0);
   const isRunningRef = useRef(false);
+  const canvasSizedRef = useRef(false);
 
-  // Keep activeRef in sync
   useEffect(() => { activeRef.current = active; }, [active]);
+
+  // ── Resize: store logical size in module-level vars ──
+  const sizeCanvas = useCallback(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    if (w === 0 || h === 0) return;
+
+    logicalW = w;
+    logicalH = h;
+    canvas.width = w * dpr;
+    canvas.height = h * dpr;
+    canvas.style.width = w + 'px';
+    canvas.style.height = h + 'px';
+    const ctx = canvas.getContext('2d');
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    canvasSizedRef.current = true;
+  }, []);
 
   const addParticles = useCallback((newOnes) => {
     const arr = particlesRef.current;
@@ -217,7 +187,6 @@ const HoliCanvas = forwardRef(function HoliCanvas({ active }, ref) {
       arr.splice(0, total - CONFIG.maxParticles);
     }
     arr.push(...newOnes);
-    // ✅ FIX: If loop was paused (no particles + not active), restart it
     startLoop();
   }, []);
 
@@ -235,31 +204,24 @@ const HoliCanvas = forwardRef(function HoliCanvas({ active }, ref) {
     spawnGulal(x, y) { spawnGulalAt(x, y); },
   }), [spawnGulalAt]);
 
+  // ✅ Pichkari — uses logicalW/logicalH (always correct on mobile)
   const spawnPichkari = useCallback(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const W = canvas.width;
-    const H = canvas.height;
+    if (!canvasSizedRef.current || logicalW === 0 || logicalH === 0) return;
+
     const color = pick(HOLI_COLORS);
-    const ox = rnd(W * 0.1, W * 0.9);
-    const oy = rnd(H * 0.75, H * 0.92);
-    const angleBase = rnd(-Math.PI * 0.85, -Math.PI * 0.15);
+    const ox = rnd(logicalW * 0.08, logicalW * 0.92);
+    const oy = rnd(logicalH * 0.82, logicalH * 0.95);  // ✅ Spawn from lower — looks like ground
+    const angleBase = rnd(-Math.PI * 0.78, -Math.PI * 0.22); // ✅ Mostly upward
     const batch = [];
     for (let i = 0; i < CONFIG.pichDrops; i++) {
-      const angle = angleBase + rnd(-0.22, 0.22);
-      const speed = rnd(5, 12);
+      const angle = angleBase + rnd(-0.18, 0.18);
+      const speed = rnd(9, 18);  // ✅ Much faster — reaches top half of screen
       batch.push(new PichkariDrop(ox, oy, angle, speed, color));
     }
     addParticles(batch);
   }, [addParticles]);
 
-  const spawnDust = useCallback(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    addParticles([new FloatingDust(canvas.width, canvas.height)]);
-  }, [addParticles]);
-
-  // ── Smart render loop — pauses when nothing to render ──
+  // ── Render loop ──
   const startLoop = useCallback(() => {
     if (isRunningRef.current) return;
     isRunningRef.current = true;
@@ -271,29 +233,25 @@ const HoliCanvas = forwardRef(function HoliCanvas({ active }, ref) {
     const loop = () => {
       const particles = particlesRef.current;
 
-      // ✅ FIX: If no particles and not active, STOP the loop entirely
       if (particles.length === 0 && !activeRef.current) {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.clearRect(0, 0, logicalW, logicalH);
         isRunningRef.current = false;
-        return; // Don't schedule next frame
+        return;
       }
 
       frameCountRef.current++;
 
-      // ✅ Frame skip for ultra-low / low devices
       if (CONFIG.frameSkip > 0 && frameCountRef.current % (CONFIG.frameSkip + 1) !== 0) {
         rafRef.current = requestAnimationFrame(loop);
         return;
       }
 
-      const W = canvas.width;
-      const H = canvas.height;
-      ctx.clearRect(0, 0, W, H);
+      ctx.clearRect(0, 0, logicalW, logicalH);
 
       const alive = [];
       for (let i = 0; i < particles.length; i++) {
         const p = particles[i];
-        if (p instanceof PichkariDrop) p.update(W, H); else p.update();
+        p.update();
         if (!p.done) {
           p.draw(ctx);
           alive.push(p);
@@ -309,67 +267,62 @@ const HoliCanvas = forwardRef(function HoliCanvas({ active }, ref) {
 
   // ── Setup canvas + resize ──
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
+    sizeCanvas();
 
-    const resize = () => {
-      // ✅ Use devicePixelRatio for sharp rendering but cap at 2x for performance
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      const w = window.innerWidth;
-      const h = window.innerHeight;
-      canvas.width = w * dpr;
-      canvas.height = h * dpr;
-      canvas.style.width = w + 'px';
-      canvas.style.height = h + 'px';
-      const ctx = canvas.getContext('2d');
-      ctx.scale(dpr, dpr);
-    };
-    resize();
-
-    // ✅ Debounced resize — don't fire on every pixel
     let resizeTimer;
     const debouncedResize = () => {
       clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(resize, 150);
+      resizeTimer = setTimeout(sizeCanvas, 150);
     };
     window.addEventListener('resize', debouncedResize);
+
+    // ✅ Mobile: orientation change needs extra delay for viewport to settle
+    const handleOrientation = () => setTimeout(sizeCanvas, 300);
+    window.addEventListener('orientationchange', handleOrientation);
 
     return () => {
       cancelAnimationFrame(rafRef.current);
       clearTimeout(resizeTimer);
       window.removeEventListener('resize', debouncedResize);
+      window.removeEventListener('orientationchange', handleOrientation);
       isRunningRef.current = false;
     };
-  }, []);
+  }, [sizeCanvas]);
 
-  // ── Auto effects: only when greeting screen active ──
+  // ── Auto pichkari when active ──
   useEffect(() => {
-    if (active) {
-      // Seed dust
-      const canvas = canvasRef.current;
-      if (canvas) {
-        const w = canvas.width / (Math.min(window.devicePixelRatio || 1, 2));
-        const h = canvas.height / (Math.min(window.devicePixelRatio || 1, 2));
-        for (let i = 0; i < CONFIG.seedDust; i++) {
-          particlesRef.current.push(new FloatingDust(w, h));
-        }
-      }
-
-      // Start loop + auto effects
-      startLoop();
-      spawnPichkari();
-      pichkariTimerRef.current = setInterval(spawnPichkari, CONFIG.pichInterval);
-      dustTimerRef.current = setInterval(spawnDust, CONFIG.dustInterval);
-    } else {
+    if (!active) {
       clearInterval(pichkariTimerRef.current);
-      clearInterval(dustTimerRef.current);
-      // Loop will auto-stop when particles die out
+      return;
     }
-    return () => {
-      clearInterval(pichkariTimerRef.current);
-      clearInterval(dustTimerRef.current);
+
+    // ✅ Mobile fix: Wait for canvas to be properly sized before spawning
+    // Lazy-loaded component on mobile might not have dimensions on first render
+    let retryRaf;
+    let started = false;
+
+    const waitAndStart = () => {
+      if (started) return;
+      if (canvasSizedRef.current && logicalW > 0 && logicalH > 0) {
+        started = true;
+        startLoop();
+        spawnPichkari(); // first one immediately
+        pichkariTimerRef.current = setInterval(spawnPichkari, CONFIG.pichInterval);
+      } else {
+        // Not ready — retry next frame
+        retryRaf = requestAnimationFrame(waitAndStart);
+      }
     };
-  }, [active, spawnPichkari, spawnDust, startLoop]);
+
+    // Small delay for Suspense/lazy mount to settle
+    const startTimer = setTimeout(waitAndStart, 50);
+
+    return () => {
+      clearTimeout(startTimer);
+      cancelAnimationFrame(retryRaf);
+      clearInterval(pichkariTimerRef.current);
+    };
+  }, [active, spawnPichkari, startLoop]);
 
   return (
     <canvas

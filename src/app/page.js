@@ -3,6 +3,14 @@ import dynamic from 'next/dynamic';
 import HeroSection from '../components/home/HeroSection';
 import StatsSection from '../components/home/StatsSection';
 
+
+
+// StoriesSection ko bhi dynamic karo - yahi fix hai
+const StoriesSection = dynamic(() => import('../components/home/StoriesSection'), {
+  loading: () => <div className="h-64 bg-white" />,
+  ssr: false,
+});
+
 // Lazy load below-the-fold components with loading states
 const FeaturesSection = dynamic(() => import('../components/home/FeaturesSection'), {
   loading: () => <div className="h-96 bg-white" />,
@@ -29,6 +37,7 @@ export default function HomePage() {
     <>
       {/* Above the fold - loads immediately */}
       <HeroSection />
+      <StoriesSection />
       <StatsSection />
       
       {/* Below the fold - lazy loaded */}

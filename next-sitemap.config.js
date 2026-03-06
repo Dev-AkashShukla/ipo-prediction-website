@@ -15,9 +15,10 @@ module.exports = {
         disallow: ['/api/', '/_next/'],
       },
     ],
-    additionalSitemaps: [],
+    additionalSitemaps: [
+    'https://finnotia.com/sitemap-stories.xml', // ← YE ADD KARO
+  ],
   },
-
   // Page-wise priority & changefreq
   transform: async (config, path) => {
     // Homepage - highest priority
@@ -87,5 +88,6 @@ module.exports = {
       priority: config.priority,
       lastmod: new Date().toISOString(),
     };
+    
   },
 }

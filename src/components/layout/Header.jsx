@@ -12,7 +12,8 @@ const navLinks = [
   { name: 'Features', href: '/#features' },
   { name: 'How It Works', href: '/#how' },
   { name: 'Contact', href: '/contact' },
-  {name: 'About Us', href:'/about'}
+  {name: 'About Us', href:'/about'},
+  { name: 'Blog', href: '/blog' },
 ];
 
 export default function Header() {

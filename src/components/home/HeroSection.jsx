@@ -20,7 +20,7 @@ export default function HeroSection() {
         <div className="max-w-4xl mx-auto text-center">
 
           {/* ── Holi Festive Banner ── */}
-          <motion.div
+          {/* <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
@@ -41,7 +41,7 @@ export default function HeroSection() {
                 Free →
               </span>
             </Link>
-          </motion.div>
+          </motion.div> */}
 
           {/* Badge */}
           <motion.div

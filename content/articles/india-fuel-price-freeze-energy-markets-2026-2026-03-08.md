@@ -31,6 +31,7 @@ thesis_statement: "India's fuel price freeze signals fiscal confidence, but mask
 historical_reference: "2014 India diesel deregulation"
 bull_case_summary: "Stable prices reduce inflation pressure, boosting consumer spending and OMC margins."
 bear_case_summary: "Subsidized prices strain OMC balance sheets if crude oil surges past $85/bbl."
+image_url: "https://res.cloudinary.com/dy2ckihxj/image/upload/v1772942191/finnotia/articles/d3272c42a1c1/featured.jpg"
 ---
 
 India just told 1.4 billion people their fuel bills won't rise. That's not just a political statement — it's a market signal. When the world's third-largest oil importer freezes retail fuel prices during a period of global crude volatility, every commodity desk from Chicago to Singapore pays attention. The Indian government's declaration that its energy stock position is 'improving' carries specific, measurable weight for investors tracking emerging market energy exposure, LPG supply chains, and the downstream economics of state-owned oil marketing companies.

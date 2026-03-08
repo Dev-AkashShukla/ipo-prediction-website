@@ -18,7 +18,7 @@ export default function PrivacyPolicy() {
           <p className="text-gray-600 text-xs md:text-sm">
             Learn how we collect, use, and protect your data
           </p>
-          <p className="text-xs text-gray-500 mt-1">Last Updated: February 23, 2026</p>
+          <p className="text-xs text-gray-500 mt-1">Last Updated: March 09, 2026</p>
         </div>
 
         {/* Commitment Box */}
@@ -30,7 +30,8 @@ export default function PrivacyPolicy() {
                 Our Commitment to Your Privacy
               </h2>
               <p className="text-gray-700 text-xs md:text-sm">
-                FINNOTIA protects your personal information and privacy. This policy explains how we collect, use, and safeguard your data, including information collected through third-party advertising services.
+                FINNOTIA protects your personal information and privacy. This policy explains how we collect, use, and safeguard your data,
+                including information collected through third-party advertising services (Google AdSense on our website and Google AdMob in our app).
               </p>
             </div>
           </div>
@@ -72,15 +73,38 @@ export default function PrivacyPolicy() {
                     <li><strong>Device:</strong> Type, OS, browser, IP address</li>
                     <li><strong>Usage:</strong> Pages viewed, time spent, clicks</li>
                     <li><strong>Location:</strong> Approximate (IP-based)</li>
-                    <li><strong>Cookies:</strong> Session, analytics, preferences</li>
+                    <li><strong>Cookies:</strong> Session, analytics, preferences, advertising</li>
                     <li><strong>App Analytics:</strong> Crash reports, metrics</li>
                   </ul>
                 </div>
 
-                {/* ✅ NEW: Advertising Data Collection */}
+                {/* ── Google AdSense (Website) ── */}
+                <div className="bg-green-50 rounded p-2 md:p-3 border-l-2 border-green-500">
+                  <h3 className="font-bold text-green-900 mb-1 flex items-center gap-1.5 text-xs md:text-sm">
+                    🌐 Website Advertising Data (Google AdSense):
+                  </h3>
+                  <ul className="list-disc pl-4 space-y-0.5 text-xs">
+                    <li><strong>Cookies:</strong> Google AdSense uses cookies (e.g., DoubleClick) to serve relevant ads on finnotia.com</li>
+                    <li><strong>Browsing data:</strong> Pages visited, content category, time on site — used to show contextually relevant ads</li>
+                    <li><strong>Device &amp; browser info:</strong> Browser type, screen size, OS, for ad rendering</li>
+                    <li><strong>Personalization:</strong> Ads may be personalized based on your Google account or browsing history across the web</li>
+                  </ul>
+                  <p className="text-xs text-green-800 mt-1">
+                    You can opt out of personalized ads via{' '}
+                    <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline font-semibold">
+                      Google Ad Settings
+                    </a>{' '}
+                    or{' '}
+                    <a href="https://www.aboutads.info/choices/" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline font-semibold">
+                      aboutads.info
+                    </a>.
+                  </p>
+                </div>
+
+                {/* ── Google AdMob (App) ── */}
                 <div className="bg-amber-50 rounded p-2 md:p-3 border-l-2 border-amber-400">
                   <h3 className="font-bold text-amber-900 mb-1 flex items-center gap-1.5 text-xs md:text-sm">
-                    📢 Advertising Data:
+                    📱 App Advertising Data (Google AdMob):
                   </h3>
                   <ul className="list-disc pl-4 space-y-0.5 text-xs">
                     <li><strong>Advertising ID:</strong> Google Advertising ID (GAID) for ad personalization</li>
@@ -89,7 +113,7 @@ export default function PrivacyPolicy() {
                     <li><strong>Ad Preferences:</strong> Your ad personalization settings</li>
                   </ul>
                   <p className="text-xs text-amber-800 mt-1">
-                    This data is collected by Google AdMob to serve relevant advertisements. You can opt out of personalized ads in your device settings.
+                    Opt out via Android Settings → Google → Ads → Opt out of Ads Personalization.
                   </p>
                 </div>
 
@@ -121,28 +145,29 @@ export default function PrivacyPolicy() {
                     <h4 className="font-bold text-gray-900 mb-1 text-xs">🎯 Core Services:</h4>
                     <ul className="list-disc pl-4 space-y-0.5 text-xs">
                       <li>Create and manage your account</li>
-                      <li>Provide IPO analysis & market updates</li>
+                      <li>Provide IPO analysis &amp; market updates</li>
                       <li>Send notifications about IPO updates</li>
                       <li>Process requests and respond to inquiries</li>
                     </ul>
                   </div>
 
-                  {/* ✅ NEW: Advertising Purpose */}
-                  <div className="bg-white border border-amber-200 rounded p-2">
-                    <h4 className="font-bold text-gray-900 mb-1 text-xs">📢 Advertising:</h4>
+                  {/* ── Advertising — both AdSense + AdMob ── */}
+                  <div className="bg-white border border-green-200 rounded p-2">
+                    <h4 className="font-bold text-gray-900 mb-1 text-xs">📢 Advertising (Website &amp; App):</h4>
                     <ul className="list-disc pl-4 space-y-0.5 text-xs">
-                      <li>Display advertisements through Google AdMob</li>
+                      <li>Display advertisements via <strong>Google AdSense</strong> on our website (finnotia.com)</li>
+                      <li>Display advertisements via <strong>Google AdMob</strong> in our Android app</li>
                       <li>Serve personalized or non-personalized ads based on your preferences</li>
-                      <li>Show rewarded video ads for premium feature access</li>
+                      <li>Show rewarded video ads for optional premium feature access (app only)</li>
                       <li>Measure ad performance and effectiveness</li>
                     </ul>
                   </div>
 
                   <div className="bg-white border border-blue-100 rounded p-2">
-                    <h4 className="font-bold text-gray-900 mb-1 text-xs">📊 AI & ML:</h4>
+                    <h4 className="font-bold text-gray-900 mb-1 text-xs">📊 AI &amp; ML:</h4>
                     <ul className="list-disc pl-4 space-y-0.5 text-xs">
                       <li>Improve AI analysis models</li>
-                      <li>Personalize content & recommendations</li>
+                      <li>Personalize content &amp; recommendations</li>
                       <li>Analyze usage patterns</li>
                       <li>Train ML systems (anonymized data)</li>
                     </ul>
@@ -161,10 +186,10 @@ export default function PrivacyPolicy() {
                   <div className="bg-white border border-blue-100 rounded p-2">
                     <h4 className="font-bold text-gray-900 mb-1 text-xs">🛡️ Security:</h4>
                     <ul className="list-disc pl-4 space-y-0.5 text-xs">
-                      <li>Detect fraud & abuse</li>
+                      <li>Detect fraud &amp; abuse</li>
                       <li>Protect against security threats</li>
                       <li>Comply with legal obligations</li>
-                      <li>Enforce Terms & Conditions</li>
+                      <li>Enforce Terms &amp; Conditions</li>
                     </ul>
                   </div>
                 </div>
@@ -177,7 +202,7 @@ export default function PrivacyPolicy() {
                 <div className="flex-shrink-0 w-6 h-6 bg-[#4A90E2] text-white rounded text-xs flex items-center justify-center font-bold">
                   3
                 </div>
-                <h2 className="text-base md:text-lg font-bold text-gray-900">Data Storage & Security</h2>
+                <h2 className="text-base md:text-lg font-bold text-gray-900">Data Storage &amp; Security</h2>
               </div>
               <div className="pl-8 space-y-2 text-gray-700 text-xs md:text-sm">
                 <div className="bg-blue-50 border-l-2 border-[#4A90E2] p-2 rounded-r">
@@ -208,7 +233,7 @@ export default function PrivacyPolicy() {
               </div>
             </section>
 
-            {/* Section 4 - ✅ FIXED: Added AdMob, removed contradictory statement */}
+            {/* Section 4 - Third-Party Services */}
             <section>
               <div className="flex items-start gap-2 mb-2">
                 <div className="flex-shrink-0 w-6 h-6 bg-[#4A90E2] text-white rounded text-xs flex items-center justify-center font-bold">
@@ -221,51 +246,51 @@ export default function PrivacyPolicy() {
 
                 <div className="space-y-1.5">
 
-                  {/* ✅ NEW: Google AdMob Section - CRITICAL for approval */}
-                  <div className="bg-amber-50 border border-amber-200 rounded p-2">
-                    <h4 className="font-bold text-amber-900 mb-1 text-xs">📢 Advertising — Google AdMob:</h4>
+                  {/* ── Google AdSense (Website) — NEW critical section ── */}
+                  <div className="bg-green-50 border border-green-300 rounded p-2">
+                    <h4 className="font-bold text-green-900 mb-1 text-xs">🌐 Website Advertising — Google AdSense:</h4>
                     <ul className="list-disc pl-4 space-y-0.5 text-xs">
-                      <li>We use <strong>Google AdMob</strong> to display advertisements in the app</li>
-                      <li>AdMob may collect and use your <strong>Google Advertising ID (GAID)</strong>, device information, and ad interaction data to serve relevant ads</li>
-                      <li>AdMob may show <strong>personalized ads</strong> based on your interests, or <strong>non-personalized ads</strong> based on your settings</li>
-                      <li>We display <strong>interstitial ads</strong> at natural content transitions and <strong>rewarded video ads</strong> for optional premium features</li>
-                      <li>You can opt out of personalized advertising by adjusting your device&apos;s ad settings:
-                        <ul className="list-disc pl-4 mt-0.5">
-                          <li><strong>Android:</strong> Settings → Google → Ads → Opt out of Ads Personalization</li>
-                        </ul>
+                      <li>We use <strong>Google AdSense</strong> to display advertisements on our website (finnotia.com)</li>
+                      <li>Google AdSense uses cookies and web beacons to serve ads based on your interests and prior visits to our website and other sites on the internet</li>
+                      <li>Google&apos;s use of advertising cookies enables it and its partners to serve ads based on your visit to our site and/or other sites</li>
+                      <li>You may opt out of personalized advertising by visiting{' '}
+                        <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline font-semibold">
+                          Google Ad Settings
+                        </a>
                       </li>
                     </ul>
-                    <div className="mt-1.5 pt-1.5 border-t border-amber-200">
-                      <p className="text-xs text-amber-800">
-                        For more information on how Google uses your data, please review:{' '}
-                        <a 
-                          href="https://policies.google.com/privacy" 
-                          target="_blank" 
-                          rel="noopener noreferrer" 
-                          className="text-blue-600 underline font-semibold"
-                        >
+                    <div className="mt-1.5 pt-1.5 border-t border-green-200">
+                      <p className="text-xs text-green-800">
+                        For more information:{' '}
+                        <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline font-semibold">
                           Google Privacy Policy
                         </a>
-                        {' '}and{' '}
-                        <a 
-                          href="https://policies.google.com/technologies/ads" 
-                          target="_blank" 
-                          rel="noopener noreferrer" 
-                          className="text-blue-600 underline font-semibold"
-                        >
-                          How Google Uses Information from Apps
+                        {' '}|{' '}
+                        <a href="https://policies.google.com/technologies/ads" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline font-semibold">
+                          How Google Uses Ad Data
                         </a>
                       </p>
                     </div>
                   </div>
 
+                  {/* ── Google AdMob (App) ── */}
+                  <div className="bg-amber-50 border border-amber-200 rounded p-2">
+                    <h4 className="font-bold text-amber-900 mb-1 text-xs">📱 App Advertising — Google AdMob:</h4>
+                    <ul className="list-disc pl-4 space-y-0.5 text-xs">
+                      <li>We use <strong>Google AdMob</strong> to display advertisements in the Android app</li>
+                      <li>AdMob may collect your <strong>Google Advertising ID (GAID)</strong>, device information, and ad interaction data</li>
+                      <li>We display <strong>interstitial ads</strong> at natural content transitions and <strong>rewarded video ads</strong> for optional premium features</li>
+                      <li>Opt out: Android Settings → Google → Ads → Opt out of Ads Personalization</li>
+                    </ul>
+                  </div>
+
                   <div className="bg-white border border-blue-100 rounded p-2">
-                    <h4 className="font-bold text-gray-900 mb-1 text-xs">🤖 AI & Analytics:</h4>
+                    <h4 className="font-bold text-gray-900 mb-1 text-xs">🤖 AI &amp; Analytics:</h4>
                     <ul className="list-disc pl-4 space-y-0.5 text-xs">
                       <li><strong>Google Gemini:</strong> IPO analysis</li>
                       <li><strong>Perplexity AI:</strong> News summarization</li>
                       <li><strong>Google Analytics:</strong> User behavior</li>
-                      <li><strong>Firebase:</strong> App performance & crash reporting</li>
+                      <li><strong>Firebase:</strong> App performance &amp; crash reporting</li>
                     </ul>
                     <p className="text-xs text-gray-600 mt-1">
                       Note: Only anonymized data shared with AI services
@@ -277,7 +302,7 @@ export default function PrivacyPolicy() {
                     <ul className="list-disc pl-4 space-y-0.5 text-xs">
                       <li><strong>Firebase:</strong> Auth, database, storage, notifications</li>
                       <li><strong>MongoDB Atlas:</strong> Database hosting</li>
-                      <li><strong>Azure/AWS/Vercel:</strong> Web hosting, CDN</li>
+                      <li><strong>Azure/Vercel:</strong> Web hosting, CDN</li>
                     </ul>
                   </div>
 
@@ -290,13 +315,11 @@ export default function PrivacyPolicy() {
                   </div>
                 </div>
 
-                {/* ✅ FIXED: Removed "Share with advertisers" from DON'T list since we DO use AdMob */}
                 <div className="bg-red-50 border-l-2 border-red-400 p-2 rounded-r">
                   <h3 className="font-bold text-red-900 mb-1 text-xs">❌ We DON'T:</h3>
                   <ul className="list-disc pl-4 space-y-0.5 text-red-800 text-xs">
                     <li>Sell your personal information to data brokers</li>
                     <li>Share your personal data for purposes unrelated to app functionality</li>
-                    <li>Use data for unrelated purposes</li>
                     <li>Share financial or investment data with advertisers</li>
                   </ul>
                 </div>
@@ -319,27 +342,22 @@ export default function PrivacyPolicy() {
                     <h4 className="font-bold text-[#2E5AAD] mb-1 text-xs">📖 Right to Access</h4>
                     <p className="text-xs">Request copy of your data</p>
                   </div>
-
                   <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded p-2 border border-blue-200">
                     <h4 className="font-bold text-[#2E5AAD] mb-1 text-xs">✏️ Right to Correction</h4>
                     <p className="text-xs">Update inaccurate info</p>
                   </div>
-
                   <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded p-2 border border-blue-200">
                     <h4 className="font-bold text-[#2E5AAD] mb-1 text-xs">🗑️ Right to Deletion</h4>
                     <p className="text-xs">Request account deletion</p>
                   </div>
-
                   <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded p-2 border border-blue-200">
                     <h4 className="font-bold text-[#2E5AAD] mb-1 text-xs">📤 Data Portability</h4>
                     <p className="text-xs">Export your data</p>
                   </div>
-
                   <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded p-2 border border-blue-200">
                     <h4 className="font-bold text-[#2E5AAD] mb-1 text-xs">🚫 Right to Opt-Out</h4>
-                    <p className="text-xs">Unsubscribe from emails & personalized ads</p>
+                    <p className="text-xs">Unsubscribe from emails &amp; personalized ads</p>
                   </div>
-
                   <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded p-2 border border-blue-200">
                     <h4 className="font-bold text-[#2E5AAD] mb-1 text-xs">⚖️ Right to Object</h4>
                     <p className="text-xs">Object to data processing</p>
@@ -349,9 +367,7 @@ export default function PrivacyPolicy() {
                 <div className="bg-blue-50 border border-[#4A90E2] rounded p-2">
                   <h4 className="font-bold text-[#2E5AAD] mb-1 text-xs">How to Exercise Rights:</h4>
                   <p className="text-xs mb-1">Contact us at: <strong>support@finnotia.com</strong></p>
-                  <p className="text-xs text-gray-600 mt-1">
-                    We&apos;ll respond within 30 days
-                  </p>
+                  <p className="text-xs text-gray-600 mt-1">We&apos;ll respond within 30 days</p>
                 </div>
               </div>
             </section>
@@ -371,19 +387,9 @@ export default function PrivacyPolicy() {
                   <li><strong>Activity Logs:</strong> 90 days</li>
                   <li><strong>Backups:</strong> Up to 180 days</li>
                   <li><strong>Inactive Accounts:</strong> Auto-delete after 2 years</li>
-                  <li><strong>Ad Interaction Data:</strong> Retained by Google per their retention policies</li>
+                  <li><strong>Ad Data (AdSense/AdMob):</strong> Retained by Google per their retention policies</li>
                   <li><strong>Legal Requirements:</strong> Retained as per law</li>
                 </ul>
-
-                <div className="bg-gray-50 rounded p-2">
-                  <h4 className="font-bold text-gray-900 mb-1 text-xs">Upon Account Deletion:</h4>
-                  <ul className="list-disc pl-4 space-y-0.5 text-xs text-gray-700">
-                    <li>Personal info deleted within 30 days</li>
-                    <li>Anonymized data may be retained</li>
-                    <li>Some data retained for legal compliance</li>
-                    <li>Third-party services (e.g., Google) may retain data per their own policies</li>
-                  </ul>
-                </div>
               </div>
             </section>
 
@@ -393,7 +399,7 @@ export default function PrivacyPolicy() {
                 <div className="flex-shrink-0 w-6 h-6 bg-[#4A90E2] text-white rounded text-xs flex items-center justify-center font-bold">
                   7
                 </div>
-                <h2 className="text-base md:text-lg font-bold text-gray-900">Cookies & Tracking</h2>
+                <h2 className="text-base md:text-lg font-bold text-gray-900">Cookies &amp; Tracking</h2>
               </div>
               <div className="pl-8 space-y-1.5 text-gray-700 text-xs">
                 <p className="text-xs">We use cookies and similar technologies to improve your experience:</p>
@@ -403,17 +409,24 @@ export default function PrivacyPolicy() {
                     <h4 className="font-bold text-gray-900 text-xs mb-0.5">🔑 Essential (Required)</h4>
                     <p className="text-xs text-gray-600">Authentication, security, core functionality</p>
                   </div>
-
                   <div className="bg-white border border-gray-200 rounded p-2">
                     <h4 className="font-bold text-gray-900 text-xs mb-0.5">📊 Analytics (Optional)</h4>
                     <p className="text-xs text-gray-600">Understand user interactions via Google Analytics</p>
                   </div>
-
-                  <div className="bg-white border border-gray-200 rounded p-2">
-                    <h4 className="font-bold text-gray-900 text-xs mb-0.5">📢 Advertising (Optional)</h4>
-                    <p className="text-xs text-gray-600">Google AdMob uses advertising identifiers to serve and measure ads. You can opt out via device ad settings.</p>
+                  <div className="bg-white border border-green-200 rounded p-2">
+                    <h4 className="font-bold text-gray-900 text-xs mb-0.5">🌐 Website Advertising — Google AdSense (Optional)</h4>
+                    <p className="text-xs text-gray-600">
+                      Google AdSense uses cookies (including the DoubleClick cookie) to serve ads on finnotia.com based on your visit to our site and/or other sites.
+                      Opt out at{' '}
+                      <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">
+                        google.com/settings/ads
+                      </a>.
+                    </p>
                   </div>
-
+                  <div className="bg-white border border-amber-200 rounded p-2">
+                    <h4 className="font-bold text-gray-900 text-xs mb-0.5">📱 App Advertising — Google AdMob (Optional)</h4>
+                    <p className="text-xs text-gray-600">Google AdMob uses advertising identifiers to serve and measure ads in our Android app. Opt out via device ad settings.</p>
+                  </div>
                   <div className="bg-white border border-gray-200 rounded p-2">
                     <h4 className="font-bold text-gray-900 text-xs mb-0.5">⚙️ Preference (Optional)</h4>
                     <p className="text-xs text-gray-600">Remember settings, personalize experience</p>
@@ -421,7 +434,7 @@ export default function PrivacyPolicy() {
                 </div>
 
                 <p className="text-xs mt-1">
-                  Control cookies via browser settings. Disabling may affect functionality.
+                  Control cookies via browser settings. Disabling advertising cookies may affect ad relevance but will not affect core functionality.
                 </p>
               </div>
             </section>
@@ -438,7 +451,9 @@ export default function PrivacyPolicy() {
                 <div className="bg-yellow-50 border-l-2 border-yellow-400 p-2 rounded-r">
                   <p className="font-bold text-yellow-900 mb-1 text-xs">🔞 Age Restriction:</p>
                   <p className="text-yellow-800 text-xs">
-                    FINNOTIA is for users <strong>18+ years</strong>. We don&apos;t knowingly collect data from minors. Parents, contact us if your child provided info. Advertisements displayed through Google AdMob are not directed at children.
+                    FINNOTIA is for users <strong>18+ years</strong>. We don&apos;t knowingly collect data from minors. 
+                    Advertisements displayed through Google AdSense (website) and Google AdMob (app) are not directed at children.
+                    Parents, contact us if your child provided info.
                   </p>
                 </div>
               </div>
@@ -454,7 +469,7 @@ export default function PrivacyPolicy() {
               </div>
               <div className="pl-8 space-y-1 text-gray-700 text-xs">
                 <p className="text-xs">
-                  We prioritize storing data in India. Some third-party services (including Google AdMob) may process data outside India. We ensure:
+                  We prioritize storing data in India. Some third-party services (including Google AdSense and Google AdMob) may process data outside India. We ensure:
                 </p>
                 <ul className="list-disc pl-4 space-y-0.5 text-xs">
                   <li>Compliance with Indian data protection laws</li>
@@ -474,17 +489,13 @@ export default function PrivacyPolicy() {
                 <h2 className="text-base md:text-lg font-bold text-gray-900">Policy Changes</h2>
               </div>
               <div className="pl-8 space-y-1 text-gray-700 text-xs">
-                <p className="text-xs">
-                  We may update this policy. Changes notified via:
-                </p>
+                <p className="text-xs">We may update this policy. Changes notified via:</p>
                 <ul className="list-disc pl-4 space-y-0.5 text-xs">
                   <li>Email notification</li>
                   <li>In-app notification/banner</li>
                   <li>Updated &quot;Last Modified&quot; date</li>
                 </ul>
-                <p className="text-xs mt-1">
-                  Continued use = acceptance of updated policy
-                </p>
+                <p className="text-xs mt-1">Continued use = acceptance of updated policy</p>
               </div>
             </section>
 
@@ -504,7 +515,8 @@ export default function PrivacyPolicy() {
                   <li><strong>SEBI Guidelines</strong> (where applicable)</li>
                   <li><strong>DPDP Act, 2023</strong> (when enforced)</li>
                   <li><strong>Google Play Developer Program Policies</strong></li>
-                  <li><strong>Google AdMob & AdSense Program Policies</strong></li>
+                  <li><strong>Google AdMob Program Policies</strong></li>
+                  <li><strong>Google AdSense Program Policies</strong></li>
                 </ul>
               </div>
             </section>
@@ -532,7 +544,7 @@ export default function PrivacyPolicy() {
                   </p>
                 </div>
                 <p className="text-xs opacity-80 mt-2">
-                  <strong>Effective:</strong> February 23, 2026
+                  <strong>Effective:</strong> March 09, 2026
                 </p>
               </div>
             </div>

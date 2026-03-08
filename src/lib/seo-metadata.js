@@ -1,31 +1,25 @@
 // src/lib/seo-metadata.js
-// Complete, Working, and Broader Market Scope (Stocks + IPO + MF)
+// Complete SEO metadata — Stocks + IPO + MF + Blog
 
 export const seoConfig = {
   siteName: 'FINNOTIA',
   siteUrl: 'https://finnotia.com',
   defaultTitle: 'FINNOTIA - Stock Market, IPO & Mutual Fund Tracker',
-  defaultDescription: 'Track Indian Stock Market, IPO GMP, Mutual Funds & Indices. AI-powered financial data platform for smart market insights. 100% Free, No Registration.',
+  defaultDescription:
+    'Track Indian Stock Market, IPO GMP, Mutual Funds & Indices. AI-powered financial data platform for smart market insights. 100% Free, No Registration.',
   defaultKeywords: [
-    // Core Market Keywords (High Volume)
     'Stock market app India',
     'Share market live updates',
     'Nifty 50 tracker',
     'Sensex live data',
     'Stock price tracker',
-    
-    // IPO Specific
     'IPO GMP today',
     'Upcoming IPO India',
     'IPO subscription status',
-    
-    // Mutual Funds & Others
     'Mutual fund tracker',
     'SIP calculator app',
     'Market news India',
     'FII DII data',
-    
-    // App Specific Features
     'Free stock market tool',
     'No registration finance app',
     'AI market insights',
@@ -37,7 +31,8 @@ export const seoConfig = {
     url: 'https://finnotia.com',
     logo: 'https://finnotia.com/finnotia-logo.png',
     foundingDate: '2024',
-    description: 'Comprehensive financial data platform for tracking Stocks, IPOs, and Mutual Funds in India. Educational tool for market enthusiasts.',
+    description:
+      'Comprehensive financial data platform for tracking Stocks, IPOs, and Mutual Funds in India. Educational tool for market enthusiasts.',
     contactPoint: {
       contactType: 'customer support',
       email: 'support@finnotia.com',
@@ -49,7 +44,8 @@ export const seoConfig = {
 export const pageMetadata = {
   home: {
     title: 'Indian Stock Market, IPO & Mutual Fund Tracker | FINNOTIA',
-    description: 'Your complete dashboard for NSE/BSE stocks, IPO GMP, Mutual Funds, and Market News. Get AI-curated data without registration. Educational Use Only.',
+    description:
+      'Your complete dashboard for NSE/BSE stocks, IPO GMP, Mutual Funds, and Market News. Get AI-curated data without registration. Educational Use Only.',
     keywords: [
       'Stock market dashboard',
       'Share price checker',
@@ -64,7 +60,8 @@ export const pageMetadata = {
   },
   features: {
     title: 'FINNOTIA Features - Stocks, IPOs, Analytics & More',
-    description: 'Explore powerful features: Live Stock Quotes, IPO Analytics, GMP Tracking, Mutual Fund Data, and Market News aggregation. All-in-one financial tool.',
+    description:
+      'Explore powerful features: Live Stock Quotes, IPO Analytics, GMP Tracking, Mutual Fund Data, and Market News aggregation. All-in-one financial tool.',
     keywords: [
       'Stock analysis features',
       'Market screener',
@@ -77,7 +74,8 @@ export const pageMetadata = {
   },
   about: {
     title: 'About FINNOTIA - AI-Driven Financial Data Platform',
-    description: 'We are simplifying financial data for India. Learn how FINNOTIA uses AI to track Stocks, IPOs, and Markets. Built for education and data accessibility.',
+    description:
+      'We are simplifying financial data for India. Learn how FINNOTIA uses AI to track Stocks, IPOs, and Markets. Built for education and data accessibility.',
     keywords: [
       'Fintech startup India',
       'AI in finance',
@@ -88,7 +86,8 @@ export const pageMetadata = {
   },
   contact: {
     title: 'Contact Support - FINNOTIA App',
-    description: 'Need help with the app? Contact FINNOTIA support for queries regarding Stock data, IPOs, or app features. Email: support@finnotia.com',
+    description:
+      'Need help with the app? Contact FINNOTIA support for queries regarding Stock data, IPOs, or app features. Email: support@finnotia.com',
     keywords: [
       'App support',
       'Contact Finnotia',
@@ -99,7 +98,8 @@ export const pageMetadata = {
   },
   download: {
     title: 'Download FINNOTIA - Free Stock & IPO App for Android',
-    description: 'Get the FINNOTIA app for Android. Track Stocks, IPOs, and Mutual Funds on the go. Fast, Free, and No Sign-up required.',
+    description:
+      'Get the FINNOTIA app for Android. Track Stocks, IPOs, and Mutual Funds on the go. Fast, Free, and No Sign-up required.',
     keywords: [
       'Stock market app download',
       'Best free market app',
@@ -108,35 +108,49 @@ export const pageMetadata = {
       'APK download',
     ],
   },
+
+  // ── BLOG SECTION (new) ────────────────────────────────────────
+  blog: {
+    title: 'Finance Blog - Market Analysis, IPO & Economy | FINNOTIA Research',
+    description:
+      'Data-driven financial analysis covering global markets, IPOs, macroeconomics, commodities, and corporate finance. Written for readers who think in numbers.',
+    keywords: [
+      'Finance blog India',
+      'Stock market analysis',
+      'IPO analysis blog',
+      'Market research articles',
+      'Economy news analysis',
+      'Investment education',
+      'Financial analysis articles',
+      'Commodity market blog',
+      'Mutual fund analysis',
+      'Finnotia research',
+      'Market insights blog',
+      'Corporate finance news',
+    ],
+  },
+
   privacy: {
     title: 'Privacy Policy - FINNOTIA',
-    description: 'We value your privacy. Read how FINNOTIA handles your data. We do not sell user data. Secure and transparent.',
-    keywords: [
-      'Data privacy',
-      'User data protection',
-      'Privacy policy finance app',
-    ],
+    description:
+      'We value your privacy. Read how FINNOTIA handles your data. We do not sell user data. Secure and transparent.',
+    keywords: ['Data privacy', 'User data protection', 'Privacy policy finance app'],
   },
   terms: {
     title: 'Terms of Service - FINNOTIA',
-    description: 'Usage guidelines for FINNOTIA platform. Understanding our educational nature and data usage terms.',
-    keywords: [
-      'Terms and conditions',
-      'App usage rules',
-      'Disclaimer',
-    ],
+    description:
+      'Usage guidelines for FINNOTIA platform. Understanding our educational nature and data usage terms.',
+    keywords: ['Terms and conditions', 'App usage rules', 'Disclaimer'],
   },
   disclaimer: {
     title: 'Disclaimer - Educational Purpose Only',
-    description: 'FINNOTIA is an informational tool. We are NOT SEBI registered. Data provided is for educational purposes, not investment advice.',
-    keywords: [
-      'Not investment advice',
-      'SEBI disclaimer',
-      'Educational tool',
-      'Market risk warning',
-    ],
+    description:
+      'FINNOTIA is an informational tool. We are NOT SEBI registered. Data provided is for educational purposes, not investment advice.',
+    keywords: ['Not investment advice', 'SEBI disclaimer', 'Educational tool', 'Market risk warning'],
   },
 };
+
+// ── Structured Data ───────────────────────────────────────────────────────────
 
 export const structuredData = {
   organization: {
@@ -145,7 +159,8 @@ export const structuredData = {
     name: 'FINNOTIA',
     url: 'https://finnotia.com',
     logo: 'https://finnotia.com/finnotia-logo.png',
-    description: 'AI-powered platform for tracking Indian Stock Market, IPOs, and Mutual Funds.',
+    description:
+      'AI-powered platform for tracking Indian Stock Market, IPOs, and Mutual Funds.',
     foundingDate: '2024',
     areaServed: 'IN',
     knowsAbout: [
@@ -155,7 +170,10 @@ export const structuredData = {
       'Nifty 50',
       'Sensex',
       'Financial News',
-      'Market Indices'
+      'Market Indices',
+      'Financial Analysis',
+      'Macroeconomics',
+      'Corporate Finance',
     ],
     contactPoint: {
       '@type': 'ContactPoint',
@@ -164,19 +182,17 @@ export const structuredData = {
       availableLanguage: ['English', 'Hindi'],
       areaServed: 'IN',
     },
-    // ✅ COMPANY ke official social pages
     sameAs: [
       'https://twitter.com/finnotia',
       'https://www.instagram.com/finnotia/',
     ],
-    // ✅ Founder connection - Google Knowledge Graph ke liye
     founder: {
       '@type': 'Person',
       name: 'Akash Shukla',
       url: 'https://finnotia.com/founder',
     },
   },
-  
+
   mobileApp: {
     '@context': 'https://schema.org',
     '@type': 'MobileApplication',
@@ -188,14 +204,34 @@ export const structuredData = {
       price: '0',
       priceCurrency: 'INR',
     },
-    description: 'Comprehensive market tracking app. Features include Live Stock Updates, IPO GMP, Mutual Fund Data, and Market News. Free to use, no registration needed.',
+    description:
+      'Comprehensive market tracking app. Features include Live Stock Updates, IPO GMP, Mutual Fund Data, and Market News. Free to use, no registration needed.',
     screenshot: 'https://finnotia.com/app-screenshot.png',
     softwareVersion: '1.0.0',
     datePublished: '2024-01-01',
     author: {
-        '@type': 'Organization',
-        name: 'FINNOTIA'
-    }
+      '@type': 'Organization',
+      name: 'FINNOTIA',
+    },
+  },
+
+  // ── Blog / Research section schema ─────────────────────────
+  blog: {
+    '@context': 'https://schema.org',
+    '@type': 'Blog',
+    name: 'FINNOTIA Research',
+    description:
+      'Data-driven financial analysis covering global markets, IPOs, macroeconomics, commodities, and corporate finance.',
+    url: 'https://finnotia.com/blog',
+    publisher: {
+      '@type': 'Organization',
+      name: 'FINNOTIA',
+      logo: {
+        '@type': 'ImageObject',
+        url: 'https://finnotia.com/finnotia-logo.png',
+      },
+    },
+    inLanguage: 'en',
   },
 
   faqPage: [
@@ -234,10 +270,55 @@ export const structuredData = {
   ],
 };
 
+// ── Helper: generate BlogPosting JSON-LD for individual articles ──────────────
+/**
+ * @param {object} fm  — frontmatter from .md file
+ * @param {string} slug — article slug
+ */
+export function generateArticleSchema(fm, slug) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: fm.title,
+    description: fm.excerpt || fm.seo_description || '',
+    image: fm.image_url
+      ? [fm.image_url]
+      : ['https://finnotia.com/og-image.png'],
+    datePublished: fm.date || '',
+    dateModified: fm.updatedAt || fm.date || '',
+    author: {
+      '@type': 'Organization',
+      name: fm.author || 'Finnotia Research',
+      url: 'https://finnotia.com',
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'FINNOTIA',
+      logo: {
+        '@type': 'ImageObject',
+        url: 'https://finnotia.com/finnotia-logo.png',
+      },
+    },
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': `https://finnotia.com/blog/${slug}`,
+    },
+    url: `https://finnotia.com/blog/${slug}`,
+    keywords: (fm.tags || []).join(', '),
+    articleSection: fm.category || 'Finance',
+    inLanguage: 'en',
+    isPartOf: {
+      '@type': 'Blog',
+      name: 'FINNOTIA Research',
+      url: 'https://finnotia.com/blog',
+    },
+  };
+}
+
 export function generateMetadata(page) {
   const meta = pageMetadata[page];
   if (!meta) return null;
-  
+
   return {
     title: meta.title,
     description: meta.description,
@@ -248,7 +329,7 @@ export function generateMetadata(page) {
       url: `${seoConfig.siteUrl}/${page === 'home' ? '' : page}`,
       siteName: seoConfig.siteName,
       type: 'website',
-      locale: 'en_IN',
+      locale: 'en_US',
       images: [
         {
           url: 'https://finnotia.com/og-image.png',

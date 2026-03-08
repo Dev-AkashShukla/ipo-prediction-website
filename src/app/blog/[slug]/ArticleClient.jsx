@@ -2,100 +2,119 @@
 // src/app/blog/[slug]/ArticleClient.jsx
 
 import { useState, useEffect } from 'react';
-import { Share2, Twitter, MessageCircle, Link2, Check, List, X, Clock, Calendar, TrendingUp, TrendingDown, Minus, Activity } from 'lucide-react';
+import {
+  Share2, Twitter, MessageCircle, Link2, Check,
+  List, X, Clock, Calendar, TrendingUp, TrendingDown,
+  Minus, Activity, BarChart2, BookOpen,
+} from 'lucide-react';
 
 const CAT_STYLES = {
-  commodities:    { bg: '#fef3c7', text: '#92400e', dot: '#f59e0b' },
-  markets:        { bg: '#d1fae5', text: '#065f46', dot: '#10b981' },
-  economy:        { bg: '#dbeafe', text: '#1e40af', dot: '#3b82f6' },
-  tech:           { bg: '#ede9fe', text: '#5b21b6', dot: '#8b5cf6' },
-  crypto:         { bg: '#fce7f3', text: '#9d174d', dot: '#ec4899' },
-  ipo:            { bg: '#fef3c7', text: '#92400e', dot: '#f59e0b' },
-  'mutual-funds': { bg: '#dbeafe', text: '#1e40af', dot: '#3b82f6' },
-  geopolitics:    { bg: '#fee2e2', text: '#991b1b', dot: '#ef4444' },
-  tax:            { bg: '#e0e7ff', text: '#3730a3', dot: '#6366f1' },
+  commodities:    { bg: '#fef3c7', text: '#92400e' },
+  markets:        { bg: '#d1fae5', text: '#065f46' },
+  economy:        { bg: '#dbeafe', text: '#1e40af' },
+  tech:           { bg: '#ede9fe', text: '#5b21b6' },
+  crypto:         { bg: '#fce7f3', text: '#9d174d' },
+  ipo:            { bg: '#fef3c7', text: '#92400e' },
+  'mutual-funds': { bg: '#dbeafe', text: '#1e40af' },
+  geopolitics:    { bg: '#fee2e2', text: '#991b1b' },
+  tax:            { bg: '#e0e7ff', text: '#3730a3' },
+  investing:      { bg: '#d1fae5', text: '#065f46' },
+  policy:         { bg: '#e0e7ff', text: '#3730a3' },
+  corporate:      { bg: '#f3f4f6', text: '#374151' },
 };
 
 const SENT_CONFIG = {
-  BULLISH: { bg: '#dcfce7', text: '#15803d', border: '#86efac', icon: TrendingUp,  label: 'Bullish' },
+  BULLISH: { bg: '#dcfce7', text: '#15803d', border: '#86efac', icon: TrendingUp,   label: 'Bullish' },
   BEARISH: { bg: '#fee2e2', text: '#dc2626', border: '#fca5a5', icon: TrendingDown, label: 'Bearish' },
-  NEUTRAL: { bg: '#f1f5f9', text: '#475569', border: '#cbd5e1', icon: Minus,       label: 'Neutral' },
-  MIXED:   { bg: '#fefce8', text: '#a16207', border: '#fde047', icon: Activity,    label: 'Mixed' },
+  NEUTRAL: { bg: '#f1f5f9', text: '#475569', border: '#cbd5e1', icon: Minus,        label: 'Neutral' },
+  MIXED:   { bg: '#fefce8', text: '#a16207', border: '#fde047', icon: Activity,     label: 'Mixed'   },
 };
 
 export default function ArticleClient({ frontmatter: fm, htmlContent }) {
-  const [progress, setProgress]   = useState(0);
-  const [showToc, setShowToc]     = useState(false);
-  const [copied, setCopied]       = useState(false);
-  const [headings, setHeadings]   = useState([]);
-  const [activeH, setActiveH]     = useState(null);
+  const [progress, setProgress] = useState(0);
+  const [showToc, setShowToc]   = useState(false);
+  const [copied, setCopied]     = useState(false);
+  const [headings, setHeadings] = useState([]);
+  const [activeH, setActiveH]   = useState(null);
 
   useEffect(() => {
     const parser = new DOMParser();
     const doc    = parser.parseFromString(htmlContent, 'text/html');
     const h2s    = Array.from(doc.querySelectorAll('h2'));
-    setHeadings(h2s.map((h) => ({ text: h.textContent, id: h.id || slugify(h.textContent) })));
+    setHeadings(h2s.map((h) => ({ text: h.textContent, id: slugify(h.textContent) })));
   }, [htmlContent]);
 
   useEffect(() => {
     const onScroll = () => {
-      const scrollTop  = window.scrollY;
-      const docHeight  = document.documentElement.scrollHeight - window.innerHeight;
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
       setProgress(docHeight > 0 ? (scrollTop / docHeight) * 100 : 0);
-
-      // Active heading tracking
       const els = document.querySelectorAll('h2');
       let current = null;
-      els.forEach((el) => {
-        if (el.getBoundingClientRect().top < 120) current = el.textContent;
-      });
+      els.forEach((el) => { if (el.getBoundingClientRect().top < 120) current = el.textContent; });
       setActiveH(current);
     };
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  const slugify = (s) => s.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
+  const slugify  = (s) => s.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
 
-  const fmtDate = (d) =>
-    d ? new Date(d).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
+  const fmtDate  = (d) =>
+    d ? new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
 
-  const catStyle  = CAT_STYLES[fm.category?.toLowerCase()] || { bg: '#f1f5f9', text: '#475569', dot: '#94a3b8' };
-  const sentConf  = SENT_CONFIG[fm.sentiment] || null;
-  const SentIcon  = sentConf?.icon || null;
+  const catStyle = CAT_STYLES[fm.category?.toLowerCase()] || { bg: '#f1f5f9', text: '#475569' };
+  const sentConf = SENT_CONFIG[fm.sentiment?.toUpperCase()] || null;
+  const SentIcon = sentConf?.icon || null;
 
   const handleCopy = () => {
-    navigator.clipboard?.writeText(window.location.href).then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    });
+    const copy = () => {
+      try {
+        const ta = document.createElement('textarea');
+        ta.value = window.location.href;
+        ta.style.cssText = 'position:fixed;opacity:0';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      } catch {}
+    };
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(window.location.href).then(() => {
+        setCopied(true); setTimeout(() => setCopied(false), 2000);
+      }).catch(copy);
+    } else copy();
   };
 
   const handleShare = (platform) => {
     const url   = encodeURIComponent(window.location.href);
-    const title = encodeURIComponent(fm.title);
+    const title = encodeURIComponent(fm.title || '');
     if (platform === 'whatsapp') window.open(`https://wa.me/?text=${title}%20${url}`);
     if (platform === 'twitter')  window.open(`https://twitter.com/intent/tweet?text=${title}&url=${url}`);
   };
 
   const scrollToHeading = (text) => {
     setShowToc(false);
-    const els    = document.querySelectorAll('h2');
-    const target = Array.from(els).find((el) => el.textContent === text);
+    const target = Array.from(document.querySelectorAll('h2')).find((el) => el.textContent === text);
     target?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
+
+  // Clean read time — strip any non-digit characters, just show number
+  const readTime = parseInt(String(fm.readTime || '').replace(/\D/g, ''), 10) || null;
 
   return (
     <div className="min-h-screen bg-white" style={{ fontFamily: "'Georgia', 'Times New Roman', serif" }}>
 
-      {/* ── Progress Bar ── sits just below fixed header (top-16 = 64px) */}
+      {/* ── Reading progress bar ── */}
       <div
         className="fixed left-0 h-[3px] z-40 transition-all duration-75"
         style={{ top: '64px', width: `${progress}%`, background: 'linear-gradient(90deg, #c8421e, #e85d3a)' }}
       />
 
-      {/* ── Hero Image — pushed below 64px header ── */}
-      <div className="relative w-full bg-gray-950 overflow-hidden mt-20" style={{ height: 'min(56vw, 480px)' }}>
+      {/* ── Hero image ── */}
+      <div className="relative w-full bg-gray-950 overflow-hidden mt-16" style={{ height: 'min(56vw, 480px)' }}>
         {fm.image_url ? (
           <>
             <img
@@ -104,10 +123,11 @@ export default function ArticleClient({ frontmatter: fm, htmlContent }) {
               className="w-full h-full object-cover opacity-90"
               style={{ objectPosition: 'center 30%' }}
             />
-            <div className="absolute inset-0" style={{
-              background: 'linear-gradient(to bottom, transparent 20%, rgba(0,0,0,0.3) 60%, rgba(0,0,0,0.85) 100%)'
-            }} />
-            {/* Category badge on image */}
+            <div
+              className="absolute inset-0"
+              style={{ background: 'linear-gradient(to bottom, transparent 20%, rgba(0,0,0,0.3) 60%, rgba(0,0,0,0.85) 100%)' }}
+            />
+            {/* Category badge — top left */}
             <div className="absolute top-4 left-4 sm:top-6 sm:left-6">
               <span
                 className="text-[11px] font-bold tracking-widest uppercase px-3 py-1.5 rounded-full"
@@ -118,17 +138,21 @@ export default function ArticleClient({ frontmatter: fm, htmlContent }) {
             </div>
           </>
         ) : (
-          <div className="w-full h-full flex items-center justify-center"
-            style={{ background: 'linear-gradient(135deg, #0c1e35 0%, #1a3355 100%)' }}>
-            <span className="text-white/10 text-8xl">📊</span>
+          /* ✅ FIX: No emoji — Lucide icon instead */
+          <div
+            className="w-full h-full flex items-center justify-center"
+            style={{ background: 'linear-gradient(135deg, #0c1e35 0%, #1a3355 100%)' }}
+          >
+            <BarChart2 className="w-16 h-16 text-white/10" strokeWidth={1} />
           </div>
         )}
 
-        {/* Title overlay on image */}
+        {/* Title + sentiment overlay — bottom of image */}
         <div className="absolute bottom-0 left-0 right-0 px-5 pb-6 sm:px-8 sm:pb-8">
           <div className="max-w-2xl mx-auto">
+            {/* ✅ FIX: Only sentiment badge — region badge removed */}
             {sentConf && (
-              <div className="flex items-center gap-1.5 mb-3">
+              <div className="flex items-center gap-2 mb-3">
                 <span
                   className="inline-flex items-center gap-1.5 text-[11px] font-bold tracking-wide uppercase px-3 py-1 rounded-full"
                   style={{ backgroundColor: sentConf.bg, color: sentConf.text }}
@@ -136,11 +160,6 @@ export default function ArticleClient({ frontmatter: fm, htmlContent }) {
                   {SentIcon && <SentIcon size={11} strokeWidth={2.5} />}
                   {sentConf.label}
                 </span>
-                {fm.region && fm.region !== 'GLOBAL' && (
-                  <span className="text-[11px] font-semibold tracking-wide uppercase px-3 py-1 rounded-full bg-white/10 text-white/80">
-                    {fm.region}
-                  </span>
-                )}
               </div>
             )}
             <h1
@@ -157,20 +176,20 @@ export default function ArticleClient({ frontmatter: fm, htmlContent }) {
         </div>
       </div>
 
-      {/* ── Article Container ── */}
+      {/* ── Article body container ── */}
       <div className="max-w-2xl mx-auto px-5 sm:px-6">
 
-        {/* ── Excerpt ── */}
+        {/* ── Excerpt / standfirst ── */}
         {fm.excerpt && (
           <p
-            className="mt-5 text-[17px] leading-relaxed text-gray-500 border-l-4 pl-4"
+            className="mt-6 text-[17px] leading-relaxed text-gray-500 border-l-4 pl-4"
             style={{ borderColor: '#c8421e', fontFamily: "'Georgia', serif", fontStyle: 'italic' }}
           >
             {fm.excerpt}
           </p>
         )}
 
-        {/* ── Key Stats Cards ── */}
+        {/* ── Key facts ── */}
         {fm.key_facts?.length > 0 && (
           <div className="mt-5 grid grid-cols-3 gap-2 sm:gap-3">
             {fm.key_facts.map((fact, i) => (
@@ -187,21 +206,33 @@ export default function ArticleClient({ frontmatter: fm, htmlContent }) {
           </div>
         )}
 
-        {/* ── Meta Row ── */}
+        {/* ── Meta row ── */}
+        {/* ✅ FIX:
+            - Removed "AI-powered market analysis" subtitle (AdSense red flag + looks cheap)
+            - Author circle now uses BookOpen icon instead of plain "F"
+            - readTime shows "X min read" not "X min" (was confusing with "X min ago")
+            - Region NOT shown here either
+        */}
         <div
           className="mt-5 flex items-center gap-3 py-4 border-t border-b border-gray-100"
           style={{ fontFamily: 'system-ui, sans-serif' }}
         >
+          {/* Author avatar */}
           <div
-            className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0"
-            style={{ backgroundColor: '#fef3f0', color: '#c8421e' }}
+            className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0"
+            style={{ backgroundColor: '#fef3f0' }}
           >
-            F
+            <BookOpen size={16} color="#c8421e" strokeWidth={2} />
           </div>
+
+          {/* Author name only — no tagline */}
           <div className="flex-1 min-w-0">
-            <div className="text-[13px] font-semibold text-gray-800">{fm.author || 'Finnotia Editorial'}</div>
-            <div className="text-[11px] text-gray-400">AI-powered market analysis</div>
+            <div className="text-[13px] font-semibold text-gray-800">
+              {fm.author || 'Finnotia Research'}
+            </div>
           </div>
+
+          {/* Date + read time */}
           <div className="flex items-center gap-3 text-[12px] text-gray-400 flex-shrink-0">
             {fm.date && (
               <span className="flex items-center gap-1">
@@ -209,16 +240,16 @@ export default function ArticleClient({ frontmatter: fm, htmlContent }) {
                 {fmtDate(fm.date)}
               </span>
             )}
-            {fm.readTime && (
+            {readTime && (
               <span className="flex items-center gap-1">
                 <Clock size={12} strokeWidth={2} />
-                {fm.readTime} min
+                {readTime} min read
               </span>
             )}
           </div>
         </div>
 
-        {/* ── Bull / Bear Thesis Cards ── */}
+        {/* ── Bull / Bear thesis cards (analysis style only) ── */}
         {(fm.bull_case_summary || fm.bear_case_summary) && (
           <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-3" style={{ fontFamily: 'system-ui, sans-serif' }}>
             {fm.bull_case_summary && (
@@ -242,7 +273,7 @@ export default function ArticleClient({ frontmatter: fm, htmlContent }) {
           </div>
         )}
 
-        {/* ── Thesis Statement ── */}
+        {/* ── Thesis statement (analysis style only) ── */}
         {fm.thesis_statement && (
           <div
             className="mt-6 rounded-xl px-5 py-4"
@@ -253,7 +284,7 @@ export default function ArticleClient({ frontmatter: fm, htmlContent }) {
           </div>
         )}
 
-        {/* ── Article Body ── */}
+        {/* ── Article body ── */}
         <div className="mt-8 pb-4">
           <style>{`
             .article-body { font-family: 'Georgia', 'Times New Roman', serif; }
@@ -325,15 +356,16 @@ export default function ArticleClient({ frontmatter: fm, htmlContent }) {
             className="article-body"
             dangerouslySetInnerHTML={{
               __html: htmlContent
+                // Strip inline disclaimer (already shown in dedicated block below)
                 .replace(/<hr\s*\/?>\s*<p>\s*<em>This article is for educational[\s\S]*?<\/em>\s*<\/p>/i, '')
-                .replace(/<p>\s*<em>This article is for educational[\s\S]*?<\/em>\s*<\/p>/i, '')
+                .replace(/<p>\s*<em>This article is for educational[\s\S]*?<\/em>\s*<\/p>/i, ''),
             }}
           />
         </div>
 
-        {/* ── Share Row ── */}
+        {/* ── Share ── */}
         <div
-          className="py-5 border-t border-gray-100 flex items-center gap-3"
+          className="py-5 border-t border-gray-100 flex items-center gap-3 flex-wrap"
           style={{ fontFamily: 'system-ui, sans-serif' }}
         >
           <span className="text-[12px] font-semibold text-gray-400 flex items-center gap-1.5">
@@ -349,23 +381,22 @@ export default function ArticleClient({ frontmatter: fm, htmlContent }) {
             onClick={() => handleShare('twitter')}
             className="flex items-center gap-1.5 px-3.5 py-2 rounded-full border border-gray-200 text-[12px] font-medium text-gray-600 hover:border-blue-400 hover:text-blue-600 transition-all"
           >
-            <Twitter size={14} strokeWidth={2} /> Twitter
+            <Twitter size={14} strokeWidth={2} /> X / Twitter
           </button>
           <button
             onClick={handleCopy}
             className="ml-auto flex items-center gap-1.5 px-3.5 py-2 rounded-full border border-gray-200 text-[12px] font-medium text-gray-600 hover:border-gray-400 transition-all"
           >
-            {copied ? <Check size={14} strokeWidth={2} color="#16a34a" /> : <Link2 size={14} strokeWidth={2} />}
-            {copied ? 'Copied!' : 'Copy link'}
+            {copied
+              ? <><Check size={14} strokeWidth={2} color="#16a34a" /> Copied!</>
+              : <><Link2 size={14} strokeWidth={2} /> Copy link</>
+            }
           </button>
         </div>
 
         {/* ── Tags ── */}
         {fm.tags?.length > 0 && (
-          <div
-            className="pb-8 flex gap-2 flex-wrap"
-            style={{ fontFamily: 'system-ui, sans-serif' }}
-          >
+          <div className="pb-8 flex gap-2 flex-wrap" style={{ fontFamily: 'system-ui, sans-serif' }}>
             {fm.tags.map((tag) => (
               <span
                 key={tag}
@@ -378,14 +409,20 @@ export default function ArticleClient({ frontmatter: fm, htmlContent }) {
         )}
 
         {/* ── Disclaimer ── */}
-        <div className="mb-16 rounded-xl bg-gray-50 border border-gray-200 px-4 py-4" style={{ fontFamily: 'system-ui, sans-serif' }}>
+        <div
+          className="mb-16 rounded-xl bg-gray-50 border border-gray-200 px-4 py-4"
+          style={{ fontFamily: 'system-ui, sans-serif' }}
+        >
           <p className="text-[11.5px] text-gray-500 leading-relaxed">
-            <span className="font-bold text-gray-700">Disclaimer:</span> This article is for educational and informational purposes only. It does not constitute financial advice, investment recommendations, or endorsement of any securities. Always consult a qualified financial advisor before making investment decisions.
+            <span className="font-bold text-gray-700">Disclaimer:</span>{' '}
+            This article is for educational and informational purposes only. It does not constitute
+            financial advice, investment recommendations, or endorsement of any securities. Always
+            consult a qualified financial advisor before making investment decisions.
           </p>
         </div>
       </div>
 
-      {/* ── TOC FAB ── */}
+      {/* ── TOC floating button ── */}
       {headings.length > 0 && (
         <>
           <button
@@ -398,7 +435,7 @@ export default function ArticleClient({ frontmatter: fm, htmlContent }) {
 
           {showToc && (
             <div
-              className="fixed bottom-22 right-4 w-[min(280px,calc(100vw-2rem))] bg-white border border-gray-200 rounded-2xl shadow-2xl z-50 overflow-hidden"
+              className="fixed right-4 w-[min(280px,calc(100vw-2rem))] bg-white border border-gray-200 rounded-2xl shadow-2xl z-50 overflow-hidden"
               style={{ bottom: '74px', fontFamily: 'system-ui, sans-serif' }}
             >
               <div className="px-4 py-3 border-b border-gray-100 flex items-center gap-2">
@@ -413,7 +450,10 @@ export default function ArticleClient({ frontmatter: fm, htmlContent }) {
                     key={i}
                     onClick={() => scrollToHeading(h.text)}
                     className="block w-full text-left px-4 py-2.5 text-[13px] transition-colors hover:bg-gray-50"
-                    style={{ color: activeH === h.text ? '#c8421e' : '#6b7280', fontWeight: activeH === h.text ? 600 : 400 }}
+                    style={{
+                      color:      activeH === h.text ? '#c8421e' : '#6b7280',
+                      fontWeight: activeH === h.text ? 600 : 400,
+                    }}
                   >
                     {h.text}
                   </button>

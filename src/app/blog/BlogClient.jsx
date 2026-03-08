@@ -1,19 +1,22 @@
 'use client';
 // src/app/blog/BlogClient.jsx
-// Client component — handles filters, search, animations
 
 import { useState, useEffect, useRef } from 'react';
+import { Search, BookOpen, Clock, ArrowRight, BarChart2, FileText } from 'lucide-react';
 
 const CAT_STYLES = {
-  commodities:   { bg: '#fef3c7', text: '#92400e' },
-  markets:       { bg: '#d1fae5', text: '#065f46' },
-  economy:       { bg: '#dbeafe', text: '#1e40af' },
-  tech:          { bg: '#ede9fe', text: '#5b21b6' },
-  crypto:        { bg: '#fce7f3', text: '#9d174d' },
-  ipo:           { bg: '#fef3c7', text: '#92400e' },
-  'mutual-funds':{ bg: '#dbeafe', text: '#1e40af' },
-  geopolitics:   { bg: '#fee2e2', text: '#991b1b' },
-  tax:           { bg: '#e0e7ff', text: '#3730a3' },
+  commodities:    { bg: '#fef3c7', text: '#92400e' },
+  markets:        { bg: '#d1fae5', text: '#065f46' },
+  economy:        { bg: '#dbeafe', text: '#1e40af' },
+  tech:           { bg: '#ede9fe', text: '#5b21b6' },
+  crypto:         { bg: '#fce7f3', text: '#9d174d' },
+  ipo:            { bg: '#fef3c7', text: '#92400e' },
+  'mutual-funds': { bg: '#dbeafe', text: '#1e40af' },
+  geopolitics:    { bg: '#fee2e2', text: '#991b1b' },
+  tax:            { bg: '#e0e7ff', text: '#3730a3' },
+  investing:      { bg: '#d1fae5', text: '#065f46' },
+  policy:         { bg: '#e0e7ff', text: '#3730a3' },
+  corporate:      { bg: '#f3f4f6', text: '#374151' },
 };
 
 const SENT_COLORS = {
@@ -24,16 +27,15 @@ const SENT_COLORS = {
 };
 
 export default function BlogClient({ articles }) {
-  const [filter, setFilter]     = useState('ALL');
-  const [search, setSearch]     = useState('');
-  const [visible, setVisible]   = useState(new Set());
-  const observerRef             = useRef(null);
+  const [filter, setFilter]   = useState('ALL');
+  const [search, setSearch]   = useState('');
+  const [visible, setVisible] = useState(new Set());
+  const observerRef           = useRef(null);
 
-  // Derive unique categories from real articles
   const categories = ['ALL', ...new Set(articles.map((a) => a.category).filter(Boolean))];
 
   const filtered = articles.filter((a) => {
-    const matchCat  = filter === 'ALL' || a.category === filter;
+    const matchCat    = filter === 'ALL' || a.category === filter;
     const matchSearch = !search ||
       a.title.toLowerCase().includes(search.toLowerCase()) ||
       (a.tags || []).some((t) => t.toLowerCase().includes(search.toLowerCase()));
@@ -53,31 +55,51 @@ export default function BlogClient({ articles }) {
   }, [filter, search]);
 
   const fmtDate = (d) =>
-    d ? new Date(d).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : '';
+    d ? new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : '';
 
-  const catStyle = (cat) => CAT_STYLES[cat?.toLowerCase()] || { bg: '#f3f4f6', text: '#374151' };
+  const catStyle  = (cat) => CAT_STYLES[cat?.toLowerCase()] || { bg: '#f3f4f6', text: '#374151' };
 
   return (
     <div className="min-h-screen bg-[#f8f7f4] font-sans pt-16">
 
       {/* ── HERO ── */}
-      <div className="bg-[#0c1e35] px-5 pt-12 pb-14 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-96 h-96 rounded-full opacity-20 pointer-events-none"
-          style={{ background: 'radial-gradient(circle, #c8421e 0%, transparent 70%)', transform: 'translate(30%,-30%)' }} />
+      <div className="bg-[#0c1e35] px-5 pt-14 pb-16 relative overflow-hidden">
+        {/* Subtle background accent */}
+        <div
+          className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full opacity-[0.07] pointer-events-none"
+          style={{
+            background: 'radial-gradient(circle, #c8421e 0%, transparent 70%)',
+            transform: 'translate(35%, -35%)',
+          }}
+        />
+        {/* Bottom curve */}
         <div className="absolute bottom-0 left-0 right-0 h-6 bg-[#f8f7f4] rounded-t-3xl" />
+
         <div className="max-w-5xl mx-auto relative z-10">
-          <div className="inline-flex items-center gap-2 bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 mb-4">
-            <span className="text-white/70 text-[10px] font-bold tracking-widest uppercase">📚 Finnotia Blog</span>
+          {/* Label */}
+          <div className="inline-flex items-center gap-2 bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 mb-5">
+            <BookOpen className="w-3 h-3 text-white/50" strokeWidth={2} />
+            <span className="text-white/50 text-[10px] font-bold tracking-widest uppercase">
+              Finnotia Research
+            </span>
           </div>
-          <h1 className="text-4xl md:text-5xl font-serif text-white leading-tight mb-2">
-            Market Intelligence<br />
-            with <em className="text-[#c8421e] not-italic font-serif italic">Clarity</em>
+
+          {/* Headline */}
+          <h1 className="text-4xl md:text-5xl font-serif text-white leading-tight mb-3">
+            Financial Analysis,<br />
+            <em className="text-[#c8421e] not-italic font-serif italic">Without the Noise.</em>
           </h1>
-          <p className="text-white/40 text-sm max-w-md leading-relaxed">
-            AI-powered finance analysis for Indian investors — commodities, markets, IPOs, and macro trends.
+
+          {/* Sub */}
+          <p className="text-white/35 text-sm max-w-lg leading-relaxed">
+            Data-driven coverage across global markets, macroeconomics, commodities, and corporate finance —
+            written for readers who think in numbers.
           </p>
-          <div className="mt-4 text-white/30 text-xs">
-            {articles.length} article{articles.length !== 1 ? 's' : ''} published
+
+          {/* Article count */}
+          <div className="mt-5 flex items-center gap-1.5 text-white/25 text-xs">
+            <BarChart2 className="w-3.5 h-3.5" strokeWidth={2} />
+            <span>{articles.length} article{articles.length !== 1 ? 's' : ''} published</span>
           </div>
         </div>
       </div>
@@ -85,13 +107,13 @@ export default function BlogClient({ articles }) {
       {/* ── SEARCH ── */}
       <div className="max-w-5xl mx-auto px-5 -mt-4 relative z-10">
         <div className="relative">
-          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">🔍</span>
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" strokeWidth={2} />
           <input
             type="text"
-            placeholder="Search articles by topic or tag..."
+            placeholder="Search by topic, keyword, or tag..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-3.5 bg-white border-2 border-gray-200 focus:border-[#c8421e] rounded-xl text-sm text-gray-800 outline-none transition-colors shadow-sm placeholder:text-gray-400"
+            className="w-full pl-11 pr-4 py-3.5 bg-white border-2 border-gray-200 focus:border-[#c8421e] rounded-xl text-sm text-gray-800 outline-none transition-colors shadow-sm placeholder:text-gray-400"
           />
         </div>
       </div>
@@ -100,41 +122,51 @@ export default function BlogClient({ articles }) {
       <div className="max-w-5xl mx-auto px-5 mt-4">
         <div className="flex gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: 'none' }}>
           {categories.map((c) => {
-            const count = c === 'ALL' ? articles.length : articles.filter((a) => a.category === c).length;
+            const count    = c === 'ALL' ? articles.length : articles.filter((a) => a.category === c).length;
             const isActive = filter === c;
             return (
               <button
                 key={c}
                 onClick={() => setFilter(c)}
                 className={`flex items-center gap-1.5 px-4 py-1.5 rounded-full border text-xs font-semibold whitespace-nowrap flex-shrink-0 transition-all capitalize
-                  ${isActive ? 'bg-[#0c1e35] text-white border-[#0c1e35]' : 'bg-white text-gray-500 border-gray-200 hover:border-gray-400'}`}
+                  ${isActive
+                    ? 'bg-[#0c1e35] text-white border-[#0c1e35]'
+                    : 'bg-white text-gray-500 border-gray-200 hover:border-gray-400 hover:text-gray-700'
+                  }`}
               >
-                {c} <span className="opacity-50 text-[10px]">({count})</span>
+                {c}
+                <span className="opacity-40 text-[10px]">({count})</span>
               </button>
             );
           })}
         </div>
       </div>
 
-      {/* ── STATS BAR ── */}
-      <div className="max-w-5xl mx-auto px-5 mt-4">
+      {/* ── RESULT COUNT ── */}
+      <div className="max-w-5xl mx-auto px-5 mt-3">
         <p className="text-xs text-gray-400">
-          Showing <span className="font-bold text-gray-700">{filtered.length}</span> of {articles.length} articles
+          Showing <span className="font-semibold text-gray-600">{filtered.length}</span> of {articles.length} articles
         </p>
       </div>
 
-      {/* ── ARTICLES GRID ── */}
+      {/* ── GRID ── */}
       <div className="max-w-5xl mx-auto px-5 mt-4 pb-24">
+
+        {/* Empty states */}
         {articles.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-24 text-center">
-            <span className="text-5xl mb-4">📝</span>
-            <p className="text-gray-500 font-semibold">No articles published yet</p>
-            <p className="text-gray-400 text-sm mt-1">Publish your first article from the CMS app</p>
+          <div className="flex flex-col items-center justify-center py-24 text-center gap-3">
+            <div className="w-14 h-14 rounded-2xl bg-gray-100 flex items-center justify-center">
+              <FileText className="w-6 h-6 text-gray-300" strokeWidth={1.5} />
+            </div>
+            <p className="text-gray-500 font-semibold text-sm">No articles published yet</p>
+            <p className="text-gray-400 text-xs">Publish your first article from the CMS</p>
           </div>
         ) : filtered.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-16 text-center">
-            <span className="text-4xl mb-3">🔍</span>
-            <p className="text-gray-400 text-sm">No articles found. Try a different search or filter.</p>
+          <div className="flex flex-col items-center justify-center py-16 text-center gap-3">
+            <div className="w-12 h-12 rounded-2xl bg-gray-100 flex items-center justify-center">
+              <Search className="w-5 h-5 text-gray-300" strokeWidth={1.5} />
+            </div>
+            <p className="text-gray-400 text-sm">No results found. Try a different search or filter.</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -151,7 +183,7 @@ export default function BlogClient({ articles }) {
                     ${visible.has(post.slug) ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'}`}
                   style={{ transitionDelay: `${(i % 3) * 80}ms` }}
                 >
-                  {/* Image */}
+                  {/* Image / placeholder */}
                   {post.image_url ? (
                     <img
                       src={post.image_url}
@@ -161,25 +193,32 @@ export default function BlogClient({ articles }) {
                     />
                   ) : (
                     <div className="w-full aspect-video bg-gradient-to-br from-[#0c1e35] to-[#1a3355] flex items-center justify-center border-b border-gray-100">
-                      <span className="text-white/20 text-4xl">📊</span>
+                      <BarChart2 className="w-10 h-10 text-white/10" strokeWidth={1} />
                     </div>
                   )}
 
                   <div className="p-4 flex flex-col flex-1">
-                    {/* Category + Read time */}
+                    {/* Category + meta row */}
                     <div className="flex items-center justify-between mb-3">
-                      <span className="text-[10px] font-bold tracking-wide uppercase px-2.5 py-1 rounded-md capitalize"
-                        style={{ backgroundColor: cs.bg, color: cs.text }}>
+                      <span
+                        className="text-[10px] font-bold tracking-wide uppercase px-2.5 py-1 rounded-md capitalize"
+                        style={{ backgroundColor: cs.bg, color: cs.text }}
+                      >
                         {post.category}
                       </span>
                       <div className="flex items-center gap-2">
                         {sc && (
-                          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full"
-                            style={{ backgroundColor: sc.bg, color: sc.text }}>
+                          <span
+                            className="text-[10px] font-bold px-2 py-0.5 rounded-full"
+                            style={{ backgroundColor: sc.bg, color: sc.text }}
+                          >
                             {post.sentiment}
                           </span>
                         )}
-                        <span className="text-[11px] text-gray-400">⏱ {post.readTime}m</span>
+                        <span className="flex items-center gap-1 text-[11px] text-gray-400">
+                          <Clock className="w-3 h-3" strokeWidth={2} />
+                          {post.readTime}m
+                        </span>
                       </div>
                     </div>
 
@@ -197,7 +236,10 @@ export default function BlogClient({ articles }) {
                     {post.tags?.length > 0 && (
                       <div className="flex gap-1.5 flex-wrap mt-3">
                         {post.tags.slice(0, 3).map((tag) => (
-                          <span key={tag} className="text-[10px] text-gray-400 bg-gray-50 border border-gray-100 px-2 py-0.5 rounded-full">
+                          <span
+                            key={tag}
+                            className="text-[10px] text-gray-400 bg-gray-50 border border-gray-100 px-2 py-0.5 rounded-full"
+                          >
                             #{tag}
                           </span>
                         ))}
@@ -207,7 +249,9 @@ export default function BlogClient({ articles }) {
                     {/* Footer */}
                     <div className="flex items-center justify-between mt-4 pt-3 border-t border-gray-100">
                       <span className="text-[11px] text-gray-400">{fmtDate(post.date)}</span>
-                      <span className="text-[12px] font-semibold text-[#c8421e]">Read →</span>
+                      <span className="flex items-center gap-1 text-[12px] font-semibold text-[#c8421e]">
+                        Read <ArrowRight className="w-3.5 h-3.5" strokeWidth={2.5} />
+                      </span>
                     </div>
                   </div>
                 </a>

@@ -11,9 +11,10 @@ const navLinks = [
   { name: 'Home', href: '/' },
   { name: 'Features', href: '/#features' },
   { name: 'How It Works', href: '/#how' },
-  { name: 'Contact', href: '/contact' },
-  {name: 'About Us', href:'/about'},
+  { name: 'Stories', href: '/stories' },   // ← ADDED
   { name: 'Blog', href: '/blog' },
+  { name: 'About Us', href: '/about' },
+  { name: 'Contact', href: '/contact' },
 ];
 
 export default function Header() {
@@ -43,56 +44,63 @@ export default function Header() {
     };
   }, [isOpen]);
 
-  // ✅ Early return AFTER all hooks
   if (pathname === '/holi') return null;
 
   return (
     <>
       {isOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 md:hidden"
           onClick={() => setIsOpen(false)}
         />
       )}
 
-      <header 
+      <header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
           scrolled || isOpen ? 'bg-white/95 backdrop-blur-md shadow-md' : 'bg-transparent'
         }`}
       >
         <nav className="container mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
-            {/* Logo - Left */}
+            {/* Logo */}
             <Link href="/" className="flex items-center gap-2 group flex-shrink-0">
               <div className="w-10 h-10 relative">
-                <Image 
-                  src="/finnotia-logo.png" 
+                <Image
+                  src="/finnotia-logo.png"
                   alt={`${APP_NAME} Logo`}
                   width={40}
                   height={40}
                   className="w-full h-full object-contain transform group-hover:scale-110 transition-transform duration-300"
                 />
               </div>
-              <span className="text-lg font-bold text-gray-900">
-                {APP_NAME}
-              </span>
+              <span className="text-lg font-bold text-gray-900">{APP_NAME}</span>
             </Link>
 
-            {/* Desktop Navigation - Center */}
-            <div className="hidden md:flex items-center gap-6 absolute left-1/2 transform -translate-x-1/2">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.name}
-                  href={link.href}
-                  className="text-sm font-medium text-gray-700 hover:text-[#2E5CB8] transition-colors duration-200 relative group"
-                >
-                  {link.name}
-                  <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#2E5CB8] group-hover:w-full transition-all duration-300" />
-                </Link>
-              ))}
+            {/* Desktop Nav */}
+            <div className="hidden md:flex items-center gap-5 absolute left-1/2 transform -translate-x-1/2">
+              {navLinks.map((link) => {
+                const isActive =
+                  link.href !== '/' &&
+                  !link.href.startsWith('/#') &&
+                  pathname.startsWith(link.href);
+                return (
+                  <Link
+                    key={link.name}
+                    href={link.href}
+                    className={`text-sm font-medium transition-colors duration-200 relative group
+                      ${isActive ? 'text-[#2E5CB8]' : 'text-gray-700 hover:text-[#2E5CB8]'}`}
+                  >
+                    {link.name}
+                    <span
+                      className={`absolute bottom-0 left-0 h-0.5 bg-[#2E5CB8] transition-all duration-300
+                        ${isActive ? 'w-full' : 'w-0 group-hover:w-full'}`}
+                    />
+                  </Link>
+                );
+              })}
             </div>
-              
-            {/* Download Dropdown - Right */}
+
+            {/* Download Dropdown */}
             <div className="hidden md:block flex-shrink-0">
               <div className="relative">
                 <button
@@ -105,12 +113,8 @@ export default function Header() {
 
                 {showDownload && (
                   <>
-                    <div 
-                      className="fixed inset-0 z-10" 
-                      onClick={() => setShowDownload(false)}
-                    />
+                    <div className="fixed inset-0 z-10" onClick={() => setShowDownload(false)} />
                     <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden z-20">
-                      {/* Android - Working Link */}
                       <a
                         href={PLAY_STORE_URL}
                         target="_blank"
@@ -126,8 +130,6 @@ export default function Header() {
                           <div className="text-xs text-green-600">Download Now</div>
                         </div>
                       </a>
-
-                      {/* iOS - Download Page Link */}
                       <Link
                         href={APP_STORE_URL}
                         className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors"
@@ -158,21 +160,30 @@ export default function Header() {
 
           {/* Mobile Menu */}
           {isOpen && (
-            <div className="md:hidden mt-4 pb-4 space-y-3 relative z-50">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.name}
-                  href={link.href}
-                  onClick={() => setIsOpen(false)}
-                  className="block text-sm font-medium text-gray-700 hover:text-[#2E5CB8] transition-colors duration-200 py-2"
-                >
-                  {link.name}
-                </Link>
-              ))}
-              
-              {/* Mobile Download Section */}
+            <div className="md:hidden mt-4 pb-4 space-y-1 relative z-50">
+              {navLinks.map((link) => {
+                const isActive =
+                  link.href !== '/' &&
+                  !link.href.startsWith('/#') &&
+                  pathname.startsWith(link.href);
+                return (
+                  <Link
+                    key={link.name}
+                    href={link.href}
+                    onClick={() => setIsOpen(false)}
+                    className={`block text-sm font-medium py-2.5 px-2 rounded-lg transition-colors duration-200
+                      ${isActive
+                        ? 'text-[#2E5CB8] bg-blue-50'
+                        : 'text-gray-700 hover:text-[#2E5CB8] hover:bg-gray-50'
+                      }`}
+                  >
+                    {link.name}
+                  </Link>
+                );
+              })}
+
+              {/* Mobile Download */}
               <div className="pt-3 border-t border-gray-200 space-y-2">
-                {/* Android */}
                 <a
                   href={PLAY_STORE_URL}
                   target="_blank"
@@ -186,8 +197,6 @@ export default function Header() {
                     <div className="text-xs opacity-80">Available Now</div>
                   </div>
                 </a>
-
-                {/* iOS */}
                 <Link
                   href={APP_STORE_URL}
                   className="flex items-center gap-3 bg-white text-gray-700 px-4 py-3 rounded-lg font-semibold border-2 border-gray-200 hover:bg-gray-50 transition-all duration-300"

@@ -1,4 +1,7 @@
 'use client';
+// src/components/layout/Footer.jsx
+// UPDATED: Editorial Policy added, copyright year fixed
+
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -11,23 +14,27 @@ const footerLinks = {
     { name: 'Features', href: '/#features' },
     { name: 'How It Works', href: '/#how' },
     { name: 'Download App', href: PLAY_STORE_URL, external: true },
+    { name: 'Web Stories', href: '/stories' },
   ],
   company: [
     { name: 'About Us', href: '/about' },
     { name: 'Founder', href: '/founder' },
     { name: 'Blog', href: '/blog' },
     { name: 'Contact Us', href: '/contact' },
+    { name: 'Sitemap', href: '/sitemap' },          // ← NEW
   ],
   legal: [
     { name: 'Privacy Policy', href: '/privacy' },
     { name: 'Terms of Service', href: '/terms' },
-    { name: 'Delete Account', href: '/delete-account' },
+    { name: 'Editorial Policy', href: '/editorial-policy' }, // ← NEW
     { name: 'Disclaimer', href: '/disclaimer' },
+    { name: 'Delete Account', href: '/delete-account' },
   ],
 };
 
 export default function Footer() {
-  const [year, setYear] = useState(2024);
+  // ✅ FIX: Initialize with current year to avoid showing "2024" on first render
+  const [year, setYear] = useState(() => new Date().getFullYear());
 
   const pathname = usePathname();
 
@@ -35,7 +42,6 @@ export default function Footer() {
     setYear(new Date().getFullYear());
   }, []);
 
-  // ✅ Early return AFTER all hooks
   if (pathname === '/holi') return null;
 
   return (
@@ -45,8 +51,8 @@ export default function Footer() {
         <div className="mb-8">
           <Link href="/" className="flex items-center gap-2 mb-4 group">
             <div className="w-10 h-10 relative flex-shrink-0">
-              <Image 
-                src="/finnotia-logo.png" 
+              <Image
+                src="/finnotia-logo.png"
                 alt={`${APP_NAME} Logo`}
                 width={40}
                 height={40}
@@ -56,7 +62,7 @@ export default function Footer() {
             <span className="text-xl font-bold">{APP_NAME}</span>
           </Link>
           <p className="text-sm text-gray-400 max-w-md leading-relaxed">
-            AI-powered IPO tracking and stock market information platform. 
+            AI-powered IPO tracking and stock market information platform.
             Access real-time data and curated news for educational purposes.
           </p>
         </div>
@@ -120,15 +126,15 @@ export default function Footer() {
           <div>
             <h3 className="text-sm font-bold mb-3 text-[#4A90E2]">Contact</h3>
             <div className="space-y-2">
-              <a 
-                href={`mailto:${CONTACT_INFO.supportEmail}`} 
+              <a
+                href={`mailto:${CONTACT_INFO.supportEmail}`}
                 className="flex items-center gap-2 text-gray-400 hover:text-[#4A90E2] text-xs transition-colors"
               >
                 <Mail className="w-3 h-3 flex-shrink-0" />
                 <span className="break-all">{CONTACT_INFO.supportEmail}</span>
               </a>
-              <a 
-                href={`mailto:${CONTACT_INFO.contactEmail}`} 
+              <a
+                href={`mailto:${CONTACT_INFO.contactEmail}`}
                 className="flex items-center gap-2 text-gray-400 hover:text-[#4A90E2] text-xs transition-colors"
               >
                 <Mail className="w-3 h-3 flex-shrink-0" />
@@ -148,8 +154,8 @@ export default function Footer() {
             </div>
             <p className="text-xs text-gray-400 leading-relaxed">
               <strong className="text-gray-300">{APP_NAME}</strong> is an educational tool and{' '}
-              <strong className="text-gray-300">NOT a SEBI registered investment advisor</strong>. 
-              Data provided is for informational purposes only. Investments in securities market are subject to market risks. 
+              <strong className="text-gray-300">NOT a SEBI registered investment advisor</strong>.
+              Data provided is for informational purposes only. Investments in securities market are subject to market risks.
               Read all related documents carefully before investing.
             </p>
           </div>
@@ -159,9 +165,15 @@ export default function Footer() {
             <p className="text-gray-500 text-xs text-center sm:text-left">
               © {year} {APP_NAME}. All rights reserved.
             </p>
-            <p className="text-gray-600 text-xs text-center sm:text-right">
-              Made with ❤️ in India
-            </p>
+            <div className="flex items-center gap-4 text-gray-600 text-xs">
+              <Link href="/editorial-policy" className="hover:text-gray-400 transition-colors">
+                Editorial Policy
+              </Link>
+              <Link href="/sitemap" className="hover:text-gray-400 transition-colors">
+                Sitemap
+              </Link>
+              <span>Made with ❤️ in India</span>
+            </div>
           </div>
         </div>
       </div>

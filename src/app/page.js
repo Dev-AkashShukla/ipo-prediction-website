@@ -1,20 +1,19 @@
-// src/app/page.js - Performance Optimized Version
+// src/app/page.js
+// UPDATED: LatestArticles section added after StoriesSection — homepage ab content-heavy hai
+
 import dynamic from 'next/dynamic';
 import HeroSection from '../components/home/HeroSection';
 import StatsSection from '../components/home/StatsSection';
+import LatestArticles from '../components/home/LatestArtciles';
 
-
-
-// StoriesSection ko bhi dynamic karo - yahi fix hai
 const StoriesSection = dynamic(() => import('../components/home/StoriesSection'), {
   loading: () => <div className="h-64 bg-white" />,
   ssr: false,
 });
 
-// Lazy load below-the-fold components with loading states
 const FeaturesSection = dynamic(() => import('../components/home/FeaturesSection'), {
   loading: () => <div className="h-96 bg-white" />,
-  ssr: false, // Client-side only for better performance
+  ssr: false,
 });
 
 const HowItWorks = dynamic(() => import('../components/home/HowItWorks'), {
@@ -35,12 +34,15 @@ const CTASection = dynamic(() => import('../components/home/CTASection'), {
 export default function HomePage() {
   return (
     <>
-      {/* Above the fold - loads immediately */}
+      {/* Above the fold */}
       <HeroSection />
       <StoriesSection />
       <StatsSection />
-      
-      {/* Below the fold - lazy loaded */}
+
+      {/* ← NEW: Latest research articles — makes homepage content-heavy for AdSense */}
+      <LatestArticles />
+
+      {/* Below the fold */}
       <FeaturesSection />
       <HowItWorks />
       <AppScreenshots />

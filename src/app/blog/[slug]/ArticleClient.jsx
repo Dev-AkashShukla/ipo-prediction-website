@@ -1,11 +1,13 @@
 'use client';
 // src/app/blog/[slug]/ArticleClient.jsx
+// UPDATED: Author byline now links to /author/[slug] for E-E-A-T
+// Everything else unchanged from original
 
 import { useState, useEffect } from 'react';
 import {
   Share2, Twitter, MessageCircle, Link2, Check,
   List, X, Clock, Calendar, TrendingUp, TrendingDown,
-  Minus, Activity, BarChart2, BookOpen,
+  Minus, Activity, BarChart2, User,
 } from 'lucide-react';
 
 const CAT_STYLES = {
@@ -29,6 +31,11 @@ const SENT_CONFIG = {
   NEUTRAL: { bg: '#f1f5f9', text: '#475569', border: '#cbd5e1', icon: Minus,        label: 'Neutral' },
   MIXED:   { bg: '#fefce8', text: '#a16207', border: '#fde047', icon: Activity,     label: 'Mixed'   },
 };
+
+// Convert author name to URL slug: "Akash Shukla" → "akash-shukla"
+function authorToSlug(name) {
+  return (name || '').toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
+}
 
 export default function ArticleClient({ frontmatter: fm, htmlContent }) {
   const [progress, setProgress] = useState(0);
@@ -59,13 +66,17 @@ export default function ArticleClient({ frontmatter: fm, htmlContent }) {
   }, []);
 
   const slugify  = (s) => s.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
-
   const fmtDate  = (d) =>
     d ? new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
 
   const catStyle = CAT_STYLES[fm.category?.toLowerCase()] || { bg: '#f1f5f9', text: '#475569' };
   const sentConf = SENT_CONFIG[fm.sentiment?.toUpperCase()] || null;
   const SentIcon = sentConf?.icon || null;
+
+  // ── Author helpers ────────────────────────────────────────────────────────
+  const authorName = fm.author || 'Finnotia Research';
+  const authorSlug = authorToSlug(authorName);
+  const authorHref = `/author/${authorSlug}`;
 
   const handleCopy = () => {
     const copy = () => {
@@ -101,7 +112,6 @@ export default function ArticleClient({ frontmatter: fm, htmlContent }) {
     target?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
-  // Clean read time — strip any non-digit characters, just show number
   const readTime = parseInt(String(fm.readTime || '').replace(/\D/g, ''), 10) || null;
 
   return (
@@ -127,7 +137,6 @@ export default function ArticleClient({ frontmatter: fm, htmlContent }) {
               className="absolute inset-0"
               style={{ background: 'linear-gradient(to bottom, transparent 20%, rgba(0,0,0,0.3) 60%, rgba(0,0,0,0.85) 100%)' }}
             />
-            {/* Category badge — top left */}
             <div className="absolute top-4 left-4 sm:top-6 sm:left-6">
               <span
                 className="text-[11px] font-bold tracking-widest uppercase px-3 py-1.5 rounded-full"
@@ -138,7 +147,6 @@ export default function ArticleClient({ frontmatter: fm, htmlContent }) {
             </div>
           </>
         ) : (
-          /* ✅ FIX: No emoji — Lucide icon instead */
           <div
             className="w-full h-full flex items-center justify-center"
             style={{ background: 'linear-gradient(135deg, #0c1e35 0%, #1a3355 100%)' }}
@@ -147,10 +155,8 @@ export default function ArticleClient({ frontmatter: fm, htmlContent }) {
           </div>
         )}
 
-        {/* Title + sentiment overlay — bottom of image */}
         <div className="absolute bottom-0 left-0 right-0 px-5 pb-6 sm:px-8 sm:pb-8">
           <div className="max-w-2xl mx-auto">
-            {/* ✅ FIX: Only sentiment badge — region badge removed */}
             {sentConf && (
               <div className="flex items-center gap-2 mb-3">
                 <span
@@ -179,7 +185,6 @@ export default function ArticleClient({ frontmatter: fm, htmlContent }) {
       {/* ── Article body container ── */}
       <div className="max-w-2xl mx-auto px-5 sm:px-6">
 
-        {/* ── Excerpt / standfirst ── */}
         {fm.excerpt && (
           <p
             className="mt-6 text-[17px] leading-relaxed text-gray-500 border-l-4 pl-4"
@@ -189,15 +194,10 @@ export default function ArticleClient({ frontmatter: fm, htmlContent }) {
           </p>
         )}
 
-        {/* ── Key facts ── */}
         {fm.key_facts?.length > 0 && (
           <div className="mt-5 grid grid-cols-3 gap-2 sm:gap-3">
             {fm.key_facts.map((fact, i) => (
-              <div
-                key={i}
-                className="rounded-xl px-3 py-3 text-center"
-                style={{ backgroundColor: '#0c1e35' }}
-              >
+              <div key={i} className="rounded-xl px-3 py-3 text-center" style={{ backgroundColor: '#0c1e35' }}>
                 <p className="text-white/75 text-[11px] sm:text-[12px] leading-snug font-medium" style={{ fontFamily: 'system-ui, sans-serif' }}>
                   {fact}
                 </p>
@@ -206,30 +206,30 @@ export default function ArticleClient({ frontmatter: fm, htmlContent }) {
           </div>
         )}
 
-        {/* ── Meta row ── */}
-        {/* ✅ FIX:
-            - Removed "AI-powered market analysis" subtitle (AdSense red flag + looks cheap)
-            - Author circle now uses BookOpen icon instead of plain "F"
-            - readTime shows "X min read" not "X min" (was confusing with "X min ago")
-            - Region NOT shown here either
-        */}
+        {/* ── Meta row — UPDATED with clickable author ── */}
         <div
           className="mt-5 flex items-center gap-3 py-4 border-t border-b border-gray-100"
           style={{ fontFamily: 'system-ui, sans-serif' }}
         >
-          {/* Author avatar */}
-          <div
-            className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0"
-            style={{ backgroundColor: '#fef3f0' }}
-          >
-            <BookOpen size={16} color="#c8421e" strokeWidth={2} />
-          </div>
-
-          {/* Author name only — no tagline */}
-          <div className="flex-1 min-w-0">
-            <div className="text-[13px] font-semibold text-gray-800">
-              {fm.author || 'Finnotia Research'}
+          {/* Author avatar — now a link */}
+          <a href={authorHref} className="flex-shrink-0">
+            <div
+              className="w-9 h-9 rounded-full flex items-center justify-center hover:opacity-80 transition-opacity"
+              style={{ backgroundColor: '#fef3f0' }}
+            >
+              <User size={16} color="#c8421e" strokeWidth={2} />
             </div>
+          </a>
+
+          {/* Author name — clickable link */}
+          <div className="flex-1 min-w-0">
+            <a
+              href={authorHref}
+              className="text-[13px] font-semibold text-gray-800 hover:text-[#c8421e] transition-colors"
+            >
+              {authorName}
+            </a>
+            <div className="text-[11px] text-gray-400 mt-0.5">Finnotia Research</div>
           </div>
 
           {/* Date + read time */}
@@ -249,7 +249,6 @@ export default function ArticleClient({ frontmatter: fm, htmlContent }) {
           </div>
         </div>
 
-        {/* ── Bull / Bear thesis cards (analysis style only) ── */}
         {(fm.bull_case_summary || fm.bear_case_summary) && (
           <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-3" style={{ fontFamily: 'system-ui, sans-serif' }}>
             {fm.bull_case_summary && (
@@ -273,7 +272,6 @@ export default function ArticleClient({ frontmatter: fm, htmlContent }) {
           </div>
         )}
 
-        {/* ── Thesis statement (analysis style only) ── */}
         {fm.thesis_statement && (
           <div
             className="mt-6 rounded-xl px-5 py-4"
@@ -356,7 +354,6 @@ export default function ArticleClient({ frontmatter: fm, htmlContent }) {
             className="article-body"
             dangerouslySetInnerHTML={{
               __html: htmlContent
-                // Strip inline disclaimer (already shown in dedicated block below)
                 .replace(/<hr\s*\/?>\s*<p>\s*<em>This article is for educational[\s\S]*?<\/em>\s*<\/p>/i, '')
                 .replace(/<p>\s*<em>This article is for educational[\s\S]*?<\/em>\s*<\/p>/i, ''),
             }}
@@ -407,6 +404,35 @@ export default function ArticleClient({ frontmatter: fm, htmlContent }) {
             ))}
           </div>
         )}
+
+        {/* ── Author Box — NEW ── */}
+        <div
+          className="mb-8 rounded-2xl border border-gray-100 p-5"
+          style={{ fontFamily: 'system-ui, sans-serif', backgroundColor: '#fafafa' }}
+        >
+          <div className="flex items-start gap-4">
+            <a href={authorHref} className="flex-shrink-0">
+              <div
+                className="w-12 h-12 rounded-xl flex items-center justify-center"
+                style={{ backgroundColor: '#fef3f0' }}
+              >
+                <User size={20} color="#c8421e" strokeWidth={1.5} />
+              </div>
+            </a>
+            <div>
+              <div className="text-[10px] font-bold tracking-widest text-gray-400 uppercase mb-1">Written by</div>
+              <a href={authorHref} className="text-[14px] font-bold text-gray-900 hover:text-[#c8421e] transition-colors">
+                {authorName}
+              </a>
+              <p className="text-[12px] text-gray-500 mt-1 leading-relaxed">
+                Founder of Finnotia. Full-stack developer and market researcher covering IPOs, stocks, and global macroeconomics.
+              </p>
+              <a href={authorHref} className="inline-block mt-2 text-[12px] font-semibold text-[#c8421e] hover:underline">
+                View all articles →
+              </a>
+            </div>
+          </div>
+        </div>
 
         {/* ── Disclaimer ── */}
         <div

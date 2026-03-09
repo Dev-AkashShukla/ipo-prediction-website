@@ -1,90 +1,149 @@
 // src/app/api/stories/route.js
-// Proxy route — hides Azure URL, returns flat items array
+// Reads directly from content/articles/*.md — no Azure API needed
+// Returns same shape as before so StoriesSection works without changes
 
-const AZURE_API = 'https://finnotia-ai-service.azurewebsites.net/api/local/news/micro/latest';
+import fs     from 'fs';
+import path   from 'path';
+import matter from 'gray-matter';
+import { NextResponse } from 'next/server';
 
-function makeSlug(headline, updateId) {
-  const clean = (headline || '')
-    .toLowerCase()
-    .replace(/[^a-z0-9\s-]/g, '')
-    .trim()
-    .replace(/\s+/g, '-')
-    .slice(0, 60);
-  return `${updateId}-${clean}`;
+function makeSlug(title, filename) {
+  // Use frontmatter slug if available, else derive from filename
+  if (title) {
+    return title
+      .toLowerCase()
+      .replace(/[^a-z0-9\s-]/g, '')
+      .trim()
+      .replace(/\s+/g, '-')
+      .slice(0, 60);
+  }
+  return filename.replace(/\.md$/, '');
+}
+
+function inferSentiment(fm) {
+  // Derive from frontmatter sentiment field or bull/bear case
+  const s = (fm.sentiment || '').toUpperCase();
+  if (['BULLISH', 'POSITIVE'].includes(s)) return 'POSITIVE';
+  if (['BEARISH', 'NEGATIVE'].includes(s)) return 'NEGATIVE';
+  if (s === 'MIXED')                        return 'MIXED';
+  if (fm.bull_case_summary && !fm.bear_case_summary) return 'POSITIVE';
+  if (fm.bear_case_summary && !fm.bull_case_summary) return 'NEGATIVE';
+  return 'NEUTRAL';
+}
+
+function inferImportance(fm) {
+  // Use frontmatter importance if set, else map from category
+  if (fm.importance) return fm.importance.toUpperCase();
+  const catMap = {
+    geopolitics: 'CRITICAL',
+    economy:     'HIGH',
+    markets:     'HIGH',
+    ipo:         'HIGH',
+    commodities: 'MEDIUM',
+    tech:        'MEDIUM',
+    policy:      'HIGH',
+    'mutual-funds': 'MEDIUM',
+    crypto:      'MEDIUM',
+    investing:   'MEDIUM',
+    tax:         'MEDIUM',
+    corporate:   'MEDIUM',
+  };
+  return catMap[(fm.category || '').toLowerCase()] || 'MEDIUM';
+}
+
+function fmtTime(dateStr) {
+  if (!dateStr) return 'Today';
+  try {
+    return new Date(dateStr).toLocaleTimeString('en-IN', {
+      hour: '2-digit', minute: '2-digit', hour12: true,
+    });
+  } catch {
+    return 'Today';
+  }
 }
 
 export async function GET() {
   try {
-    const res = await fetch(AZURE_API, {
-      next: { revalidate: 1800 },
-      headers: { 'Accept': 'application/json' },
-    });
+    const dir = path.join(process.cwd(), 'content', 'articles');
 
-    if (!res.ok) throw new Error(`Azure API ${res.status}`);
+    // If no articles dir yet, return empty
+    if (!fs.existsSync(dir)) {
+      return NextResponse.json({ items: [], date: new Date().toISOString().split('T')[0] });
+    }
 
-    const raw = await res.json();
+    const files = fs
+      .readdirSync(dir)
+      .filter(f => f.endsWith('.md') && f !== '.gitkeep');
 
-    // ── Handle both possible response shapes ──
-    // Shape 1: { success, data: { updates: [] } }
-    // Shape 2: { success, updates: [] }
-    const updates =
-      raw?.data?.updates ||
-      raw?.updates ||
-      [];
+    if (files.length === 0) {
+      return NextResponse.json({ items: [], date: new Date().toISOString().split('T')[0] });
+    }
 
-    const IMPORTANCE_ORDER = { CRITICAL: 0, HIGH: 1, MEDIUM: 2, LOW: 3 };
+    const items = files
+      .map(filename => {
+        try {
+          const raw        = fs.readFileSync(path.join(dir, filename), 'utf8');
+          const { data: fm } = matter(raw);
 
-    const items = updates
-      .flatMap((u) =>
-        (u.news_items || []).map((item) => ({
-          slug: makeSlug(item.headline, u.update_id),
-          update_id: u.update_id,
-          generated_at: u.generated_at,
-          headline:        item.headline        || '',
-          quick_summary:   item.quick_summary   || '',
-          detailed_summary:item.detailed_summary|| '',
-          what_it_means:   item.what_it_means   || '',
-          context:         item.context         || '',
-          key_points:      item.key_points      || [],
-          importance:      item.importance      || 'MEDIUM',
-          sentiment:       item.sentiment       || 'NEUTRAL',
-          is_breaking:     item.is_breaking     || false,
-          source:          item.source          || {},
-          tags:            item.tags            || [],
-          published_time:  item.published_time  || item.timestamp || '',
-        }))
-      )
-      .filter((item) => item.headline) // skip empty
-      .sort(
-        (a, b) =>
-          (IMPORTANCE_ORDER[a.importance] ?? 9) -
-          (IMPORTANCE_ORDER[b.importance] ?? 9)
-      );
+          const slug = fm.slug || makeSlug(fm.title, filename);
 
-    // Deduplicate by headline
-    const seen = new Set();
-    const unique = items.filter((item) => {
-      if (seen.has(item.headline)) return false;
-      seen.add(item.headline);
-      return true;
-    });
+          return {
+            slug,
 
-    return Response.json(
+            // Core content
+            headline:        fm.title         || 'Untitled',
+            quick_summary:   fm.excerpt        || '',
+            detailed_summary: fm.excerpt       || '',
+            what_it_means:   fm.bull_case_summary || fm.thesis_statement || '',
+            context:         fm.bear_case_summary || '',
+            key_points:      fm.key_facts      || [],
+
+            // Meta
+            importance:      inferImportance(fm),
+            sentiment:       inferSentiment(fm),
+            category:        fm.category       || 'Markets',
+            tags:            fm.tags           || [],
+            published_time:  fmtTime(fm.date),
+            date:            fm.date           || '',
+
+            // Source — articles are by Finnotia
+            source: {
+              name: 'Finnotia Research',
+              url:  `https://finnotia.com/blog/${slug}`,
+            },
+
+            // Image for story viewer
+            image_url_og: fm.image_url || '',
+          };
+        } catch {
+          // Skip malformed files silently
+          return null;
+        }
+      })
+      .filter(Boolean)                                      // remove nulls
+      .filter(item => item.headline !== 'Untitled' || item.quick_summary) // skip empty
+      .sort((a, b) => new Date(b.date) - new Date(a.date)); // newest first
+
+    return NextResponse.json(
       {
-        success: true,
-        date: updates[0]?.generated_at || new Date().toISOString(),
-        total: unique.length,
-        items: unique,
+        items,
+        date:  new Date().toISOString().split('T')[0],
+        total: items.length,
+        source: 'articles',
       },
       {
-        headers: { 'Cache-Control': 'public, max-age=1800, stale-while-revalidate=3600' },
+        headers: {
+          'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600',
+        },
       }
     );
+
   } catch (err) {
-    console.error('[Stories API]', err.message);
-    return Response.json(
-      { success: false, error: err.message, items: [] },
-      { status: 500 }
+    console.error('[/api/stories]', err.message);
+    // Never return 500 — return empty array so UI doesn't break
+    return NextResponse.json(
+      { items: [], date: new Date().toISOString().split('T')[0], error: err.message },
+      { status: 200 }
     );
   }
 }

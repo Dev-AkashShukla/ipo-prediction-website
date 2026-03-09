@@ -151,7 +151,7 @@ export default function RootLayout({ children }) {
         </Script>
 
         <Header />
-        <main className="min-h-fitcontent">
+        <main className="min-h-fitcontent pt-16" style={{ fontFamily: 'system-ui, sans-serif' }}>
           {children}
         </main>
         <Footer />

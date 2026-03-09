@@ -69,7 +69,7 @@ const sections = [
 
 export default function SitemapPage() {
   return (
-    <div className="min-h-screen bg-[#f8f7f4] pt-16" style={{ fontFamily: 'system-ui, sans-serif' }}>
+    <div className="min-h-screen bg-[#f8f7f4]" style={{ fontFamily: 'system-ui, sans-serif' }}>
 
       {/* ── Hero ── */}
       <div className="bg-[#0c1e35] px-5 pt-14 pb-16 relative overflow-hidden">

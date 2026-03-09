@@ -2,12 +2,31 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── FINNOTIA Design System ──────────────────────────────────────────────────
+   Primary:    #0B0F19  (dark navy  – hero, dark sections, footer)
+   Accent:     #2563EB  (blue       – CTAs, tags, links, icons)
+   Background: #F8FAFC  (off-white  – page background)
+   Surface:    #FFFFFF  (cards)
+   Border:     #E2E8F0  (dividers)
+   Muted:      #64748B  (secondary text)
+   Heading:    #0F172A  (near-black)
+─────────────────────────────────────────────────────────────────────────── */
+
 :root {
-  --primary: #3b82f6;
-  --secondary: #8b5cf6;
-  --accent: #10b981;
-  --dark: #0f172a;
-  --light: #f8fafc;
+  --primary:    #0B0F19;
+  --accent:     #2563EB;
+  --accent-hover: #1D4ED8;
+  --bg:         #F8FAFC;
+  --surface:    #FFFFFF;
+  --border:     #E2E8F0;
+  --muted:      #64748B;
+  --heading:    #0F172A;
+  --text:       #334155;
+
+  /* Legacy aliases kept for backward compat */
+  --secondary:  #2563EB;
+  --dark:       #0B0F19;
+  --light:      #F8FAFC;
 }
 
 * {
@@ -21,90 +40,175 @@ html {
 }
 
 body {
-  font-family: 'Inter', sans-serif;
-  background: var(--light);
-  color: var(--dark);
+  font-family: 'DM Sans', 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--text);
   overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-}
+/* ── Custom Scrollbar ────────────────────────────────────────── */
+::-webkit-scrollbar        { width: 6px; }
+::-webkit-scrollbar-track  { background: #F1F5F9; }
+::-webkit-scrollbar-thumb  { background: var(--accent); border-radius: 3px; }
 
-::-webkit-scrollbar-track {
-  background: #f1f5f9;
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--primary);
-  border-radius: 4px;
-}
-
-/* Smooth Animations */
+/* ── Animations ──────────────────────────────────────────────── */
 .fade-in {
-  animation: fadeIn 0.6s ease-in-out;
+  animation: fadeIn 0.5s ease-out;
 }
-
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-/* Gradient Text */
+@keyframes blob {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%       { transform: translate(20px, -30px) scale(1.08); }
+  66%       { transform: translate(-15px, 15px) scale(0.95); }
+}
+.animate-blob            { animation: blob 8s infinite ease-in-out; }
+.animation-delay-2000    { animation-delay: 2s; }
+.animation-delay-4000    { animation-delay: 4s; }
+
+/* ── Gradient Text ────────────────────────────────────────────── */
 .gradient-text {
-  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+  background: linear-gradient(135deg, var(--accent) 0%, #60A5FA 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
-/* Glass Effect */
+/* ── Glass Effect ─────────────────────────────────────────────── */
 .glass {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
 }
 
-/* Button Hover Effects */
+/* ── Reusable Button Classes ──────────────────────────────────── */
 .btn-primary {
-  @apply bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-3 rounded-xl font-semibold hover:shadow-xl hover:scale-105 transition-all duration-300;
+  @apply bg-[#2563EB] hover:bg-[#1D4ED8] text-white px-6 py-3 rounded-xl font-semibold
+         transition-all duration-200 shadow-sm hover:shadow-md active:scale-95;
 }
 
 .btn-secondary {
-  @apply bg-white text-blue-600 px-8 py-3 rounded-xl font-semibold border-2 border-blue-600 hover:bg-blue-50 transition-all duration-300;
+  @apply bg-white text-[#2563EB] px-6 py-3 rounded-xl font-semibold border border-[#BFDBFE]
+         hover:border-[#2563EB] hover:bg-blue-50 transition-all duration-200 active:scale-95;
+}
+
+.btn-ghost {
+  @apply text-[#2563EB] font-semibold px-4 py-2 rounded-lg hover:bg-blue-50 transition-colors duration-200;
+}
+
+/* ── Category Tags ────────────────────────────────────────────── */
+.tag {
+  @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold;
+}
+.tag-accent  { @apply bg-[#DBEAFE] text-[#1E40AF]; }
+.tag-dark    { @apply bg-[#0B0F19] text-white/80; }
+.tag-green   { @apply bg-[#D1FAE5] text-[#065F46]; }
+.tag-amber   { @apply bg-[#FEF3C7] text-[#92400E]; }
+.tag-red     { @apply bg-[#FEE2E2] text-[#991B1B]; }
+
+/* ── Section Spacing (breathing room) ────────────────────────── */
+.section { @apply py-16 sm:py-20 lg:py-24; }
+.section-sm { @apply py-10 sm:py-14; }
+
+/* ── Card ─────────────────────────────────────────────────────── */
+.card {
+  @apply bg-white rounded-2xl border border-[#E2E8F0] 
+         transition-all duration-200 hover:shadow-md hover:-translate-y-0.5;
+}
+
+/* ── Container ────────────────────────────────────────────────── */
+.container {
+  @apply max-w-[1200px] mx-auto;
 }
 
 
-@keyframes blob {
-  0%, 100% { 
-    transform: translate(0, 0) scale(1); 
-  }
-  25% { 
-    transform: translate(20px, -50px) scale(1.1); 
-  }
-  50% { 
-    transform: translate(-20px, 20px) scale(0.9); 
-  }
-  75% { 
-    transform: translate(50px, 50px) scale(1.05); 
-  }
-}
+/* ── Article Body Styles ─────────────────────────────────────────────────────
+   Add this block to your src/app/globals.css
+   Moved here from ArticleClient.jsx to fix Next.js hydration mismatch error
+   (inline <style> tags with quotes cause &#x27; encoding on server vs client)
+   ─────────────────────────────────────────────────────────────────────────── */
 
-.animate-blob {
-  animation: blob 7s infinite;
+.article-body {
+  font-family: 'Georgia', 'Times New Roman', serif;
 }
-
-.animation-delay-2000 {
-  animation-delay: 2s;
+.article-body h2 {
+  font-size: clamp(17px, 3vw, 22px);
+  font-weight: 700;
+  color: #111827;
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid #e5e7eb;
+  line-height: 1.35;
+  font-family: 'Georgia', serif;
 }
-
-.animation-delay-4000 {
-  animation-delay: 4s;
+.article-body h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1f2937;
+  margin-top: 1.5rem;
+  margin-bottom: 0.6rem;
+}
+.article-body p {
+  font-size: 15px;
+  line-height: 1.8;
+  color: #374151;
+  margin-bottom: 1.2rem;
+  text-align: justify;
+  text-justify: inter-word;
+}
+.article-body strong {
+  color: #111827;
+  font-weight: 700;
+}
+.article-body a {
+  color: #c8421e;
+  text-decoration: none;
+  border-bottom: 1px solid #fca5a5;
+}
+.article-body a:hover {
+  border-color: #c8421e;
+}
+.article-body ul,
+.article-body ol {
+  margin-bottom: 1.2rem;
+  padding-left: 1.4rem;
+}
+.article-body li {
+  font-size: 14.5px;
+  line-height: 1.7;
+  color: #4b5563;
+  margin-bottom: 0.35rem;
+  text-align: justify;
+}
+.article-body blockquote {
+  margin: 1.5rem 0;
+  padding: 0.875rem 1rem;
+  border-left: 3px solid #c8421e;
+  background: #fef3f0;
+  border-radius: 0 10px 10px 0;
+}
+.article-body blockquote p {
+  margin: 0;
+  font-style: italic;
+  color: #7c2d12;
+  font-size: 14px;
+  text-align: left;
+}
+.article-body hr {
+  border: none;
+  border-top: 1px solid #e5e7eb;
+  margin: 2rem 0;
+}
+.article-body code {
+  font-size: 12px;
+  color: #c8421e;
+  background: #fef3f0;
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-family: monospace;
 }

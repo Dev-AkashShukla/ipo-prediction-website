@@ -1,27 +1,20 @@
 'use client';
-import { GRADIENTS } from '../../lib/constants';
+// src/components/ui/GradientText.jsx
+// ── Single blue gradient — no purple/pink ───────────────────────
 
 /**
- * Reusable Gradient Text Component
- * 
- * @param {string} variant - 'primary' | 'secondary' | 'hero'
- * @param {string} className - Additional classes
- * @param {React.ReactNode} children - Text content
+ * @param {'blue'|'light'} variant
  */
-export default function GradientText({ 
-  variant = 'hero', 
-  className = '',
-  children 
-}) {
-  const gradientClasses = {
-    primary: GRADIENTS.primary,
-    secondary: GRADIENTS.secondary,
-    hero: GRADIENTS.hero,
+export default function GradientText({ variant = 'blue', className = '', children }) {
+  const gradients = {
+    blue:  'linear-gradient(135deg, #2563EB 0%, #60A5FA 100%)',
+    light: 'linear-gradient(135deg, #60A5FA 0%, #93C5FD 100%)',
   };
 
   return (
-    <span 
-      className={`bg-gradient-to-r ${gradientClasses[variant]} bg-clip-text text-transparent ${className}`}
+    <span
+      className={`text-transparent bg-clip-text ${className}`}
+      style={{ backgroundImage: gradients[variant] ?? gradients.blue }}
     >
       {children}
     </span>

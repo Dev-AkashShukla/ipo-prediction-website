@@ -1,58 +1,37 @@
 'use client';
+// src/app/contact/page.js
 
 import { useState } from 'react';
-import { Mail, Send, Loader2 } from 'lucide-react';
+import { Mail, Send, Loader2, MessageSquare, Clock, MapPin, Headphones } from 'lucide-react';
 import { PLAY_STORE_URL, CONTACT_INFO, GRADIENTS } from '../../lib/constants';
 import AndroidIcon from '../../components/ui/AndroidIcon';
 import { useRecaptcha, useWeb3Forms } from '../../hooks';
 import { FormStatusMessage, RecaptchaNotice } from '../../components/forms';
 
-const initialFormData = {
-  name: '',
-  email: '',
-  subject: '',
-  message: '',
-};
+const initialFormData = { name: '', email: '', subject: '', message: '' };
 
 export default function ContactPage() {
-  const [formData, setFormData] = useState(initialFormData);
+  const [formData, setFormData]             = useState(initialFormData);
   const [validationError, setValidationError] = useState(null);
 
-  const { isLoaded: recaptchaLoaded, verify } = useRecaptcha();
+  const { isLoaded: recaptchaLoaded, verify }      = useRecaptcha();
   const { submit, isSubmitting, status, resetStatus } = useWeb3Forms();
 
   const handleSubmit = async () => {
-    // Validation
     if (!formData.name || !formData.email || !formData.subject || !formData.message) {
-      setValidationError('validation_error');
-      return;
+      setValidationError('validation_error'); return;
     }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(formData.email)) {
-      setValidationError('email_error');
-      return;
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      setValidationError('email_error'); return;
     }
-
     setValidationError(null);
-
-    // Verify reCAPTCHA
     const captchaResult = await verify('contact_form');
-    if (!captchaResult.success) {
-      setValidationError('spam');
-      return;
-    }
-
-    // Submit form
+    if (!captchaResult.success) { setValidationError('spam'); return; }
     const result = await submit(formData, {
-      subject: `[FINNOTIA Contact] ${formData.subject}`,
+      subject:  `[FINNOTIA Contact] ${formData.subject}`,
       fromName: 'FINNOTIA Contact Form',
     });
-
-    if (result.success) {
-      setFormData(initialFormData);
-      setTimeout(resetStatus, 5000);
-    }
+    if (result.success) { setFormData(initialFormData); setTimeout(resetStatus, 5000); }
   };
 
   const handleChange = (e) => {
@@ -61,97 +40,99 @@ export default function ContactPage() {
     if (status && status !== 'success') resetStatus();
   };
 
-  const isDisabled = isSubmitting || !recaptchaLoaded;
+  const isDisabled    = isSubmitting || !recaptchaLoaded;
   const displayStatus = validationError || status;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50/30 py-4 sm:py-8 px-3 sm:px-6">
-      <div className="max-w-6xl mx-auto">
-        
-        {/* Header */}
-        <header className="text-center mb-4 mt-12 sm:mb-8 sm:mt-12">
-          <h1 className="text-xl sm:text-3xl lg:text-4xl font-black text-gray-900 mb-1.5">
-            Get in <span className={`bg-gradient-to-r ${GRADIENTS.primary} bg-clip-text text-transparent`}>Touch</span>
-          </h1>
-          <p className="text-xs sm:text-sm text-gray-600 max-w-xl mx-auto px-2">
-            Have questions? We'd love to hear from you.
-          </p>
-        </header>
+    <div className="min-h-screen bg-[#f8f7f4]" style={{ fontFamily: 'system-ui, sans-serif' }}>
 
-        <div className="grid lg:grid-cols-5 gap-3 sm:gap-5">
-          
-          {/* Contact Form */}
-          <section className="lg:col-span-3 bg-white rounded-xl sm:rounded-2xl shadow-xl p-4 sm:p-6 lg:p-8">
-            <h2 className="text-base sm:text-lg font-bold text-gray-900 mb-3 sm:mb-5">Send a Message</h2>
-            
-            <FormStatusMessage 
-              status={displayStatus} 
-              message={displayStatus === 'success' ? '✓ Message sent successfully! We\'ll get back to you soon.' : undefined}
+      {/* ── Hero ── */}
+      <div className="bg-[#0c1e35] px-4 pt-8 pb-12 relative overflow-hidden">
+        {/* Glow blobs */}
+        <div
+          className="absolute top-0 right-0 w-[280px] h-[280px] rounded-full opacity-[0.07] pointer-events-none"
+          style={{ background: 'radial-gradient(circle, #4A90E2 0%, transparent 70%)', transform: 'translate(30%, -30%)' }}
+        />
+        <div
+          className="absolute bottom-0 left-0 w-[200px] h-[200px] rounded-full opacity-[0.04] pointer-events-none"
+          style={{ background: 'radial-gradient(circle, #60A5FA 0%, transparent 70%)', transform: 'translate(-30%, 40%)' }}
+        />
+        <div className="absolute bottom-0 left-0 right-0 h-5 bg-[#f8f7f4] rounded-t-3xl" />
+
+        <div className="max-w-5xl mx-auto relative z-10 text-center">
+          {/* Icon badge */}
+          <div className="inline-flex items-center gap-1.5 bg-white/5 border border-white/10 rounded-lg px-2.5 py-1 mb-3">
+            <MessageSquare className="w-3 h-3 text-white/50" strokeWidth={2} />
+            <span className="text-white/50 text-[9px] font-bold tracking-widest uppercase">Contact Us</span>
+          </div>
+
+          {/* Heading */}
+          <h1 className="text-2xl sm:text-3xl font-black text-white leading-tight mb-2">
+            Get in{' '}
+            <span
+              className="text-transparent bg-clip-text"
+              style={{ backgroundImage: 'linear-gradient(135deg, #60A5FA 0%, #2563EB 100%)' }}
+            >
+              Touch
+            </span>
+          </h1>
+          <p className="text-white/40 text-xs sm:text-sm max-w-xs mx-auto">
+            Have questions, feedback, or need support? We'd love to hear from you.
+          </p>
+
+          {/* Quick info pills */}
+          <div className="flex flex-wrap items-center justify-center gap-2 mt-4">
+            {[
+              { icon: Clock,      label: 'Replies in 24h'   },
+              { icon: Headphones, label: 'Active Support'   },
+              { icon: MapPin,     label: 'Mumbai, India 🇮🇳' },
+            ].map(({ icon: Icon, label }) => (
+              <div key={label} className="inline-flex items-center gap-1.5 bg-white/5 border border-white/10 rounded-full px-2.5 py-1">
+                <Icon className="w-3 h-3 text-[#60A5FA]" strokeWidth={2} />
+                <span className="text-white/60 text-[10px] font-medium">{label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* ── Body ── */}
+      <div className="max-w-5xl mx-auto px-4 py-6 sm:py-8">
+        <div className="grid lg:grid-cols-5 gap-3 sm:gap-4">
+
+          {/* ── Form ── */}
+          <section className="lg:col-span-3 bg-white rounded-xl border border-gray-100 shadow-sm p-4 sm:p-5">
+            <h2 className="text-sm font-bold text-gray-900 mb-3 flex items-center gap-2">
+              <Send className="w-3.5 h-3.5 text-[#4A90E2]" strokeWidth={2} />
+              Send a Message
+            </h2>
+
+            <FormStatusMessage
+              status={displayStatus}
+              message={displayStatus === 'success' ? "✓ Message sent! We'll get back to you soon." : undefined}
             />
 
-            <div className="space-y-3 sm:space-y-4">
-              {/* Name & Email Row */}
-              <div className="grid sm:grid-cols-2 gap-3">
-                <FormInput
-                  id="name"
-                  label="Name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  disabled={isDisabled}
-                  placeholder="Your Name"
-                />
-                <FormInput
-                  id="email"
-                  type="email"
-                  label="Email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  disabled={isDisabled}
-                  placeholder="your@example.com"
-                />
+            <div className="space-y-2.5">
+              <div className="grid sm:grid-cols-2 gap-2.5">
+                <FormInput id="name"  label="Name"  value={formData.name}  onChange={handleChange} disabled={isDisabled} placeholder="Your Name" />
+                <FormInput id="email" type="email" label="Email" value={formData.email} onChange={handleChange} disabled={isDisabled} placeholder="your@email.com" />
               </div>
+              <FormInput    id="subject" label="Subject" value={formData.subject} onChange={handleChange} disabled={isDisabled} placeholder="How can we help?" />
+              <FormTextarea id="message" label="Message" value={formData.message} onChange={handleChange} disabled={isDisabled} placeholder="Tell us more about your inquiry..." />
 
-              {/* Subject */}
-              <FormInput
-                id="subject"
-                label="Subject"
-                value={formData.subject}
-                onChange={handleChange}
-                disabled={isDisabled}
-                placeholder="How can we help?"
-              />
-
-              {/* Message */}
-              <FormTextarea
-                id="message"
-                label="Message"
-                value={formData.message}
-                onChange={handleChange}
-                disabled={isDisabled}
-                placeholder="Tell us more about your inquiry..."
-              />
-
-              {/* Submit Button */}
               <button
                 onClick={handleSubmit}
                 disabled={isDisabled}
-                className={`w-full bg-gradient-to-r ${GRADIENTS.primary} text-white px-4 py-2.5 sm:py-3 rounded-lg font-bold text-xs sm:text-sm hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100`}
+                className="w-full bg-[#0c1e35] hover:bg-[#142840] text-white px-4 py-2.5 rounded-lg font-bold text-xs
+                  hover:shadow-lg hover:scale-[1.02] active:scale-[0.98] transition-all duration-200
+                  flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
               >
                 {isSubmitting ? (
-                  <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                    <span>Sending...</span>
-                  </>
+                  <><Loader2 className="w-3.5 h-3.5 animate-spin" /><span>Sending...</span></>
                 ) : !recaptchaLoaded ? (
-                  <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                    <span>Loading...</span>
-                  </>
+                  <><Loader2 className="w-3.5 h-3.5 animate-spin" /><span>Loading...</span></>
                 ) : (
-                  <>
-                    <span>Send Message</span>
-                    <Send className="w-4 h-4" />
-                  </>
+                  <><span>Send Message</span><Send className="w-3.5 h-3.5" /></>
                 )}
               </button>
 
@@ -159,124 +140,127 @@ export default function ContactPage() {
             </div>
           </section>
 
-          {/* Sidebar */}
-          <aside className="lg:col-span-2 space-y-3">
-            <DownloadCTA />
-            <ContactInfo />
+          {/* ── Sidebar ── */}
+          <aside className="lg:col-span-2 flex flex-col gap-3">
+
+            {/* Download CTA */}
+            <div className="bg-[#0c1e35] rounded-xl p-4 text-white shadow-sm">
+              <div className="flex items-start gap-2.5 mb-3">
+                <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <AndroidIcon className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-bold mb-0.5">Get FINNOTIA App</h3>
+                  <p className="text-[11px] opacity-85 leading-snug">Real-time IPO alerts & AI analysis</p>
+                </div>
+              </div>
+              <a
+                href={PLAY_STORE_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block text-center bg-white text-[#0c1e35] px-4 py-1.5 rounded-lg text-xs font-bold
+                           hover:shadow-md hover:bg-gray-50 active:scale-95 transition-all duration-200"
+              >
+                Download Free
+              </a>
+            </div>
+
+            {/* Contact Info */}
+            <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-4 flex-1">
+              <h2 className="text-sm font-bold text-gray-900 mb-3">Contact Info</h2>
+              <div className="space-y-2.5">
+
+                {/* Email */}
+                <div className="flex items-start gap-2.5">
+                  <div className="w-7 h-7 bg-blue-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <Mail className="w-3.5 h-3.5 text-[#4A90E2]" strokeWidth={2} />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-[10px] font-bold text-gray-500 uppercase tracking-wide mb-0.5">Email</p>
+                    <a
+                      href={`mailto:${CONTACT_INFO.contactEmail}`}
+                      className="text-xs text-gray-700 hover:text-[#4A90E2] transition-colors truncate block"
+                    >
+                      {CONTACT_INFO.contactEmail}
+                    </a>
+                  </div>
+                </div>
+
+                {/* Response */}
+                <div className="flex items-start gap-2.5">
+                  <div className="w-7 h-7 bg-green-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <Clock className="w-3.5 h-3.5 text-green-600" strokeWidth={2} />
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-bold text-gray-500 uppercase tracking-wide mb-0.5">Response Time</p>
+                    <p className="text-xs text-gray-700">Within 24 hours</p>
+                  </div>
+                </div>
+
+                {/* Location */}
+                <div className="flex items-start gap-2.5">
+                  <div className="w-7 h-7 bg-orange-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <MapPin className="w-3.5 h-3.5 text-orange-500" strokeWidth={2} />
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-bold text-gray-500 uppercase tracking-wide mb-0.5">Based In</p>
+                    <p className="text-xs text-gray-700">Mumbai, India 🇮🇳</p>
+                  </div>
+                </div>
+
+                {/* Live badge */}
+                <div className="bg-green-50 border border-green-200 rounded-lg px-3 py-2 flex items-center gap-2">
+                  <span className="relative flex h-1.5 w-1.5 flex-shrink-0">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
+                    <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-green-500" />
+                  </span>
+                  <p className="text-[11px] font-semibold text-green-800">Support is active</p>
+                </div>
+              </div>
+            </div>
+
           </aside>
         </div>
 
-        {/* Footer */}
-        <footer className="text-center mt-4 sm:mt-8 px-4">
-          <p className="text-xs text-gray-500">
-            🔒 Your information is secure and will never be shared
-          </p>
-        </footer>
+        <p className="text-center text-[10px] text-gray-400 mt-5">
+          🔒 Your information is secure and will never be shared with third parties
+        </p>
       </div>
     </div>
   );
 }
 
-// ============ Sub-Components ============
-
+// ── Reusable form fields ─────────────────────────────────────────
 function FormInput({ id, type = 'text', label, value, onChange, disabled, placeholder }) {
   return (
     <div>
-      <label htmlFor={id} className="block text-xs font-semibold text-gray-700 mb-1.5">
-        {label} *
+      <label htmlFor={id} className="block text-[11px] font-semibold text-gray-600 mb-1">
+        {label} <span className="text-red-400">*</span>
       </label>
       <input
-        id={id}
-        type={type}
-        name={id}
-        value={value}
-        onChange={onChange}
-        required
-        disabled={disabled}
-        className="w-full px-3 py-2 text-xs sm:text-sm border border-gray-200 rounded-lg focus:border-[#4A90E2] focus:ring-2 focus:ring-[#4A90E2]/20 focus:outline-none transition-all bg-gray-50/50 focus:bg-white disabled:opacity-50"
-        placeholder={placeholder}
+        id={id} type={type} name={id} value={value} onChange={onChange}
+        required disabled={disabled} placeholder={placeholder}
+        className="w-full px-3 py-2 text-xs border border-gray-200 rounded-lg
+                   focus:border-[#4A90E2] focus:ring-2 focus:ring-[#4A90E2]/20 focus:outline-none
+                   transition-all bg-gray-50/50 focus:bg-white disabled:opacity-50 placeholder:text-gray-400"
       />
     </div>
   );
 }
 
-function FormTextarea({ id, label, value, onChange, disabled, placeholder, rows = 3 }) {
+function FormTextarea({ id, label, value, onChange, disabled, placeholder }) {
   return (
     <div>
-      <label htmlFor={id} className="block text-xs font-semibold text-gray-700 mb-1.5">
-        {label} *
+      <label htmlFor={id} className="block text-[11px] font-semibold text-gray-600 mb-1">
+        {label} <span className="text-red-400">*</span>
       </label>
       <textarea
-        id={id}
-        name={id}
-        value={value}
-        onChange={onChange}
-        required
-        disabled={disabled}
-        rows={rows}
-        className="w-full px-3 py-2 text-xs sm:text-sm border border-gray-200 rounded-lg focus:border-[#4A90E2] focus:ring-2 focus:ring-[#4A90E2]/20 focus:outline-none transition-all bg-gray-50/50 focus:bg-white resize-none disabled:opacity-50"
-        placeholder={placeholder}
+        id={id} name={id} value={value} onChange={onChange}
+        required disabled={disabled} rows={4} placeholder={placeholder}
+        className="w-full px-3 py-2 text-xs border border-gray-200 rounded-lg
+                   focus:border-[#4A90E2] focus:ring-2 focus:ring-[#4A90E2]/20 focus:outline-none
+                   transition-all bg-gray-50/50 focus:bg-white resize-none disabled:opacity-50 placeholder:text-gray-400"
       />
-    </div>
-  );
-}
-
-function DownloadCTA() {
-  return (
-    <div className={`bg-gradient-to-br ${GRADIENTS.primary} rounded-xl sm:rounded-2xl shadow-xl p-4 sm:p-5 text-white`}>
-      <div className="flex items-start gap-2.5 mb-3">
-        <div className="w-9 h-9 bg-white/20 backdrop-blur rounded-lg flex items-center justify-center flex-shrink-0">
-          <AndroidIcon className="w-5 h-5" />
-        </div>
-        <div>
-          <h3 className="text-sm sm:text-base font-bold mb-0.5">Get FINNOTIA</h3>
-          <p className="text-xs opacity-90 leading-snug">
-            Real-time IPO alerts & analysis
-          </p>
-        </div>
-      </div>
-      <a 
-        href={PLAY_STORE_URL}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="block text-center bg-white text-[#4A90E2] px-4 py-2 rounded-lg text-xs sm:text-sm font-bold hover:shadow-lg hover:bg-gray-50 active:scale-95 transition-all duration-200"
-      >
-        Download Now
-      </a>
-    </div>
-  );
-}
-
-function ContactInfo() {
-  return (
-    <div className="bg-white rounded-xl sm:rounded-2xl shadow-xl p-4 sm:p-5">
-      <h2 className="text-sm sm:text-base font-bold text-gray-900 mb-3">Contact Info</h2>
-      
-      <div className="space-y-3">
-        <div className="flex items-start gap-2.5">
-          <div className="w-8 h-8 bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
-            <Mail className="w-4 h-4 text-[#4A90E2]" />
-          </div>
-          <div className="min-w-0 flex-1">
-            <h3 className="text-xs font-bold text-gray-900 mb-0.5">Email Us</h3>
-            <a 
-              href={`mailto:${CONTACT_INFO.contactEmail}`}
-              className="block text-xs text-gray-600 hover:text-[#4A90E2] transition-colors truncate"
-            >
-              {CONTACT_INFO.contactEmail}
-            </a>
-          </div>
-        </div>
-
-        <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-lg p-2.5">
-          <div className="flex items-center gap-2">
-            <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
-            <p className="text-xs font-semibold text-green-800">
-              We respond within 24 hours
-            </p>
-          </div>
-        </div>
-      </div>
     </div>
   );
 }

@@ -1,41 +1,43 @@
 'use client';
+// src/components/home/HowItWorks.jsx
+// ── Clean steps — monochromatic blue palette ──────────────────────
+
 import { motion } from 'framer-motion';
 import { Download, Smartphone, TrendingUp, Zap } from 'lucide-react';
 import SectionHeader from '../ui/SectionHeader';
 
 const steps = [
   {
-    icon: Download,
+    icon:  Download,
     title: 'Download App',
-    description: 'Get FINNOTIA from Google Play Store. Available for all Android devices.',
-    color: 'from-[#4A90E2] to-[#2E5CB8]',
+    desc:  'Get FINNOTIA free from Google Play Store. Works on all Android devices.',
+    num:   '01',
   },
   {
-    icon: Smartphone,
+    icon:  Smartphone,
     title: 'Setup Account',
-    description: 'Quick one-time setup to personalize your experience and preferences.',
-    color: 'from-[#2E5CB8] to-[#3B82F6]',
+    desc:  'Quick one-time setup to personalise your experience and preferences.',
+    num:   '02',
   },
   {
-    icon: TrendingUp,
+    icon:  TrendingUp,
     title: 'Explore Markets',
-    description: 'Access real-time market data, stock updates, news, and mutual fund information.',
-    color: 'from-cyan-500 to-blue-500',
+    desc:  'Access real-time market data, stock updates, news and mutual fund information.',
+    num:   '03',
   },
   {
-    icon: Zap,
-    title: 'Track  & Learn',
-    // ✅ FIXED: Text thoda short kiya hai taaki height balance rahe
-    description: 'Use AI-curated data to track market trends and support your learning.', 
-    color: 'from-blue-500 to-indigo-500',
+    icon:  Zap,
+    title: 'Track & Learn',
+    desc:  'Use AI-curated data to follow market trends and support your learning.',
+    num:   '04',
   },
 ];
 
 export default function HowItWorks() {
   return (
-    <section id="how" className="py-8 sm:py-12 bg-gray-50">
-      <div className="container mx-auto px-4">
-        {/* Reusable Section Header */}
+    <section id="how" className="py-16 sm:py-20 bg-[#F8FAFC]">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+
         <SectionHeader
           badge="Getting Started"
           title="Start in"
@@ -43,52 +45,56 @@ export default function HowItWorks() {
           description="Getting started is easy. Download the app and begin exploring market data today."
         />
 
-        {/* Steps */}
-        {/* 'items-stretch' grid default hota hai, bas andar child ko h-full chahiye */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 max-w-6xl mx-auto">
-          {steps.map((step, index) => {
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 max-w-5xl mx-auto">
+          {steps.map((step, i) => {
             const Icon = step.icon;
             return (
               <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 30 }}
+                key={step.title}
+                initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                className="relative flex" // ✅ ADDED: 'flex' taaki andar ka div height fill kare
+                transition={{ duration: 0.5, delay: i * 0.1 }}
+                className="relative"
               >
-                {/* Connector Line (Desktop Only) */}
-                {index < steps.length - 1 && (
-                  <div className="hidden lg:block absolute top-16 left-full w-full h-0.5 bg-gradient-to-r from-gray-300 to-transparent -translate-x-1/2 z-0" />
+                {/* Connector line */}
+                {i < steps.length - 1 && (
+                  <div className="hidden lg:block absolute top-8 left-full w-full h-px
+                                  bg-gradient-to-r from-[#BFDBFE] to-transparent
+                                  -translate-x-1/2 z-0" />
                 )}
 
                 {/* Card */}
-                {/* ✅ ADDED: 'h-full', 'w-full', 'flex', 'flex-col' for equal height & proper alignment */}
-                <div className="relative bg-white rounded-xl p-3 sm:p-4 lg:p-5 shadow-md hover:shadow-lg transition-shadow duration-300 z-10 h-full w-full flex flex-col items-center">
-                  
-                  {/* Step Number */}
-                  <div className="absolute -top-2 -left-2 sm:-top-3 sm:-left-3 w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-[#4A90E2] to-[#2E5CB8] text-white rounded-lg flex items-center justify-center text-base sm:text-lg font-bold shadow-md">
-                    {index + 1}
-                  </div>
+                <div className="relative bg-white rounded-2xl border border-[#E2E8F0]
+                                p-5 sm:p-6 hover:border-[#BFDBFE] hover:shadow-md
+                                hover:-translate-y-0.5 transition-all duration-200
+                                h-full flex flex-col z-10">
+
+                  {/* Step number */}
+                  <span className="absolute -top-3 -left-2 text-[10px] font-black
+                                   text-[#2563EB] bg-[#DBEAFE] rounded-full w-7 h-7
+                                   flex items-center justify-center">
+                    {step.num}
+                  </span>
 
                   {/* Icon */}
-                  <div className={`w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br ${step.color} rounded-lg flex items-center justify-center mb-3 sm:mb-4`}>
-                    <Icon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+                  <div className="w-11 h-11 bg-[#2563EB] rounded-xl flex items-center
+                                  justify-center mb-4">
+                    <Icon className="w-5 h-5 text-white" strokeWidth={1.8} />
                   </div>
 
-                  {/* Content */}
-                  <h3 className="text-sm sm:text-base lg:text-lg font-bold text-gray-900 mb-1.5 sm:mb-2 text-center">
+                  <h3 className="text-sm sm:text-base font-bold text-[#0F172A] mb-2">
                     {step.title}
                   </h3>
-                  <p className="text-xs sm:text-sm text-gray-600 text-center leading-relaxed flex-grow">
-                     {/* ✅ ADDED: 'flex-grow' taaki agar text kam bhi ho toh button/bottom alignment sahi rahe (future proof) */}
-                    {step.description}
+                  <p className="text-xs sm:text-sm text-[#64748B] leading-relaxed flex-grow">
+                    {step.desc}
                   </p>
                 </div>
               </motion.div>
             );
           })}
         </div>
+
       </div>
     </section>
   );

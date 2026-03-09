@@ -1,7 +1,5 @@
 'use client';
 // src/app/blog/[slug]/ArticleClient.jsx
-// UPDATED: Author byline now links to /author/[slug] for E-E-A-T
-// Everything else unchanged from original
 
 import { useState, useEffect } from 'react';
 import {
@@ -32,7 +30,6 @@ const SENT_CONFIG = {
   MIXED:   { bg: '#fefce8', text: '#a16207', border: '#fde047', icon: Activity,     label: 'Mixed'   },
 };
 
-// Convert author name to URL slug: "Akash Shukla" → "akash-shukla"
 function authorToSlug(name) {
   return (name || '').toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
 }
@@ -67,13 +64,12 @@ export default function ArticleClient({ frontmatter: fm, htmlContent }) {
 
   const slugify  = (s) => s.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
   const fmtDate  = (d) =>
-    d ? new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
+    d ? new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : '';
 
   const catStyle = CAT_STYLES[fm.category?.toLowerCase()] || { bg: '#f1f5f9', text: '#475569' };
   const sentConf = SENT_CONFIG[fm.sentiment?.toUpperCase()] || null;
   const SentIcon = sentConf?.icon || null;
 
-  // ── Author helpers ────────────────────────────────────────────────────────
   const authorName = fm.author || 'Finnotia Research';
   const authorSlug = authorToSlug(authorName);
   const authorHref = `/author/${authorSlug}`;
@@ -117,14 +113,14 @@ export default function ArticleClient({ frontmatter: fm, htmlContent }) {
   return (
     <div className="min-h-screen bg-white" style={{ fontFamily: "'Georgia', 'Times New Roman', serif" }}>
 
-      {/* ── Reading progress bar ── */}
+      {/* ── Progress bar ── */}
       <div
-        className="fixed left-0 h-[3px] z-40 transition-all duration-75"
-        style={{ top: '64px', width: `${progress}%`, background: 'linear-gradient(90deg, #c8421e, #e85d3a)' }}
+        className="fixed left-0 h-[2px] z-40 transition-all duration-75"
+        style={{ top: '48px', width: `${progress}%`, background: 'linear-gradient(90deg, #5d5fdd, #160938)' }}
       />
 
       {/* ── Hero image ── */}
-      <div className="relative w-full bg-gray-950 overflow-hidden mt-16" style={{ height: 'min(56vw, 480px)' }}>
+      <div className="relative w-full bg-gray-950 overflow-hidden" style={{ height: 'min(52vw, 420px)' }}>
         {fm.image_url ? (
           <>
             <img
@@ -135,11 +131,11 @@ export default function ArticleClient({ frontmatter: fm, htmlContent }) {
             />
             <div
               className="absolute inset-0"
-              style={{ background: 'linear-gradient(to bottom, transparent 20%, rgba(0,0,0,0.3) 60%, rgba(0,0,0,0.85) 100%)' }}
+              style={{ background: 'linear-gradient(to bottom, transparent 20%, rgba(0,0,0,0.3) 55%, rgba(0,0,0,0.85) 100%)' }}
             />
-            <div className="absolute top-4 left-4 sm:top-6 sm:left-6">
+            <div className="absolute top-3 left-3 sm:top-5 sm:left-5">
               <span
-                className="text-[11px] font-bold tracking-widest uppercase px-3 py-1.5 rounded-full"
+                className="text-[10px] font-bold tracking-widest uppercase px-2.5 py-1 rounded-full"
                 style={{ backgroundColor: catStyle.bg, color: catStyle.text }}
               >
                 {fm.category}
@@ -151,19 +147,19 @@ export default function ArticleClient({ frontmatter: fm, htmlContent }) {
             className="w-full h-full flex items-center justify-center"
             style={{ background: 'linear-gradient(135deg, #0c1e35 0%, #1a3355 100%)' }}
           >
-            <BarChart2 className="w-16 h-16 text-white/10" strokeWidth={1} />
+            <BarChart2 className="w-14 h-14 text-white/10" strokeWidth={1} />
           </div>
         )}
 
-        <div className="absolute bottom-0 left-0 right-0 px-5 pb-6 sm:px-8 sm:pb-8">
+        <div className="absolute bottom-0 left-0 right-0 px-4 pb-5 sm:px-6 sm:pb-6">
           <div className="max-w-2xl mx-auto">
             {sentConf && (
-              <div className="flex items-center gap-2 mb-3">
+              <div className="flex items-center gap-2 mb-2">
                 <span
-                  className="inline-flex items-center gap-1.5 text-[11px] font-bold tracking-wide uppercase px-3 py-1 rounded-full"
+                  className="inline-flex items-center gap-1 text-[10px] font-bold tracking-wide uppercase px-2.5 py-0.5 rounded-full"
                   style={{ backgroundColor: sentConf.bg, color: sentConf.text }}
                 >
-                  {SentIcon && <SentIcon size={11} strokeWidth={2.5} />}
+                  {SentIcon && <SentIcon size={10} strokeWidth={2.5} />}
                   {sentConf.label}
                 </span>
               </div>
@@ -171,9 +167,9 @@ export default function ArticleClient({ frontmatter: fm, htmlContent }) {
             <h1
               className="text-white font-bold leading-tight"
               style={{
-                fontSize: 'clamp(22px, 5.5vw, 38px)',
+                fontSize: 'clamp(18px, 4.5vw, 32px)',
                 fontFamily: "'Georgia', 'Times New Roman', serif",
-                textShadow: '0 2px 12px rgba(0,0,0,0.4)',
+                textShadow: '0 2px 10px rgba(0,0,0,0.4)',
               }}
             >
               {fm.title}
@@ -182,23 +178,25 @@ export default function ArticleClient({ frontmatter: fm, htmlContent }) {
         </div>
       </div>
 
-      {/* ── Article body container ── */}
-      <div className="max-w-2xl mx-auto px-5 sm:px-6">
+      {/* ── Article body ── */}
+      <div className="max-w-2xl mx-auto px-4 sm:px-5">
 
+        {/* Excerpt */}
         {fm.excerpt && (
           <p
-            className="mt-6 text-[17px] leading-relaxed text-gray-500 border-l-4 pl-4"
+            className="mt-5 text-[15px] leading-relaxed text-gray-500 border-l-4 pl-4"
             style={{ borderColor: '#c8421e', fontFamily: "'Georgia', serif", fontStyle: 'italic' }}
           >
             {fm.excerpt}
           </p>
         )}
 
+        {/* Key facts */}
         {fm.key_facts?.length > 0 && (
-          <div className="mt-5 grid grid-cols-3 gap-2 sm:gap-3">
+          <div className="mt-4 grid grid-cols-3 gap-2">
             {fm.key_facts.map((fact, i) => (
-              <div key={i} className="rounded-xl px-3 py-3 text-center" style={{ backgroundColor: '#0c1e35' }}>
-                <p className="text-white/75 text-[11px] sm:text-[12px] leading-snug font-medium" style={{ fontFamily: 'system-ui, sans-serif' }}>
+              <div key={i} className="rounded-xl px-2.5 py-2.5 text-center" style={{ backgroundColor: '#0c1e35' }}>
+                <p className="text-white/75 text-[10px] sm:text-[11px] leading-snug font-medium" style={{ fontFamily: 'system-ui, sans-serif' }}>
                   {fact}
                 </p>
               </div>
@@ -206,152 +204,78 @@ export default function ArticleClient({ frontmatter: fm, htmlContent }) {
           </div>
         )}
 
-        {/* ── Meta row — UPDATED with clickable author ── */}
+        {/* ── Meta row ── */}
         <div
-          className="mt-5 flex items-center gap-3 py-4 border-t border-b border-gray-100"
+          className="mt-4 flex items-center gap-2.5 py-3 border-t border-b border-gray-100"
           style={{ fontFamily: 'system-ui, sans-serif' }}
         >
-          {/* Author avatar — now a link */}
           <a href={authorHref} className="flex-shrink-0">
-            <div
-              className="w-9 h-9 rounded-full flex items-center justify-center hover:opacity-80 transition-opacity"
-              style={{ backgroundColor: '#fef3f0' }}
-            >
-              <User size={16} color="#c8421e" strokeWidth={2} />
+            <div className="w-8 h-8 rounded-full flex items-center justify-center hover:opacity-80 transition-opacity" style={{ backgroundColor: '#fef3f0' }}>
+              <User size={14} color="#c8421e" strokeWidth={2} />
             </div>
           </a>
-
-          {/* Author name — clickable link */}
           <div className="flex-1 min-w-0">
-            <a
-              href={authorHref}
-              className="text-[13px] font-semibold text-gray-800 hover:text-[#c8421e] transition-colors"
-            >
+            <a href={authorHref} className="text-[12px] font-semibold text-gray-800 hover:text-[#c8421e] transition-colors">
               {authorName}
             </a>
-            <div className="text-[11px] text-gray-400 mt-0.5">Finnotia Research</div>
+            <div className="text-[10px] text-gray-400">Finnotia Research</div>
           </div>
-
-          {/* Date + read time */}
-          <div className="flex items-center gap-3 text-[12px] text-gray-400 flex-shrink-0">
+          <div className="flex items-center gap-2 text-[11px] text-gray-400 flex-shrink-0">
             {fm.date && (
-              <span className="flex items-center gap-1">
-                <Calendar size={12} strokeWidth={2} />
+              <span className="flex items-center gap-0.5">
+                <Calendar size={11} strokeWidth={2} />
                 {fmtDate(fm.date)}
               </span>
             )}
             {readTime && (
-              <span className="flex items-center gap-1">
-                <Clock size={12} strokeWidth={2} />
-                {readTime} min read
+              <span className="flex items-center gap-0.5">
+                <Clock size={11} strokeWidth={2} />
+                {readTime} min
               </span>
             )}
           </div>
         </div>
 
+        {/* Bull / Bear */}
         {(fm.bull_case_summary || fm.bear_case_summary) && (
-          <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-3" style={{ fontFamily: 'system-ui, sans-serif' }}>
+          <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2.5" style={{ fontFamily: 'system-ui, sans-serif' }}>
             {fm.bull_case_summary && (
-              <div className="rounded-xl p-4 border" style={{ backgroundColor: '#f0fdf4', borderColor: '#bbf7d0' }}>
-                <div className="flex items-center gap-2 mb-2">
-                  <TrendingUp size={15} color="#16a34a" strokeWidth={2.5} />
-                  <span className="text-[11px] font-bold tracking-widest uppercase text-green-700">Bull Case</span>
+              <div className="rounded-xl p-3.5 border" style={{ backgroundColor: '#f0fdf4', borderColor: '#bbf7d0' }}>
+                <div className="flex items-center gap-1.5 mb-1.5">
+                  <TrendingUp size={13} color="#16a34a" strokeWidth={2.5} />
+                  <span className="text-[10px] font-bold tracking-widest uppercase text-green-700">Bull Case</span>
                 </div>
-                <p className="text-[13px] text-green-900 leading-relaxed">{fm.bull_case_summary}</p>
+                <p className="text-[12px] text-green-900 leading-relaxed">{fm.bull_case_summary}</p>
               </div>
             )}
             {fm.bear_case_summary && (
-              <div className="rounded-xl p-4 border" style={{ backgroundColor: '#fff1f2', borderColor: '#fecdd3' }}>
-                <div className="flex items-center gap-2 mb-2">
-                  <TrendingDown size={15} color="#dc2626" strokeWidth={2.5} />
-                  <span className="text-[11px] font-bold tracking-widest uppercase text-red-700">Bear Case</span>
+              <div className="rounded-xl p-3.5 border" style={{ backgroundColor: '#fff1f2', borderColor: '#fecdd3' }}>
+                <div className="flex items-center gap-1.5 mb-1.5">
+                  <TrendingDown size={13} color="#dc2626" strokeWidth={2.5} />
+                  <span className="text-[10px] font-bold tracking-widest uppercase text-red-700">Bear Case</span>
                 </div>
-                <p className="text-[13px] text-red-900 leading-relaxed">{fm.bear_case_summary}</p>
+                <p className="text-[12px] text-red-900 leading-relaxed">{fm.bear_case_summary}</p>
               </div>
             )}
           </div>
         )}
 
+        {/* Thesis */}
         {fm.thesis_statement && (
           <div
-            className="mt-6 rounded-xl px-5 py-4"
+            className="mt-4 rounded-xl px-4 py-3.5"
             style={{ background: 'linear-gradient(135deg, #0c1e35, #1a3355)', fontFamily: 'system-ui, sans-serif' }}
           >
-            <div className="text-[10px] font-bold tracking-widest uppercase text-white/40 mb-2">Thesis</div>
-            <p className="text-white/90 text-[14px] leading-relaxed italic">"{fm.thesis_statement}"</p>
+            <div className="text-[9px] font-bold tracking-widest uppercase text-white/40 mb-1.5">Thesis</div>
+            <p className="text-white/90 text-[13px] leading-relaxed italic">"{fm.thesis_statement}"</p>
           </div>
         )}
 
-        {/* ── Article body ── */}
-        <div className="mt-8 pb-4">
-          <style>{`
-            .article-body { font-family: 'Georgia', 'Times New Roman', serif; }
-            .article-body h2 {
-              font-size: clamp(19px, 3.5vw, 24px);
-              font-weight: 700;
-              color: #111827;
-              margin-top: 2.5rem;
-              margin-bottom: 1rem;
-              padding-top: 1.5rem;
-              border-top: 1px solid #e5e7eb;
-              line-height: 1.35;
-              font-family: 'Georgia', serif;
-            }
-            .article-body h3 {
-              font-size: 18px;
-              font-weight: 600;
-              color: #1f2937;
-              margin-top: 1.75rem;
-              margin-bottom: 0.75rem;
-            }
-            .article-body p {
-              font-size: 16px;
-              line-height: 1.85;
-              color: #374151;
-              margin-bottom: 1.4rem;
-            }
-            .article-body strong { color: #111827; font-weight: 700; }
-            .article-body a { color: #c8421e; text-decoration: none; border-bottom: 1px solid #fca5a5; }
-            .article-body a:hover { border-color: #c8421e; }
-            .article-body ul, .article-body ol {
-              margin-bottom: 1.4rem;
-              padding-left: 1.5rem;
-            }
-            .article-body li {
-              font-size: 15.5px;
-              line-height: 1.7;
-              color: #4b5563;
-              margin-bottom: 0.4rem;
-            }
-            .article-body blockquote {
-              margin: 2rem 0;
-              padding: 1rem 1.25rem;
-              border-left: 4px solid #c8421e;
-              background: #fef3f0;
-              border-radius: 0 12px 12px 0;
-            }
-            .article-body blockquote p {
-              margin: 0;
-              font-style: italic;
-              color: #7c2d12;
-              font-size: 15px;
-            }
-            .article-body hr {
-              border: none;
-              border-top: 1px solid #e5e7eb;
-              margin: 2.5rem 0;
-            }
-            .article-body code {
-              font-size: 13px;
-              color: #c8421e;
-              background: #fef3f0;
-              padding: 2px 6px;
-              border-radius: 4px;
-              font-family: monospace;
-            }
-          `}</style>
+        {/* ── Article HTML ── */}
+        <div className="mt-6 pb-3">
           <div
             className="article-body"
+            style={{ textAlign: 'justify' }}
             dangerouslySetInnerHTML={{
               __html: htmlContent
                 .replace(/<hr\s*\/?>\s*<p>\s*<em>This article is for educational[\s\S]*?<\/em>\s*<\/p>/i, '')
@@ -362,42 +286,42 @@ export default function ArticleClient({ frontmatter: fm, htmlContent }) {
 
         {/* ── Share ── */}
         <div
-          className="py-5 border-t border-gray-100 flex items-center gap-3 flex-wrap"
+          className="py-4 border-t border-gray-100 flex items-center gap-2 flex-wrap"
           style={{ fontFamily: 'system-ui, sans-serif' }}
         >
-          <span className="text-[12px] font-semibold text-gray-400 flex items-center gap-1.5">
-            <Share2 size={14} strokeWidth={2} /> Share
+          <span className="text-[11px] font-semibold text-gray-400 flex items-center gap-1">
+            <Share2 size={13} strokeWidth={2} /> Share
           </span>
           <button
             onClick={() => handleShare('whatsapp')}
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-full border border-gray-200 text-[12px] font-medium text-gray-600 hover:border-green-400 hover:text-green-600 transition-all"
+            className="flex items-center gap-1 px-3 py-1.5 rounded-full border border-gray-200 text-[11px] font-medium text-gray-600 hover:border-green-400 hover:text-green-600 transition-all"
           >
-            <MessageCircle size={14} strokeWidth={2} /> WhatsApp
+            <MessageCircle size={12} strokeWidth={2} /> WhatsApp
           </button>
           <button
             onClick={() => handleShare('twitter')}
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-full border border-gray-200 text-[12px] font-medium text-gray-600 hover:border-blue-400 hover:text-blue-600 transition-all"
+            className="flex items-center gap-1 px-3 py-1.5 rounded-full border border-gray-200 text-[11px] font-medium text-gray-600 hover:border-blue-400 hover:text-blue-600 transition-all"
           >
-            <Twitter size={14} strokeWidth={2} /> X / Twitter
+            <Twitter size={12} strokeWidth={2} /> X / Twitter
           </button>
           <button
             onClick={handleCopy}
-            className="ml-auto flex items-center gap-1.5 px-3.5 py-2 rounded-full border border-gray-200 text-[12px] font-medium text-gray-600 hover:border-gray-400 transition-all"
+            className="ml-auto flex items-center gap-1 px-3 py-1.5 rounded-full border border-gray-200 text-[11px] font-medium text-gray-600 hover:border-gray-400 transition-all"
           >
             {copied
-              ? <><Check size={14} strokeWidth={2} color="#16a34a" /> Copied!</>
-              : <><Link2 size={14} strokeWidth={2} /> Copy link</>
+              ? <><Check size={12} strokeWidth={2} color="#16a34a" /> Copied!</>
+              : <><Link2 size={12} strokeWidth={2} /> Copy link</>
             }
           </button>
         </div>
 
         {/* ── Tags ── */}
         {fm.tags?.length > 0 && (
-          <div className="pb-8 flex gap-2 flex-wrap" style={{ fontFamily: 'system-ui, sans-serif' }}>
+          <div className="pb-5 flex gap-1.5 flex-wrap" style={{ fontFamily: 'system-ui, sans-serif' }}>
             {fm.tags.map((tag) => (
               <span
                 key={tag}
-                className="text-[11px] text-gray-500 bg-gray-50 border border-gray-200 px-3.5 py-1.5 rounded-full font-medium"
+                className="text-[10px] text-gray-500 bg-gray-50 border border-gray-200 px-3 py-1 rounded-full font-medium"
               >
                 #{tag}
               </span>
@@ -405,46 +329,30 @@ export default function ArticleClient({ frontmatter: fm, htmlContent }) {
           </div>
         )}
 
-        {/* ── Author Box — NEW ── */}
+        {/* ── Author Box ── */}
         <div
-          className="mb-8 rounded-2xl border border-gray-100 p-5"
+          className="mb-6 rounded-xl border border-gray-100 p-4"
           style={{ fontFamily: 'system-ui, sans-serif', backgroundColor: '#fafafa' }}
         >
-          <div className="flex items-start gap-4">
+          <div className="flex items-start gap-3">
             <a href={authorHref} className="flex-shrink-0">
-              <div
-                className="w-12 h-12 rounded-xl flex items-center justify-center"
-                style={{ backgroundColor: '#fef3f0' }}
-              >
-                <User size={20} color="#c8421e" strokeWidth={1.5} />
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: '#fef3f0' }}>
+                <User size={17} color="#c8421e" strokeWidth={1.5} />
               </div>
             </a>
             <div>
-              <div className="text-[10px] font-bold tracking-widest text-gray-400 uppercase mb-1">Written by</div>
-              <a href={authorHref} className="text-[14px] font-bold text-gray-900 hover:text-[#c8421e] transition-colors">
+              <div className="text-[9px] font-bold tracking-widest text-gray-400 uppercase mb-0.5">Written by</div>
+              <a href={authorHref} className="text-[13px] font-bold text-gray-900 hover:text-[#c8421e] transition-colors">
                 {authorName}
               </a>
-              <p className="text-[12px] text-gray-500 mt-1 leading-relaxed">
+              <p className="text-[11px] text-gray-500 mt-0.5 leading-relaxed">
                 Founder of Finnotia. Full-stack developer and market researcher covering IPOs, stocks, and global macroeconomics.
               </p>
-              <a href={authorHref} className="inline-block mt-2 text-[12px] font-semibold text-[#c8421e] hover:underline">
+              <a href={authorHref} className="inline-block mt-1.5 text-[11px] font-semibold text-[#c8421e] hover:underline">
                 View all articles →
               </a>
             </div>
           </div>
-        </div>
-
-        {/* ── Disclaimer ── */}
-        <div
-          className="mb-16 rounded-xl bg-gray-50 border border-gray-200 px-4 py-4"
-          style={{ fontFamily: 'system-ui, sans-serif' }}
-        >
-          <p className="text-[11.5px] text-gray-500 leading-relaxed">
-            <span className="font-bold text-gray-700">Disclaimer:</span>{' '}
-            This article is for educational and informational purposes only. It does not constitute
-            financial advice, investment recommendations, or endorsement of any securities. Always
-            consult a qualified financial advisor before making investment decisions.
-          </p>
         </div>
       </div>
 
@@ -453,29 +361,29 @@ export default function ArticleClient({ frontmatter: fm, htmlContent }) {
         <>
           <button
             onClick={() => setShowToc(!showToc)}
-            className="fixed bottom-6 right-4 w-12 h-12 rounded-full text-white shadow-xl z-50 flex items-center justify-center transition-transform active:scale-95"
+            className="fixed bottom-5 right-4 w-11 h-11 rounded-full text-white shadow-xl z-50 flex items-center justify-center transition-transform active:scale-95"
             style={{ background: '#0c1e35' }}
           >
-            {showToc ? <X size={18} strokeWidth={2.5} /> : <List size={18} strokeWidth={2.5} />}
+            {showToc ? <X size={16} strokeWidth={2.5} /> : <List size={16} strokeWidth={2.5} />}
           </button>
 
           {showToc && (
             <div
-              className="fixed right-4 w-[min(280px,calc(100vw-2rem))] bg-white border border-gray-200 rounded-2xl shadow-2xl z-50 overflow-hidden"
-              style={{ bottom: '74px', fontFamily: 'system-ui, sans-serif' }}
+              className="fixed right-4 w-[min(270px,calc(100vw-2rem))] bg-white border border-gray-200 rounded-2xl shadow-2xl z-50 overflow-hidden"
+              style={{ bottom: '68px', fontFamily: 'system-ui, sans-serif' }}
             >
-              <div className="px-4 py-3 border-b border-gray-100 flex items-center gap-2">
-                <List size={14} color="#c8421e" strokeWidth={2.5} />
-                <span className="text-[11px] font-bold tracking-widest text-gray-400 uppercase">
+              <div className="px-3.5 py-2.5 border-b border-gray-100 flex items-center gap-2">
+                <List size={13} color="#c8421e" strokeWidth={2.5} />
+                <span className="text-[10px] font-bold tracking-widest text-gray-400 uppercase">
                   Table of Contents
                 </span>
               </div>
-              <div className="max-h-64 overflow-y-auto py-2">
+              <div className="max-h-60 overflow-y-auto py-1.5">
                 {headings.map((h, i) => (
                   <button
                     key={i}
                     onClick={() => scrollToHeading(h.text)}
-                    className="block w-full text-left px-4 py-2.5 text-[13px] transition-colors hover:bg-gray-50"
+                    className="block w-full text-left px-3.5 py-2 text-[12px] transition-colors hover:bg-gray-50"
                     style={{
                       color:      activeH === h.text ? '#c8421e' : '#6b7280',
                       fontWeight: activeH === h.text ? 600 : 400,

@@ -44,8 +44,9 @@ export default function HomePage() {
 
       {/* Below the fold */}
       <FeaturesSection />
-      <HowItWorks />
       <AppScreenshots />
+      <HowItWorks />
+      
       <CTASection />
     </>
   );

@@ -1,51 +1,101 @@
-// FILE: app/about/page.js (UPDATED)
-// Changes: Made "Akash Shukla" a clickable link to /founder page
-// Text alignment set to justify for better readability
+// FILE: app/about/page.js
+// Route: finnotia.com/about
 
 import { pageMetadata, seoConfig } from '../../lib/seo-metadata';
 import { APP_NAME, GRADIENTS } from '../../lib/constants';
 import Link from 'next/link';
+import { Target, ShieldCheck, Sparkles } from 'lucide-react';
 
 export const metadata = {
   title: pageMetadata.about.title,
   description: pageMetadata.about.description,
   keywords: pageMetadata.about.keywords,
-
   openGraph: {
     title: pageMetadata.about.title,
     description: pageMetadata.about.description,
     url: `${seoConfig.siteUrl}/about`,
     images: ['/og-image.png'],
   },
-
   twitter: {
     title: pageMetadata.about.title,
     description: pageMetadata.about.description,
   },
-
-  alternates: {
-    canonical: `${seoConfig.siteUrl}/about`,
-  },
+  alternates: { canonical: `${seoConfig.siteUrl}/about` },
 };
 
-export default function AboutPage() {
-  const offerings = [
-    'AI-curated IPO data using GMP, subscription status & market conditions',
-    'IPO listing updates with post-listing performance tracking',
-    'Stock updates based on news, sentiment & market factors',
-    'AI-curated mutual fund information across equity, debt & hybrid categories',
-    'Verified market news with curated alerts and notifications',
-  ];
+// ── Static Data ───────────────────────────────────────────────
+const stats = [
+  { value: 'AI',   label: 'Powered Platform' },
+  { value: '5+',   label: 'Market Categories' },
+  { value: '2025', label: 'Founded' },
+  { value: '🇮🇳',  label: 'Built for India' },
+];
 
+const offerings = [
+  {
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" className="w-4 h-4 sm:w-5 sm:h-5">
+        <path d="M3 3h18v4H3zM3 10h12v4H3zM3 17h8v4H3z" fill="white" opacity="0.9"/>
+        <circle cx="19" cy="19" r="3" fill="#60a5fa"/>
+        <path d="M18 19h2M19 18v2" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
+      </svg>
+    ),
+    iconBg: 'bg-gradient-to-br from-blue-500 to-blue-700',
+    title: 'IPO Tracking',
+    description: 'AI-curated IPO data using GMP, subscription status & market conditions with listing performance tracking.',
+  },
+  {
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" className="w-4 h-4 sm:w-5 sm:h-5">
+        <polyline points="22 7 13.5 15.5 8.5 10.5 2 17" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+        <polyline points="16 7 22 7 22 13" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+      </svg>
+    ),
+    iconBg: 'bg-gradient-to-br from-emerald-500 to-emerald-700',
+    title: 'Stock Updates',
+    description: 'Real-time stock updates based on news, sentiment analysis & prevailing market factors.',
+  },
+  {
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" className="w-4 h-4 sm:w-5 sm:h-5">
+        <circle cx="12" cy="12" r="9" stroke="white" strokeWidth="2"/>
+        <path d="M12 8v4l3 3" stroke="white" strokeWidth="2" strokeLinecap="round"/>
+        <path d="M8 12h1M15 12h1M12 8v1M12 15v1" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
+      </svg>
+    ),
+    iconBg: 'bg-gradient-to-br from-violet-500 to-violet-700',
+    title: 'Mutual Funds',
+    description: 'AI-curated mutual fund info across equity, debt & hybrid categories with clear insights.',
+  },
+  {
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" className="w-4 h-4 sm:w-5 sm:h-5">
+        <path d="M4 4h16v2.5L12 13 4 6.5V4z" fill="white" opacity="0.9"/>
+        <rect x="4" y="9" width="16" height="11" rx="1" stroke="white" strokeWidth="2" fill="none"/>
+        <path d="M9 15h6M9 18h4" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
+      </svg>
+    ),
+    iconBg: 'bg-gradient-to-br from-amber-500 to-orange-600',
+    title: 'Market News',
+    description: 'Verified financial news with AI-curated alerts and notifications — no hype, no rumours.',
+  },
+];
+
+const values = [
+  { icon: Target,     iconColor: '#2563EB', iconBg: '#dbeafe', title: 'Clarity Over Noise',  description: 'Complex market data presented in simple, structured formats that anyone can understand.' },
+  { icon: ShieldCheck, iconColor: '#059669', iconBg: '#d1fae5', title: 'Verified Data',       description: 'All information sourced from verified data providers with defined market logic.' },
+  { icon: Sparkles,   iconColor: '#7c3aed', iconBg: '#ede9fe', title: 'AI-First Approach',   description: 'Machine learning and AI continuously improve data accuracy and insight quality.' },
+];
+
+export default function AboutPage() {
   const aboutJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'AboutPage',
     mainEntity: {
       '@type': 'Organization',
       name: APP_NAME,
-      description:
-        'AI-powered Indian market information platform for IPOs, stocks, mutual funds, and verified financial news.',
-      foundingDate: '2024',
+      description: 'AI-powered Indian market information platform for IPOs, stocks, mutual funds, and verified financial news.',
+      foundingDate: '2025',
       url: seoConfig.siteUrl,
       logo: `${seoConfig.siteUrl}/finnotia-logo.png`,
       areaServed: 'IN',
@@ -55,172 +105,155 @@ export default function AboutPage() {
         name: 'Akash Shukla',
         url: `${seoConfig.siteUrl}/founder`,
         jobTitle: 'Founder',
-        sameAs: [
-          'https://www.youtube.com/@atrangimemer',
-          'https://www.linkedin.com/in/akash-shukla-finnotia/',
-        ],
       },
     },
   };
 
   return (
     <>
-      {/* JSON-LD */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(aboutJsonLd) }}
-      />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(aboutJsonLd) }} />
 
-      <div className="min-h-screen bg-white pt-20 pb-10 sm:pt-24 sm:pb-16">
-        <div className="container mx-auto px-4 sm:px-6">
-          <div className="max-w-3xl mx-auto">
+      <div className="min-h-screen bg-[#f8f7f4]" style={{ fontFamily: 'system-ui, sans-serif' }}>
 
-            {/* Header */}
-            <header className="text-center sm:text-left mb-6 sm:mb-8">
-              <h1 className="text-3xl sm:text-5xl font-black text-gray-900">
-                About{' '}
-                <span
-                  className={`bg-gradient-to-r ${GRADIENTS.primary} bg-clip-text text-transparent`}
-                >
-                  {APP_NAME}
-                </span>
-              </h1>
-            </header>
+        {/* ── Hero ── */}
+        <div className="bg-[#0c1e35] px-4 pt-8 pb-12 relative overflow-hidden">
+          <div
+            className="absolute top-0 right-0 w-[280px] h-[280px] rounded-full opacity-[0.06] pointer-events-none"
+            style={{ background: 'radial-gradient(circle, #4A90E2 0%, transparent 70%)', transform: 'translate(30%, -30%)' }}
+          />
+          <div className="absolute bottom-0 left-0 right-0 h-5 bg-[#f8f7f4] rounded-t-3xl" />
 
-            {/* Content */}
-            <article className="space-y-8 text-gray-700">
+          <div className="max-w-3xl mx-auto relative z-10 text-center">
+            <div className="inline-flex items-center gap-1.5 bg-white/5 border border-white/10 rounded-lg px-2.5 py-1 mb-3">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#60A5FA] animate-pulse" />
+              <span className="text-white/50 text-[9px] font-bold tracking-widest uppercase">AI-Powered Financial Platform</span>
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-black text-white leading-tight mb-2">
+              About{' '}
+              <span
+                className="text-transparent bg-clip-text"
+                style={{ backgroundImage: 'linear-gradient(135deg, #60A5FA 0%, #2563EB 100%)' }}
+              >
+                {APP_NAME}
+              </span>
+            </h1>
+            <p className="text-white/40 text-xs sm:text-sm max-w-sm mx-auto leading-relaxed">
+              An AI-powered Indian market information platform — track IPOs, stocks, mutual funds,
+              and financial news with clarity and zero hype.
+            </p>
 
-              <p className="text-base sm:text-lg font-medium text-gray-600 leading-relaxed text-justify">
-                {APP_NAME} is an AI-powered Indian market information platform
-                designed to help users track IPOs, stocks, mutual funds, and
-                financial news using real-time data and AI-curated information.
+            {/* Stats row in hero */}
+            <div className="grid grid-cols-4 gap-2 mt-5 max-w-sm mx-auto">
+              {stats.map((s, i) => (
+                <div key={i} className="bg-white/5 border border-white/10 rounded-xl py-2.5 px-1">
+                  <div className="text-base sm:text-lg font-black text-white">{s.value}</div>
+                  <div className="text-[9px] text-white/40 mt-0.5 font-medium leading-tight">{s.label}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div className="max-w-3xl mx-auto px-4 py-6 sm:py-8 space-y-5">
+
+          {/* ── Mission ── */}
+          <div className="grid sm:grid-cols-2 gap-3 sm:gap-4">
+            {/* Mission text */}
+            <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-4">
+              <h2 className="text-sm font-bold text-gray-900 mb-2">Our Mission</h2>
+              <p className="text-xs text-gray-600 leading-relaxed text-justify">
+                Our mission is to simplify complex market data using AI and present clear, unbiased,
+                and structured information — so every Indian investor can understand market behavior
+                without hype, rumours, or misleading tips.
               </p>
+            </div>
 
-              <div className="space-y-10">
+            {/* Values */}
+            <div className="flex flex-col gap-2">
+              {values.map((v, i) => (
+                <div key={i} className="flex items-start gap-2.5 bg-white rounded-xl border border-gray-100 shadow-sm p-3">
+                  <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: v.iconBg }}>
+                    <v.icon className="w-3.5 h-3.5" style={{ color: v.iconColor }} strokeWidth={2} />
+                  </div>
+                  <div>
+                    <h3 className="text-[12px] font-bold text-gray-900">{v.title}</h3>
+                    <p className="text-[11px] text-gray-500 mt-0.5 leading-relaxed">{v.description}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
 
-                {/* Mission */}
-                <section>
-                  <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">
-                    Our Mission
-                  </h2>
-                  <p className="text-sm sm:text-base leading-relaxed text-gray-600 text-justify">
-                    Our mission is to simplify complex market data using AI and
-                    present clear, unbiased, and structured information so users
-                    can understand market behavior without hype, rumors, or
-                    misleading tips.
+          {/* ── What We Offer ── */}
+          <div>
+            <h2 className="text-sm font-bold text-gray-900 mb-3">What We Offer</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              {offerings.map((item, i) => (
+                <div key={i} className="bg-white rounded-xl border border-gray-100 shadow-sm p-3.5 hover:shadow-md transition-shadow">
+                  <div className="flex items-center gap-2.5 mb-1.5">
+                    <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-lg ${item.iconBg} flex items-center justify-center flex-shrink-0`}>
+                      {item.icon}
+                    </div>
+                    <h3 className="text-[12px] sm:text-[13px] font-bold text-gray-900">{item.title}</h3>
+                  </div>
+                  <p className="text-[11px] text-gray-500 leading-relaxed pl-[37px] sm:pl-[42px]">
+                    {item.description}
                   </p>
-                </section>
+                </div>
+              ))}
+            </div>
+          </div>
 
-                {/* What We Offer */}
-                <section>
-                  <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">
-                    What We Offer
-                  </h2>
-                  <ul className="space-y-2.5">
-                    {offerings.map((item, index) => (
-                      <li
-                        key={index}
-                        className="flex items-start gap-2.5 text-sm sm:text-base text-justify"
-                      >
-                        <span className="text-[#4A90E2] font-bold mt-0.5 flex-shrink-0">•</span>
-                        <span>{item}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </section>
+          {/* ── Founder Card ── */}
+          <div>
+            <h2 className="text-sm font-bold text-gray-900 mb-3">The Team</h2>
+            <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+              <div className="flex flex-col sm:flex-row items-center sm:items-start gap-3 p-4">
 
-                {/* Why Finnotia */}
-                <section>
-                  <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">
-                    Why {APP_NAME}?
-                  </h2>
-                  <p className="text-sm sm:text-base leading-relaxed text-gray-600 text-justify">
-                    All information on {APP_NAME} is generated using verified data
-                    sources, defined market logic, and continuous performance
-                    tracking — helping users understand markets with clarity and
-                    confidence.
+                {/* Avatar */}
+                <div className="relative flex-shrink-0">
+                  <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl overflow-hidden border-2 border-gray-100 shadow-sm">
+                    <img
+                      src="/akash-shukla.png"
+                      alt="Akash Shukla - Founder of Finnotia"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 bg-[#2563EB] text-white text-[8px] font-bold px-1.5 py-0.5 rounded-full whitespace-nowrap shadow">
+                    ✓ Founder
+                  </div>
+                </div>
+
+                {/* Info */}
+                <div className="text-center sm:text-left flex-1 min-w-0">
+                  <Link
+                    href="/founder"
+                    className="text-sm font-black text-[#0c1e35] hover:text-[#4A90E2] transition-colors"
+                  >
+                    Akash Shukla
+                  </Link>
+                  <p className="text-[10px] text-gray-400 font-medium mt-0.5 mb-1.5">
+                    Founder &amp; Full Stack Developer · Kolkata, India
                   </p>
-                </section>
-
-                {/* Team + Founder */}
-                <div className="grid sm:grid-cols-2 gap-8">
-
-                  {/* Team */}
-                  <section>
-                    <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">
-                      Our Team
-                    </h2>
-                    <p className="text-sm sm:text-base leading-relaxed text-gray-600 text-justify">
-                      {APP_NAME} is built by a technology-driven team focused on
-                      applying AI, automation, and data systems to solve
-                      real-world problems in the Indian financial markets with
-                      clarity and transparency.
-                    </p>
-                  </section>
-
-                  {/* Founder - NOW WITH CLICKABLE LINK */}
-                  <section>
-                    <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">
-                      Founder
-                    </h2>
-                    <p className="text-sm sm:text-base leading-relaxed text-gray-600 text-justify">
-                      {/* ✅ CLICKABLE LINK TO FOUNDER PAGE */}
-                      <Link
-                        href="/founder"
-                        className={`font-bold bg-gradient-to-r ${GRADIENTS.primary} bg-clip-text text-transparent hover:underline`}
-                      >
-                        Akash Shukla
-                      </Link>{' '}
-                      is the founder of {APP_NAME} and a software developer focused
-                      on building practical, data-driven financial tools for Indian
-                      users.
-                    </p>
-
-                    <p className="text-sm sm:text-base leading-relaxed text-gray-600 mt-3 text-justify">
-                      With experience in full-stack development and AI-powered
-                      systems, Akash built {APP_NAME} to simplify complex market
-                      data and present it in a clear, structured, and unbiased
-                      way.
-                    </p>
-
-                    <p className="text-sm sm:text-base leading-relaxed text-gray-600 mt-3 text-justify">
-                      The goal behind {APP_NAME} is to help users understand IPOs,
-                      stocks, mutual funds, and market news using real-time data
-                      and AI-curated information — without hype or misleading
-                      tips.
-                    </p>
-
-                    {/* ✅ LEARN MORE LINK */}
-                    <Link
-                      href="/founder"
-                      className="inline-flex items-center gap-2 mt-4 text-sm font-medium text-blue-600 hover:text-blue-700"
-                    >
-                      Learn more about Akash
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </svg>
-                    </Link>
-                  </section>
-
+                  <p className="text-[11px] sm:text-xs text-gray-600 leading-relaxed text-justify">
+                    Akash built {APP_NAME} to simplify complex market data for Indian retail investors.
+                    With expertise in full-stack development, AI systems, and a YouTube community of 1M+
+                    subscribers, his mission is to make financial information accessible and actionable.
+                  </p>
+                  <Link
+                    href="/founder"
+                    className="inline-flex items-center gap-1 mt-2 text-[11px] font-semibold text-[#4A90E2] hover:underline"
+                  >
+                    View full profile
+                    <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </Link>
                 </div>
               </div>
-
-              {/* Disclaimer */}
-              <section className="mt-10 p-4 bg-red-50 rounded-lg border border-red-200">
-                <h3 className="text-sm font-bold text-red-900 mb-2">
-                  ⚠️ IMPORTANT DISCLAIMER
-                </h3>
-                <p className="text-xs text-red-800 leading-relaxed font-medium text-justify">
-                  <strong>{APP_NAME} provides AI-curated market information for
-                  informational and educational purposes only. We are NOT SEBI
-                  registered. This is NOT investment advice. Market investments
-                  are subject to risk. Please consult a SEBI-registered advisor
-                  before making any investment decisions.</strong>
-                </p>
-              </section>
-
-            </article>
+            </div>
           </div>
+
         </div>
       </div>
     </>

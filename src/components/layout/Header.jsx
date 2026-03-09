@@ -60,7 +60,7 @@ export default function Header() {
           scrolled || isOpen ? 'bg-white/95 backdrop-blur-md shadow-md' : 'bg-transparent'
         }`}
       >
-        <nav className="container mx-auto px-4 py-3">
+        <nav className="container mx-auto px-3 py-1">
           <div className="flex items-center justify-between">
             {/* Logo */}
             <Link href="/" className="flex items-center gap-2 group flex-shrink-0">

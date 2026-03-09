@@ -1,24 +1,594 @@
 'use client';
-// src/app/stories/page.js — Finnotia Market Stories
-// Clean IPO-style cards with auto-sliding text sections
+// src/app/stories/page.js
+// FIXES:
+//  ✅ Hydration error gone — no inline <style> on server
+//  ✅ Pagination — usePagination hook, 12 cards per page
+//  ✅ 2-column desktop layout (max-w-6xl, not max-w-2xl)
+//  ✅ Side space used properly — full-width grid
+//  ✅ SEO: metadata exported from layout/page wrapper pattern
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import {
+  X, Share2, ChevronLeft, ChevronRight,
+  Link2, Check, MessageCircle, Download,
+  TrendingUp, TrendingDown, Minus, Activity,
+  Pause, Play,
+} from 'lucide-react';
+import { usePagination } from '../../hooks/usePagination';
+import Pagination from '../../components/ui/Pagination';
 
-const IMP = {
-  CRITICAL: { color: '#ef4444', bg: '#fef2f2', label: 'Critical', dot: '#ef4444' },
-  HIGH:     { color: '#2563eb', bg: '#eff6ff', label: 'High',     dot: '#2563eb' },
-  MEDIUM:   { color: '#16a34a', bg: '#f0fdf4', label: 'Medium',   dot: '#16a34a' },
-  LOW:      { color: '#6b7280', bg: '#f9fafb', label: 'Low',      dot: '#9ca3af' },
+// ── Constants ─────────────────────────────────────────────────────
+const SLIDE_DURATION = 7000;
+const IMPORTANCE_CONFIG = {
+  CRITICAL: { color: '#EF4444', bg: 'rgba(239,68,68,0.12)', label: 'Critical' },
+  HIGH:     { color: '#2563EB', bg: 'rgba(37,99,235,0.12)',  label: 'High'     },
+  MEDIUM:   { color: '#22C55E', bg: 'rgba(34,197,94,0.12)', label: 'Medium'   },
+  LOW:      { color: '#94A3B8', bg: 'rgba(148,163,184,0.1)', label: 'Low'      },
+};
+const SENTIMENT_CONFIG = {
+  POSITIVE: { icon: TrendingUp,   color: '#22C55E', label: 'Bullish' },
+  NEGATIVE: { icon: TrendingDown, color: '#EF4444', label: 'Bearish' },
+  NEUTRAL:  { icon: Minus,        color: '#94A3B8', label: 'Neutral' },
+  MIXED:    { icon: Activity,     color: '#F59E0B', label: 'Mixed'   },
 };
 
-const SENT_ICON  = { POSITIVE: '↑', NEGATIVE: '↓', NEUTRAL: '—' };
-const SENT_COLOR = { POSITIVE: '#16a34a', NEGATIVE: '#ef4444', NEUTRAL: '#6b7280' };
+const ITEMS_PER_PAGE = 10;
 
+// ── Build slides from story ───────────────────────────────────────
+function buildSlides(story) {
+  const imp    = IMPORTANCE_CONFIG[story.importance] || IMPORTANCE_CONFIG.HIGH;
+  const sent   = SENTIMENT_CONFIG[story.sentiment]  || SENTIMENT_CONFIG.NEUTRAL;
+  const slides = [];
+  slides.push({ type: 'cover',     story, imp, sent });
+  if (story.quick_summary || story.detailed_summary)
+    slides.push({ type: 'summary',   story, imp, sent });
+  if (story.key_points?.length > 0)
+    slides.push({ type: 'keypoints', story, imp, sent });
+  if (story.what_it_means)
+    slides.push({ type: 'impact',    story, imp, sent });
+  if (story.context)
+    slides.push({ type: 'context',   story, imp, sent });
+  slides.push({ type: 'source', story, imp, sent });
+  slides.push({ type: 'cta',    story, imp, sent });
+  return slides;
+}
+
+// ── Slide Content ─────────────────────────────────────────────────
+function SlideContent({ slide }) {
+  const { type, story, imp, sent } = slide;
+  const SentIcon = sent.icon;
+
+  if (type === 'cover') return (
+    <div className="w-full h-full flex flex-col justify-end p-6 pb-10"
+      style={{ background: 'linear-gradient(160deg,#0B0F19 0%,#0f1f3d 100%)' }}>
+      <div className="flex items-center gap-2 mb-4">
+        <span className="px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wide text-white"
+          style={{ background: imp.color }}>{imp.label}</span>
+        <span className="flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold"
+          style={{ background: sent.color + '20', color: sent.color }}>
+          <SentIcon className="w-3 h-3" strokeWidth={2.5} />
+          {sent.label}
+        </span>
+      </div>
+      <h2 className="text-white text-2xl font-bold leading-tight mb-4"
+        style={{ fontFamily: 'Georgia, serif' }}>{story.headline}</h2>
+      <div className="flex items-center gap-3 text-white/40 text-xs">
+        <span>{story.source?.name || 'Market Update'}</span>
+        <span>·</span>
+        <span>{story.published_time || 'Today'}</span>
+      </div>
+    </div>
+  );
+
+  if (type === 'summary') return (
+    <div className="w-full h-full flex flex-col justify-center p-6"
+      style={{ background: '#0B0F19' }}>
+      <div className="mb-6">
+        <div className="text-[11px] font-bold tracking-widest uppercase mb-2"
+          style={{ color: imp.color }}>What Happened</div>
+        <div className="w-8 h-0.5 rounded" style={{ background: imp.color }} />
+      </div>
+      <div className="rounded-2xl p-5"
+        style={{ background: imp.bg, border: `1px solid ${imp.color}30` }}>
+        <p className="text-white text-[17px] leading-relaxed"
+          style={{ fontFamily: 'Georgia, serif' }}>
+          {story.detailed_summary || story.quick_summary}
+        </p>
+      </div>
+    </div>
+  );
+
+  if (type === 'keypoints') return (
+    <div className="w-full h-full flex flex-col justify-center p-6"
+      style={{ background: '#080D19' }}>
+      <div className="mb-5">
+        <div className="text-[11px] font-bold tracking-widest uppercase mb-1"
+          style={{ color: imp.color }}>Key Takeaways</div>
+        <h3 className="text-white text-xl font-bold">
+          {story.key_points.length} Things to Know
+        </h3>
+      </div>
+      <div className="flex flex-col gap-3">
+        {story.key_points.slice(0, 4).map((pt, i) => (
+          <div key={i} className="flex gap-3 items-start rounded-xl p-4"
+            style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}>
+            <div className="w-6 h-6 rounded-lg flex-shrink-0 flex items-center justify-center
+                            text-xs font-black text-white mt-0.5"
+              style={{ background: imp.color }}>{i + 1}</div>
+            <p className="text-white/85 text-[15px] leading-snug flex-1">{pt}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
+  if (type === 'impact') return (
+    <div className="w-full h-full flex flex-col justify-center p-6"
+      style={{ background: 'linear-gradient(160deg,#050d1a 0%,#0B0F19 100%)' }}>
+      <div className="text-[11px] font-bold tracking-widest uppercase mb-2 text-[#F59E0B]">
+        Business Impact</div>
+      <h3 className="text-white text-xl font-bold mb-6">Why It Matters</h3>
+      <div className="rounded-2xl p-5"
+        style={{ background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.2)',
+                 borderLeft: '4px solid #F59E0B' }}>
+        <p className="text-white text-[16px] leading-relaxed"
+          style={{ fontFamily: 'Georgia, serif' }}>{story.what_it_means}</p>
+      </div>
+      <p className="text-white/20 text-[10px] mt-4 italic">* Analysis for informational purposes only.</p>
+    </div>
+  );
+
+  if (type === 'context') return (
+    <div className="w-full h-full flex flex-col justify-center p-6"
+      style={{ background: '#0B0F19' }}>
+      <div className="text-[11px] font-bold tracking-widest uppercase mb-2"
+        style={{ color: imp.color }}>Background</div>
+      <h3 className="text-white text-xl font-bold mb-6">The Bigger Picture</h3>
+      <div className="relative">
+        <div className="text-6xl leading-none font-black absolute -top-3 -left-2"
+          style={{ color: imp.color, opacity: 0.2 }}>"</div>
+        <div className="rounded-2xl p-5 pl-6"
+          style={{ background: 'rgba(255,255,255,0.03)',
+                   border: `1px solid rgba(255,255,255,0.07)`,
+                   borderLeft: `3px solid ${imp.color}` }}>
+          <p className="text-white/80 text-[16px] leading-relaxed italic"
+            style={{ fontFamily: 'Georgia, serif' }}>{story.context}</p>
+        </div>
+      </div>
+    </div>
+  );
+
+  if (type === 'source') return (
+    <div className="w-full h-full flex flex-col justify-center p-6"
+      style={{ background: '#080D19' }}>
+      <div className="text-[11px] font-bold tracking-widest uppercase mb-6"
+        style={{ color: imp.color }}>Source & Tags</div>
+      <div className="rounded-2xl p-5 mb-5"
+        style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
+        <p className="text-white/40 text-[11px] mb-1">Reported by</p>
+        <p className="text-white text-lg font-bold">{story.source?.name || 'Financial Sources'}</p>
+        {story.source?.url && (
+          <a href={story.source.url} target="_blank" rel="noopener noreferrer"
+            className="text-[12px] mt-1 block" style={{ color: imp.color }}>
+            View original →
+          </a>
+        )}
+      </div>
+      {story.tags?.length > 0 && (
+        <div>
+          <p className="text-white/30 text-[10px] uppercase tracking-widest mb-3">Topics</p>
+          <div className="flex flex-wrap gap-2">
+            {story.tags.slice(0, 6).map(t => (
+              <span key={t} className="px-3 py-1.5 rounded-full text-[12px] font-medium"
+                style={{ background: 'rgba(255,255,255,0.06)',
+                         border: '1px solid rgba(255,255,255,0.1)',
+                         color: 'rgba(255,255,255,0.6)' }}>#{t}</span>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+
+  if (type === 'cta') return (
+    <div className="w-full h-full flex flex-col items-center justify-center p-6 text-center relative overflow-hidden"
+      style={{ background: 'linear-gradient(160deg,#0B0F19 0%,#0f1a30 100%)' }}>
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <div className="w-64 h-64 rounded-full blur-3xl"
+          style={{ background: imp.color, opacity: 0.08 }} />
+      </div>
+      <div className="relative z-10">
+        <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg"
+          style={{ background: imp.color }}>
+          <span className="text-3xl">📊</span>
+        </div>
+        <h3 className="text-white text-2xl font-bold mb-3">Want More?</h3>
+        <p className="text-white/50 text-[15px] leading-relaxed mb-8 max-w-xs">
+          Read the full story with detailed analysis on FINNOTIA.
+        </p>
+        <a href={`/stories/${story.slug}`}
+          className="inline-block px-8 py-3.5 rounded-full text-white font-bold text-[15px] mb-4"
+          style={{ background: imp.color }}>
+          Read Full Story
+        </a>
+        <p className="text-white/20 text-[10px]">Educational only · Not SEBI registered</p>
+      </div>
+    </div>
+  );
+
+  return null;
+}
+
+// ── Share Sheet ───────────────────────────────────────────────────
+function ShareSheet({ story, onClose }) {
+  const [copied, setCopied] = useState(false);
+  const url = `https://finnotia.com/stories/${story.slug}`;
+
+  const shareWhatsApp = () => {
+    window.open(`https://wa.me/?text=${encodeURIComponent(story.headline + '\n\n' + url)}`);
+  };
+  const copyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(url);
+    } catch {
+      const ta = document.createElement('textarea');
+      ta.value = url;
+      ta.style.cssText = 'position:fixed;opacity:0';
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+    }
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  return (
+    <div className="fixed inset-0 z-[100] flex items-end" onClick={onClose}>
+      <div className="absolute inset-0 bg-black/60" />
+      <div className="relative w-full rounded-t-3xl p-6 pb-10"
+        style={{ background: '#151C2E', border: '1px solid rgba(255,255,255,0.08)' }}
+        onClick={e => e.stopPropagation()}>
+        <div className="w-10 h-1 bg-white/20 rounded-full mx-auto mb-6" />
+        <h3 className="text-white font-bold text-lg mb-1">Share Story</h3>
+        <p className="text-white/40 text-sm mb-6 line-clamp-1">{story.headline}</p>
+        <div className="flex flex-col gap-3">
+          <button onClick={shareWhatsApp}
+            className="flex items-center gap-4 p-4 rounded-2xl w-full text-left"
+            style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}>
+            <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
+              style={{ background: 'rgba(37,211,102,0.15)' }}>
+              <MessageCircle className="w-5 h-5" style={{ color: '#25D166' }} />
+            </div>
+            <div>
+              <p className="text-white font-semibold text-sm">Share on WhatsApp</p>
+              <p className="text-white/40 text-xs">Send link to contacts</p>
+            </div>
+          </button>
+          <button onClick={copyLink}
+            className="flex items-center gap-4 p-4 rounded-2xl w-full text-left"
+            style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}>
+            <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
+              style={{ background: 'rgba(37,99,235,0.15)' }}>
+              {copied ? <Check className="w-5 h-5 text-green-400" /> : <Link2 className="w-5 h-5 text-blue-400" />}
+            </div>
+            <div>
+              <p className="text-white font-semibold text-sm">{copied ? 'Copied!' : 'Copy Link'}</p>
+              <p className="text-white/40 text-xs">Share anywhere</p>
+            </div>
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Full-screen Story Viewer ──────────────────────────────────────
+function StoryViewer({ stories, initialIndex, onClose }) {
+  const [storyIdx, setStoryIdx]     = useState(initialIndex);
+  const [slideIdx, setSlideIdx]     = useState(0);
+  const [progress, setProgress]     = useState(0);
+  const [paused, setPaused]         = useState(false);
+  const [showShare, setShowShare]   = useState(false);
+  const [touchStart, setTouchStart] = useState(null);
+
+  const timerRef     = useRef(null);
+  const progressRef  = useRef(null);
+  const startTimeRef = useRef(null);
+  const elapsedRef   = useRef(0);
+
+  const currentStory = stories[storyIdx];
+  const slides       = buildSlides(currentStory);
+  const totalSlides  = slides.length;
+
+  const clearTimers = useCallback(() => {
+    clearInterval(timerRef.current);
+    cancelAnimationFrame(progressRef.current);
+  }, []);
+
+  const goNext = useCallback(() => {
+    clearTimers();
+    elapsedRef.current = 0;
+    if (slideIdx < totalSlides - 1) {
+      setSlideIdx(s => s + 1);
+    } else if (storyIdx < stories.length - 1) {
+      setStoryIdx(s => s + 1);
+      setSlideIdx(0);
+    } else {
+      onClose();
+    }
+  }, [slideIdx, totalSlides, storyIdx, stories.length, onClose, clearTimers]);
+
+  const startProgress = useCallback(() => {
+    startTimeRef.current = Date.now() - elapsedRef.current;
+    const tick = () => {
+      const elapsed = Date.now() - startTimeRef.current;
+      const pct     = Math.min((elapsed / SLIDE_DURATION) * 100, 100);
+      setProgress(pct);
+      if (pct < 100) progressRef.current = requestAnimationFrame(tick);
+    };
+    progressRef.current = requestAnimationFrame(tick);
+    timerRef.current = setTimeout(() => goNext(), SLIDE_DURATION - elapsedRef.current);
+  }, [slideIdx, storyIdx, goNext]); // eslint-disable-line
+
+  useEffect(() => {
+    if (paused || showShare) { clearTimers(); return; }
+    elapsedRef.current = 0;
+    setProgress(0);
+    startProgress();
+    return clearTimers;
+  }, [slideIdx, storyIdx, paused, showShare]); // eslint-disable-line
+
+  const goPrev = useCallback(() => {
+    clearTimers();
+    elapsedRef.current = 0;
+    if (slideIdx > 0) setSlideIdx(s => s - 1);
+    else if (storyIdx > 0) { setStoryIdx(s => s - 1); setSlideIdx(0); }
+  }, [slideIdx, storyIdx, clearTimers]);
+
+  const onTouchStart = (e) => setTouchStart({ x: e.touches[0].clientX, y: e.touches[0].clientY });
+  const onTouchEnd   = (e) => {
+    if (!touchStart) return;
+    const dy = e.changedTouches[0].clientY - touchStart.y;
+    if (dy > 80) onClose();
+    setTouchStart(null);
+  };
+  const handleTap = (e) => {
+    if (showShare) return;
+    const x = e.clientX / window.innerWidth;
+    if (x < 0.3) goPrev(); else goNext();
+  };
+
+  const imp = IMPORTANCE_CONFIG[currentStory.importance] || IMPORTANCE_CONFIG.HIGH;
+
+  return (
+    <div className="fixed inset-0 z-50 bg-black flex items-center justify-center"
+      onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
+      <div className="relative w-full h-full max-w-[430px] overflow-hidden select-none"
+        style={{ touchAction: 'pan-y' }}>
+
+        {/* Slide */}
+        <div className="absolute inset-0"
+          onClick={handleTap}
+          onMouseDown={() => { clearTimers(); setPaused(true); }}
+          onMouseUp={() => setPaused(false)}
+          onTouchStart={() => { clearTimers(); setPaused(true); }}
+          onTouchEnd={(e) => { setPaused(false); onTouchEnd(e); }}>
+          <div className="w-full h-full relative overflow-hidden">
+            {slides[slideIdx]?.type === 'cover' && currentStory.image_url_og && (
+              <img src={currentStory.image_url_og} alt=""
+                className="absolute inset-0 w-full h-full object-cover opacity-20" />
+            )}
+            <SlideContent slide={slides[slideIdx]} />
+          </div>
+        </div>
+
+        {/* Progress bars */}
+        <div className="absolute top-0 left-0 right-0 z-20 flex gap-1.5 p-3 pt-4">
+          {slides.map((_, i) => (
+            <div key={i} className="flex-1 h-[3px] rounded-full overflow-hidden"
+              style={{ background: 'rgba(255,255,255,0.2)' }}>
+              <div className="h-full rounded-full"
+                style={{
+                  background: '#fff',
+                  width: i < slideIdx ? '100%' : i === slideIdx ? `${progress}%` : '0%',
+                  transition: i === slideIdx ? 'none' : undefined,
+                }} />
+            </div>
+          ))}
+        </div>
+
+        {/* Header */}
+        <div className="absolute top-8 left-0 right-0 z-20 flex items-center
+                        justify-between px-4 pointer-events-none">
+          <div className="flex items-center gap-2">
+            <div className="w-7 h-7 rounded-full flex items-center justify-center"
+              style={{ background: imp.color }}>
+              <span className="text-white text-[10px] font-black">F</span>
+            </div>
+            <span className="text-white text-sm font-semibold">FINNOTIA</span>
+            <span className="text-white/40 text-xs">{storyIdx + 1}/{stories.length}</span>
+          </div>
+          {paused && (
+            <div className="flex items-center gap-1 px-2 py-1 rounded-full"
+              style={{ background: 'rgba(0,0,0,0.5)' }}>
+              <Pause className="w-3 h-3 text-white" />
+              <span className="text-white text-[10px]">Paused</span>
+            </div>
+          )}
+        </div>
+
+        {/* Action buttons */}
+        <div className="absolute top-8 right-4 z-30 flex items-center gap-2 pointer-events-auto">
+          <button onClick={(e) => { e.stopPropagation(); setShowShare(true); }}
+            className="w-9 h-9 rounded-full flex items-center justify-center"
+            style={{ background: 'rgba(0,0,0,0.5)' }}>
+            <Share2 className="w-4 h-4 text-white" />
+          </button>
+          <button onClick={onClose}
+            className="w-9 h-9 rounded-full flex items-center justify-center"
+            style={{ background: 'rgba(0,0,0,0.5)' }}>
+            <X className="w-4 h-4 text-white" />
+          </button>
+        </div>
+
+        {/* Desktop nav arrows */}
+        <button onClick={(e) => { e.stopPropagation(); goPrev(); }}
+          className="absolute left-2 top-1/2 -translate-y-1/2 z-20
+                     w-8 h-8 rounded-full hidden md:flex items-center justify-center"
+          style={{ background: 'rgba(0,0,0,0.4)',
+                   opacity: slideIdx === 0 && storyIdx === 0 ? 0.3 : 0.8 }}>
+          <ChevronLeft className="w-5 h-5 text-white" />
+        </button>
+        <button onClick={(e) => { e.stopPropagation(); goNext(); }}
+          className="absolute right-2 top-1/2 -translate-y-1/2 z-20
+                     w-8 h-8 rounded-full hidden md:flex items-center justify-center"
+          style={{ background: 'rgba(0,0,0,0.4)', opacity: 0.8 }}>
+          <ChevronRight className="w-5 h-5 text-white" />
+        </button>
+
+        {/* Slide dots */}
+        <div className="absolute bottom-8 left-0 right-0 z-20 flex justify-center gap-1.5 pointer-events-none">
+          {slides.map((_, i) => (
+            <div key={i} className="rounded-full transition-all duration-200"
+              style={{
+                width: i === slideIdx ? '16px' : '5px',
+                height: '5px',
+                background: i === slideIdx ? '#fff' : 'rgba(255,255,255,0.3)',
+              }} />
+          ))}
+        </div>
+      </div>
+
+      {showShare && <ShareSheet story={currentStory} onClose={() => setShowShare(false)} />}
+    </div>
+  );
+}
+
+// ── Story Card (2-col grid card) ──────────────────────────────────
+function StoryCard({ story, onClick }) {
+  const imp      = IMPORTANCE_CONFIG[story.importance] || IMPORTANCE_CONFIG.HIGH;
+  const sent     = SENTIMENT_CONFIG[story.sentiment]   || SENTIMENT_CONFIG.NEUTRAL;
+  const SentIcon = sent.icon;
+  const slideCount = Math.min(buildSlides(story).length, 7);
+
+  return (
+    <button
+      onClick={onClick}
+      className="group w-full text-left rounded-2xl overflow-hidden transition-all duration-200
+                 hover:scale-[1.02] hover:shadow-xl active:scale-[0.98]"
+      style={{
+        background: '#ffffff',
+        border: `1px solid ${imp.color}20`,
+        boxShadow: `0 2px 12px rgba(0,0,0,0.06)`,
+      }}
+    >
+      {/* Top color accent bar */}
+      <div className="h-1 w-full" style={{ background: `linear-gradient(90deg, ${imp.color}, ${imp.color}60)` }} />
+
+      {/* Card body */}
+      <div className="p-4 sm:p-5">
+
+        {/* Row 1: badges + time */}
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2">
+            {/* Importance badge */}
+            <span
+              className="px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider text-white"
+              style={{ background: imp.color }}
+            >
+              {imp.label}
+            </span>
+            {/* Sentiment badge */}
+            <span
+              className="flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold"
+              style={{ background: sent.color + '18', color: sent.color, border: `1px solid ${sent.color}30` }}
+            >
+              <SentIcon className="w-2.5 h-2.5" strokeWidth={2.5} />
+              {sent.label}
+            </span>
+          </div>
+          <span className="text-[10px] font-medium text-gray-400">
+            {story.published_time || 'Today'}
+          </span>
+        </div>
+
+        {/* Headline */}
+        <h3
+          className="text-gray-900 text-sm sm:text-[15px] font-bold leading-snug mb-3 line-clamp-3
+                     group-hover:text-[#2563EB] transition-colors duration-200"
+          style={{ fontFamily: 'Georgia, serif' }}
+        >
+          {story.headline}
+        </h3>
+
+        {/* Summary — show on larger screens */}
+        {story.quick_summary && (
+          <p className="hidden sm:block text-[12px] leading-relaxed line-clamp-2 mb-3 text-gray-500">
+            {story.quick_summary}
+          </p>
+        )}
+
+        {/* Tags */}
+        {story.tags?.length > 0 && (
+          <div className="flex flex-wrap gap-1 mb-3">
+            {story.tags.slice(0, 3).map(t => (
+              <span key={t} className="text-[10px] px-2 py-0.5 rounded-full"
+                style={{
+                  background: '#F1F5F9',
+                  border: '1px solid #E2E8F0',
+                  color: '#64748B',
+                }}>
+                #{t}
+              </span>
+            ))}
+          </div>
+        )}
+
+        {/* Divider */}
+        <div className="border-t mb-3 border-gray-100" />
+
+        {/* Footer: slide progress + source + read */}
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-1.5 flex-1 min-w-0">
+            {/* Slide count dots */}
+            <div className="flex items-center gap-[3px]">
+              {[...Array(slideCount)].map((_, i) => (
+                <div key={i} className="rounded-full"
+                  style={{
+                    width: i === 0 ? '12px' : '4px',
+                    height: '4px',
+                    background: i === 0 ? imp.color : 'rgba(255,255,255,0.15)',
+                  }} />
+              ))}
+            </div>
+            <span className="text-[10px] truncate text-gray-400">
+              {story.source?.name || 'Finnotia'}
+            </span>
+          </div>
+          <span
+            className="text-[11px] font-bold flex-shrink-0 flex items-center gap-0.5
+                       group-hover:gap-1.5 transition-all duration-200"
+            style={{ color: imp.color }}
+          >
+            Read <ChevronRight className="w-3 h-3" />
+          </span>
+        </div>
+
+      </div>
+    </button>
+  );
+}
+
+
+
+// ── Main Page ─────────────────────────────────────────────────────
 export default function StoriesPage() {
-  const [stories, setStories]   = useState([]);
-  const [loading, setLoading]   = useState(true);
-  const [filter, setFilter]     = useState('ALL');
-  const [date, setDate]         = useState('');
+  const [stories, setStories]         = useState([]);
+  const [loading, setLoading]         = useState(true);
+  const [filter, setFilter]           = useState('ALL');
+  const [date, setDate]               = useState('');
+  const [activeStory, setActiveStory] = useState(null);
 
   useEffect(() => {
     fetch('/api/stories')
@@ -28,239 +598,183 @@ export default function StoriesPage() {
       .finally(() => setLoading(false));
   }, []);
 
-  const FILTERS  = ['ALL', 'CRITICAL', 'HIGH', 'MEDIUM'];
+  // Lock scroll when story is open
+  useEffect(() => {
+    document.body.style.overflow = activeStory !== null ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [activeStory]);
+
+  const FILTERS = ['ALL', 'CRITICAL', 'HIGH', 'MEDIUM'];
   const filtered = filter === 'ALL' ? stories : stories.filter(s => s.importance === filter);
 
-  const fmtDate = (d) => {
-    if (!d) return 'Today';
-    return new Date(d).toLocaleDateString('en-IN', {
-      weekday: 'short', day: 'numeric', month: 'short', year: 'numeric',
-    });
-  };
+  // Pagination
+  const pagination = usePagination(filtered, ITEMS_PER_PAGE);
+
+  // Reset to page 1 when filter changes
+  useEffect(() => { pagination.goTo(1); }, [filter]); // eslint-disable-line
+
+  const fmtDate = (d) => d
+    ? new Date(d).toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short' })
+    : 'Today';
 
   return (
     <>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap');
+      <div className="min-h-screen" style={{ background: '#ffffff', fontFamily: 'system-ui, sans-serif' }}>
 
-        .sr { min-height:100vh; background:#f4f6f9; padding-top:64px; font-family:'DM Sans',-apple-system,BlinkMacSystemFont,sans-serif; }
+        {/* ── Header ── */}
+        <div style={{ background: '#0c1e35' }} className="px-4 pt-8 pb-12 relative overflow-hidden">
+          <div className="absolute inset-0 opacity-[0.04]"
+            style={{
+              backgroundImage: `linear-gradient(rgba(255,255,255,.4) 1px,transparent 1px),
+                linear-gradient(90deg,rgba(255,255,255,.4) 1px,transparent 1px)`,
+              backgroundSize: '32px 32px',
+            }} />
+          <div className="absolute bottom-0 left-0 right-0 h-5"
+            style={{ background: '#F8FAFC', borderRadius: '20px 20px 0 0' }} />
 
-        /* ── HEADER ── */
-        .sh { background:linear-gradient(135deg,#1a2f4a 0%,#0c1e35 100%); padding:24px 16px 30px; position:relative; }
-        .sh::after { content:''; position:absolute; bottom:-1px; left:0; right:0; height:16px; background:#f4f6f9; border-radius:16px 16px 0 0; }
-        .sh-in { max-width:560px; margin:0 auto; }
-        .sh-badge { display:inline-flex; align-items:center; gap:4px; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.12); border-radius:5px; padding:3px 8px; margin-bottom:10px; }
-        .sh-badge span { color:rgba(255,255,255,0.8); font-size:9px; font-weight:600; letter-spacing:1px; }
-        .sh-title { color:#fff; font-size:20px; font-weight:700; margin:0 0 3px; line-height:1.25; }
-        .sh-sub { color:rgba(255,255,255,0.45); font-size:11px; margin:0; }
-
-        /* ── FILTER ── */
-        .sf { max-width:560px; margin:-2px auto 0; padding:0 16px; display:flex; gap:5px; overflow-x:auto; scrollbar-width:none; position:relative; z-index:2; }
-        .sf::-webkit-scrollbar { display:none; }
-        .sf-btn { padding:5px 12px; border-radius:7px; border:1.5px solid #dde1e8; background:#fff; color:#64748b; font-size:11px; font-weight:600; cursor:pointer; font-family:inherit; white-space:nowrap; flex-shrink:0; transition:all .15s; }
-        .sf-btn.act { background:#0c1e35; color:#fff; border-color:#0c1e35; }
-
-        /* ── STATS ── */
-        .ss { max-width:560px; margin:10px auto 0; padding:0 16px; display:flex; align-items:center; gap:12px; }
-        .ss-i { display:flex; align-items:center; gap:4px; font-size:10px; color:#94a3b8; }
-        .ss-d { width:5px; height:5px; border-radius:50%; }
-        .ss-n { font-weight:700; color:#334155; }
-
-        /* ── CARD LIST ── */
-        .cl { max-width:560px; margin:14px auto 0; padding:0 16px 80px; display:flex; flex-direction:column; gap:8px; }
-
-        /* ── STORY CARD ── */
-        .sc { background:#fff; border-radius:10px; border:1px solid #e4e8ee; overflow:hidden; text-decoration:none; display:block; transition:border-color .15s,box-shadow .15s; }
-        .sc:active { border-color:#2563eb; box-shadow:0 2px 10px rgba(37,99,235,.08); }
-
-        .sc-top { display:flex; align-items:stretch; gap:0; padding:10px 10px 0; }
-        .sc-bar { width:3px; border-radius:3px; flex-shrink:0; margin-right:8px; }
-        .sc-body { flex:1; min-width:0; }
-
-        .sc-meta { display:flex; align-items:center; gap:5px; margin-bottom:5px; flex-wrap:wrap; }
-        .sc-imp { font-size:8px; font-weight:700; letter-spacing:.4px; padding:2px 6px; border-radius:3px; text-transform:uppercase; }
-        .sc-sent { font-size:10px; font-weight:600; }
-        .sc-time { font-size:9px; color:#94a3b8; margin-left:auto; }
-
-        .sc-hl { font-size:13.5px; font-weight:700; color:#0f172a; line-height:1.35; margin:0 0 6px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
-
-        /* ── AUTO-SLIDE ── */
-        .sl-area { position:relative; height:46px; overflow:hidden; margin-bottom:4px; }
-        .sl-track { display:flex; flex-direction:column; animation:sl 12s ease-in-out infinite; }
-        .sl-item { height:46px; display:flex; flex-direction:column; justify-content:center; }
-        .sl-lbl { font-size:8px; font-weight:700; letter-spacing:.4px; color:#94a3b8; text-transform:uppercase; margin-bottom:1px; }
-        .sl-txt { font-size:11.5px; color:#475569; line-height:1.4; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
-
-        @keyframes sl {
-          0%,28%   { transform:translateY(0); }
-          33%,61%  { transform:translateY(-46px); }
-          66%,94%  { transform:translateY(-92px); }
-          100%     { transform:translateY(0); }
-        }
-
-        .sl-dots { display:flex; gap:3px; align-items:center; margin-bottom:2px; }
-        .sl-dot { width:3px; height:3px; border-radius:50%; background:#d1d5db; }
-        .sl-dot-a { width:10px; height:3px; border-radius:2px; animation:dotC 12s ease-in-out infinite; }
-        @keyframes dotC {
-          0%,28%  { background:#2563eb; }
-          33%,61% { background:#16a34a; }
-          66%,94% { background:#f59e0b; }
-          100%    { background:#2563eb; }
-        }
-
-        /* ── TAGS ── */
-        .sc-tags { display:flex; gap:3px; flex-wrap:wrap; padding:0 10px; }
-        .sc-tag { font-size:9px; color:#64748b; background:#f1f5f9; padding:1px 6px; border-radius:3px; font-weight:500; }
-
-        /* ── FOOTER ── */
-        .sc-ft { display:flex; align-items:center; justify-content:space-between; padding:7px 10px; border-top:1px solid #f1f5f9; margin-top:6px; }
-        .sc-kp { font-size:9px; color:#94a3b8; }
-        .sc-rd { font-size:10px; font-weight:600; color:#2563eb; }
-
-        /* ── SKELETON ── */
-        .sk { background:#fff; border-radius:10px; border:1px solid #e4e8ee; padding:12px; animation:skP 1.5s ease-in-out infinite; }
-        .sk-l { height:8px; background:#f1f5f9; border-radius:5px; margin-bottom:8px; }
-        @keyframes skP { 0%,100%{opacity:1} 50%{opacity:.5} }
-
-        .empty { text-align:center; padding:50px 20px; color:#94a3b8; font-size:12px; }
-      `}</style>
-
-      <div className="sr">
-        {/* Header */}
-        <div className="sh">
-          <div className="sh-in">
-            <div className="sh-badge"><span>⚡ MARKET STORIES</span></div>
-            <h1 className="sh-title">Today&apos;s Market News</h1>
-            <p className="sh-sub">{fmtDate(date)} · For Indian investors</p>
+          <div className="max-w-4xl mx-auto relative z-10">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-4"
+              style={{ background: 'rgba(37,99,235,0.15)', border: '1px solid rgba(37,99,235,0.25)' }}>
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inset-0 rounded-full opacity-60"
+                  style={{ background: '#2563EB' }} />
+                <span className="relative rounded-full h-2 w-2" style={{ background: '#2563EB' }} />
+              </span>
+            <span className="text-[11px] font-semibold tracking-wide" style={{ color: '#93C5FD' }}>
+  TRENDING · Market Stories
+</span>
+            </div>
+            <h1 className="text-white text-2xl font-bold mb-1">Today's Market News</h1>
+            <p className="text-sm" style={{ color: 'rgba(255,255,255,0.35)' }}>
+              {fmtDate(date)} · Tap any story to read
+            </p>
           </div>
         </div>
 
-        {/* Filters */}
-        <div className="sf">
-          {FILTERS.map(f => {
-            const c = f === 'ALL' ? stories.length : stories.filter(s => s.importance === f).length;
-            return (
-              <button key={f} className={`sf-btn${filter === f ? ' act' : ''}`} onClick={() => setFilter(f)}>
-                {f === 'ALL' ? 'All' : f.charAt(0) + f.slice(1).toLowerCase()} ({c})
-              </button>
-            );
-          })}
-        </div>
+        {/* ── Main content area — full width ── */}
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
 
-        {/* Stats */}
-        <div className="ss">
-          {['CRITICAL','HIGH','MEDIUM'].map(k => {
-            const c = stories.filter(s => s.importance === k).length;
-            return c > 0 ? (
-              <div key={k} className="ss-i">
-                <div className="ss-d" style={{ background: IMP[k].dot }} />
-                <span className="ss-n">{c}</span> {IMP[k].label}
-              </div>
-            ) : null;
-          })}
-        </div>
-
-        {/* Cards */}
-        <div className="cl">
-          {loading ? (
-            [1,2,3,4].map(i => (
-              <div key={i} className="sk">
-                <div className="sk-l" style={{ width:'20%' }} />
-                <div className="sk-l" style={{ width:'75%', height:'12px' }} />
-                <div className="sk-l" style={{ width:'55%', height:'12px' }} />
-                <div className="sk-l" style={{ width:'90%' }} />
-                <div className="sk-l" style={{ width:'70%' }} />
-              </div>
-            ))
-          ) : filtered.length === 0 ? (
-            <div className="empty">
-              <div style={{ fontSize:'28px', marginBottom:'6px' }}>📭</div>
-              No stories found
+          {/* ── Filters + Stats row ── */}
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mt-5 mb-4">
+            {/* Filter pills */}
+            <div className="flex gap-2 overflow-x-auto" style={{ scrollbarWidth: 'none' }}>
+              {FILTERS.map(f => {
+                const count = f === 'ALL' ? stories.length : stories.filter(s => s.importance === f).length;
+                const imp   = IMPORTANCE_CONFIG[f];
+                return (
+                  <button key={f} onClick={() => setFilter(f)}
+                    className="flex-shrink-0 px-4 py-1.5 rounded-full text-xs font-bold
+                               transition-all duration-150 border whitespace-nowrap"
+                    style={{
+                      background:  filter === f ? (imp?.color || '#0B0F19') : '#fff',
+                      color:       filter === f ? '#fff' : '#64748B',
+                      borderColor: filter === f ? (imp?.color || '#0B0F19') : '#E2E8F0',
+                    }}>
+                    {f === 'ALL' ? 'All' : f.charAt(0) + f.slice(1).toLowerCase()} ({count})
+                  </button>
+                );
+              })}
             </div>
-          ) : (
-            filtered.map((s, i) => <StoryCard key={s.slug || i} story={s} />)
+
+            {/* Stats */}
+            {!loading && stories.length > 0 && (
+              <div className="flex gap-4 flex-shrink-0">
+                {['CRITICAL', 'HIGH', 'MEDIUM'].map(k => {
+                  const c = stories.filter(s => s.importance === k).length;
+                  if (!c) return null;
+                  const imp = IMPORTANCE_CONFIG[k];
+                  return (
+                    <div key={k} className="flex items-center gap-1.5 text-xs">
+                      <div className="w-2 h-2 rounded-full" style={{ background: imp.color }} />
+                      <span className="font-bold" style={{ color: imp.color }}>{c}</span>
+                      <span className="text-[#94A3B8]">{imp.label}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
+          {/* ── Result count + page info ── */}
+          {!loading && filtered.length > 0 && (
+            <p className="text-xs text-gray-400 mb-4">
+              Showing {(pagination.currentPage - 1) * ITEMS_PER_PAGE + 1}–
+              {Math.min(pagination.currentPage * ITEMS_PER_PAGE, filtered.length)} of{' '}
+              {filtered.length} stories
+              {pagination.totalPages > 1 && ` · Page ${pagination.currentPage} of ${pagination.totalPages}`}
+            </p>
           )}
-        </div>
-      </div>
-    </>
-  );
-}
 
-/* ══ STORY CARD ══ */
-function StoryCard({ story }) {
-  const imp      = IMP[story.importance] || IMP.HIGH;
-  const sentIcon = SENT_ICON[story.sentiment] || '—';
-  const sentClr  = SENT_COLOR[story.sentiment] || '#6b7280';
-
-  // Build slide items
-  const slides = [];
-  if (story.quick_summary)    slides.push({ label: 'Summary', text: story.quick_summary });
-  if (story.what_it_means)    slides.push({ label: 'Impact',  text: story.what_it_means });
-  if (story.context)          slides.push({ label: 'Context', text: story.context });
-  if (story.detailed_summary && slides.length < 3) slides.push({ label: 'Detail', text: story.detailed_summary });
-
-  // Pad to 3 for smooth animation loop
-  while (slides.length < 3) {
-    slides.push(slides.length > 0 ? { ...slides[0] } : { label: 'Summary', text: story.headline });
-  }
-
-  return (
-    <a href={`/stories/${story.slug}`} className="sc">
-      <div className="sc-top">
-        <div className="sc-bar" style={{ background: imp.color }} />
-        <div className="sc-body">
-          {/* Meta */}
-          <div className="sc-meta">
-            <span className="sc-imp" style={{ color: imp.color, background: imp.bg }}>
-              {story.importance}
-            </span>
-            <span className="sc-sent" style={{ color: sentClr }}>
-              {sentIcon} {story.sentiment}
-            </span>
-            <span className="sc-time">{story.published_time || ''}</span>
+          {/* ── Story Grid ── */}
+          <div id="stories-grid">
+            {loading ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                {[...Array(4)].map((_, i) => (
+              <div key={i} className="rounded-2xl overflow-hidden animate-pulse bg-white border border-gray-100"
+                style={{ boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
+                    <div className="h-1 w-full bg-gray-200" />
+                    <div className="p-5 space-y-3">
+                      <div className="flex gap-2">
+                        <div className="h-5 w-16 bg-gray-200 rounded-md" />
+                        <div className="h-5 w-16 bg-gray-200 rounded-md" />
+                      </div>
+                      <div className="h-4 bg-gray-200 rounded w-full" />
+                      <div className="h-4 bg-gray-200 rounded w-4/5" />
+                      <div className="h-4 bg-gray-200 rounded w-3/5" />
+                      <div className="h-3 bg-gray-100 rounded w-full mt-4" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : filtered.length === 0 ? (
+              <div className="text-center py-20">
+                <div className="text-4xl mb-3">📭</div>
+                <p className="text-[#94A3B8] text-sm">No stories found</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                {pagination.currentItems.map((story, i) => (
+                  <StoryCard
+                    key={story.slug || i}
+                    story={story}
+                    index={i}
+                    onClick={() => setActiveStory(filtered.indexOf(story))}
+                  />
+                ))}
+              </div>
+            )}
           </div>
 
-          {/* Headline */}
-          <h3 className="sc-hl">{story.headline}</h3>
-
-          {/* Auto-sliding section */}
-          <div className="sl-area">
-            <div className="sl-track">
-              {slides.slice(0, 3).map((s, i) => (
-                <div key={i} className="sl-item">
-                  <div className="sl-lbl">{s.label}</div>
-                  <div className="sl-txt">{s.text}</div>
-                </div>
-              ))}
+          {/* ── Pagination ── */}
+          {!loading && filtered.length > ITEMS_PER_PAGE && (
+            <div className="mt-8 pb-4">
+              <Pagination
+                currentPage={pagination.currentPage}
+                totalPages={pagination.totalPages}
+                onPageChange={pagination.goTo}
+              />
             </div>
-          </div>
+          )}
 
-          {/* Dots */}
-          <div className="sl-dots">
-            <div className="sl-dot sl-dot-a" />
-            <div className="sl-dot" />
-            <div className="sl-dot" />
-          </div>
+          {/* Bottom disclaimer */}
+          {!loading && filtered.length > 0 && (
+            <p className="text-center text-xs text-gray-400 pb-8 mt-2">
+              Updated regularly · Market insights for informational purposes
+
+            </p>
+          )}
+
         </div>
       </div>
 
-      {/* Tags + Key Points */}
-      {(story.tags?.length > 0 || story.key_points?.length > 0) && (
-        <div className="sc-tags">
-          {(story.tags || []).slice(0, 3).map((t, i) => (
-            <span key={`t${i}`} className="sc-tag">#{t}</span>
-          ))}
-          {(story.key_points || []).slice(0, 2).map((kp, i) => (
-            <span key={`k${i}`} className="sc-tag">{kp}</span>
-          ))}
-        </div>
+      {/* ── Full-screen Story Viewer ── */}
+      {activeStory !== null && filtered.length > 0 && (
+        <StoryViewer
+          stories={filtered}
+          initialIndex={activeStory}
+          onClose={() => setActiveStory(null)}
+        />
       )}
-
-      {/* Footer */}
-      <div className="sc-ft">
-        <span className="sc-kp">{story.key_points?.length || 0} key points</span>
-        <span className="sc-rd">Read →</span>
-      </div>
-    </a>
+    </>
   );
 }

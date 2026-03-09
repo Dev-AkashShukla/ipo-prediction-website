@@ -1,49 +1,70 @@
-// Application constants for FINNOTIA - SEBI COMPLIANT
+// src/lib/constants.js
+// ── FINNOTIA Design Tokens ──────────────────────────────────────
+// Primary: #0B0F19 | Accent: #2563EB | Background: #F8FAFC
 
 export const APP_NAME = 'FINNOTIA';
-// ✅ FIXED: Removed "Analysis" and "Research"
 export const APP_DESCRIPTION = 'AI-Powered IPO Tracker & Market Data Platform';
 
-// ✅ Download Links - Single source of truth
-export const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.ipo.ipopredictor';
-export const APP_STORE_URL = '/download'; // iOS coming soon page
-//export const PLAY_STORE_URL = '/download';
+// ── Download Links ──────────────────────────────────────────────
+export const PLAY_STORE_URL =
+  'https://play.google.com/store/apps/details?id=com.ipo.ipopredictor';
+export const APP_STORE_URL = '/download';
 
-// Google Recaptcha
-export const RECAPTCHA_SITE_KEY = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || '';
-
-// ✅ Website URL
-export const SITE_URL = 'https://finnotia.com';
-
-export const SOCIAL_LINKS = {
-  twitter: 'https://twitter.com/finnotia',
-  instagram: 'https://instagram.com/finnotia',
+// ── Design Tokens ───────────────────────────────────────────────
+export const THEME_COLORS = {
+  primary:    '#0B0F19',   // dark navy   — hero, dark sections
+  accent:     '#2563EB',   // blue        — CTAs, links, tags
+  accentHover:'#1D4ED8',   // darker blue — hover states
+  accentLight:'#DBEAFE',   // light blue  — badge backgrounds
+  bg:         '#F8FAFC',   // off-white   — page background
+  surface:    '#FFFFFF',   // white       — cards
+  border:     '#E2E8F0',   // slate-200   — dividers
+  muted:      '#64748B',   // slate-500   — secondary text
+  heading:    '#0F172A',   // slate-900   — headings
+  text:       '#334155',   // slate-700   — body text
 };
 
+// Tailwind gradient strings
+export const GRADIENTS = {
+  // Main CTA — solid accent, no purple
+  primary: 'from-[#2563EB] to-[#1D4ED8]',
+  // Dark hero background gradient
+  hero:    'from-[#0BB0F19] via-[#0F172A] to-[#0B1829]',
+  // Soft blue for lighter sections
+  soft:    'from-[#EFF6FF] to-[#F8FAFC]',
+  // Full CTA section
+  cta:     'from-[#0B0F19] via-[#0F1F3D] to-[#0B0F19]',
+};
+
+// ── Contact ──────────────────────────────────────────────────────
 export const CONTACT_INFO = {
   supportEmail: 'support@finnotia.com',
   contactEmail: 'contact@finnotia.com',
-  // Removed phone - don't add fake number
 };
 
-// ✅ Theme Colors - Use these instead of hardcoding
-export const THEME_COLORS = {
-  primary: '#4A90E2',
-  primaryDark: '#2E5AAD',
-  secondary: '#2E5CB8',
-  accent: '#3B82F6',
-  dark: '#1E3A8A',
+export const SOCIAL_LINKS = {
+  twitter:   'https://twitter.com/finnotia',
+  instagram: 'https://instagram.com/finnotia',
 };
 
-// ✅ Gradient Classes - Reusable Tailwind classes
-export const GRADIENTS = {
-  primary: 'from-[#4A90E2] to-[#2E5AAD]',
-  secondary: 'from-[#2E5CB8] to-[#3B82F6]',
-  hero: 'from-[#4A90E2] to-[#1E3A8A]',
-  cta: 'from-[#4A90E2] via-[#2E5CB8] to-[#1E3A8A]',
+export const SITE_URL = 'https://finnotia.com';
+export const RECAPTCHA_SITE_KEY = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || '';
+
+// ── SEBI Disclaimer ──────────────────────────────────────────────
+export const DISCLAIMER_TEXT = {
+  short:  `${APP_NAME} is for educational purposes only. NOT SEBI registered.`,
+  medium: `${APP_NAME} is an educational tool and NOT a SEBI registered investment advisor. Data is for informational purposes only.`,
+  full:   `${APP_NAME} is an educational tool and NOT a SEBI registered investment advisor. Data provided is for informational purposes only. Investments in securities market are subject to market risks. Read all related documents carefully before investing. Past performance is not indicative of future results.`,
 };
 
-// ✅ FIXED: Safe feature names
+export const SAFE_TERMS = {
+  tracking:    'Tracking',
+  data:        'Data',
+  information: 'Information',
+  updates:     'Updates',
+  curated:     'Curated',
+};
+
 export const FEATURES_LIST = [
   'AI-Powered IPO Tracking',
   'Stock Market Updates',
@@ -53,28 +74,10 @@ export const FEATURES_LIST = [
   'Timely Notifications',
 ];
 
-// API endpoints (internal use - these are fine)
 export const API_ENDPOINTS = {
-  news: '/api/news',
-  stocks: '/api/stocks',
+  news:         '/api/news',
+  stocks:       '/api/stocks',
   mutual_funds: '/api/mutual-funds',
-  ipo: '/api/ipo',
-  gmp: '/api/gmp',
-};
-
-// ✅ SEBI Disclaimer Text - Use this everywhere
-export const DISCLAIMER_TEXT = {
-  short: `${APP_NAME} is for educational purposes only. NOT SEBI registered.`,
-  medium: `${APP_NAME} is an educational tool and NOT a SEBI registered investment advisor. Data is for informational purposes only.`,
-  full: `${APP_NAME} is an educational tool and NOT a SEBI registered investment advisor. Data provided is for informational purposes only. Investments in securities market are subject to market risks. Read all related documents carefully before investing. Past performance is not indicative of future results.`,
-};
-
-// ✅ Safe words to use across the app
-export const SAFE_TERMS = {
-  // Use these instead of risky words
-  tracking: 'Tracking',      // instead of "Analysis"
-  data: 'Data',              // instead of "Insights"  
-  information: 'Information', // instead of "Research"
-  updates: 'Updates',        // instead of "Insights"
-  curated: 'Curated',        // instead of "Analyzed"
+  ipo:          '/api/ipo',
+  gmp:          '/api/gmp',
 };

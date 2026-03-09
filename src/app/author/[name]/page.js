@@ -116,7 +116,7 @@ export default function AuthorPage({ params }) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema) }}
       />
 
-      <div className="min-h-screen bg-[#f8f7f4] pt-16" style={{ fontFamily: 'system-ui, sans-serif' }}>
+      <div className="min-h-screen bg-[#f8f7f4] pt-" style={{ fontFamily: 'system-ui, sans-serif' }}>
 
         {/* ── Author Hero ── */}
         <div className="bg-[#0c1e35] px-5 pt-14 pb-16 relative overflow-hidden">

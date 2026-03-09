@@ -1,4 +1,3 @@
-'use client';
 // src/app/delete-account/page.js
 import Link from 'next/link';
 import { Trash2, ShieldCheck, Mail, ArrowRight } from 'lucide-react';
@@ -26,7 +25,7 @@ const steps = [
 
 export default function DeleteAccountPage() {
   return (
-    <div className="min-h-screen bg-[#f8f7f4] " style={{ fontFamily: 'system-ui, sans-serif' }}>
+    <div className="min-h-screen bg-[#f8f7f4]" style={{ fontFamily: 'system-ui, sans-serif' }}>
       <div className="container mx-auto px-4 py-8 sm:py-12 max-w-lg">
 
         {/* Header */}

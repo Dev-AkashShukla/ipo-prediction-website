@@ -1,33 +1,29 @@
 // scripts/ping-search-engines.js
-// package.json mein add karo: "postbuild": "node scripts/ping-search-engines.js"
-// Ya Vercel deploy ke baad manually: node scripts/ping-search-engines.js
+// postbuild mein run hota hai: "postbuild": "next-sitemap && node scripts/ping-search-engines.js"
+//
+// NOTE: Google ka sitemap ping (google.com/ping) March 2023 mein OFFICIALLY DEPRECATED ho gaya.
+// Ab sirf Bing ping kaam karta hai.
+// Google Search Console mein manually sitemap.xml submit karo — woh best practice hai.
 
 const SITEMAP_URL = 'https://finnotia.com/sitemap.xml';
 
 async function ping() {
   console.log('🔍 Pinging search engines...\n');
 
-  const engines = [
-    { name: 'Google', url: `https://www.google.com/ping?sitemap=${SITEMAP_URL}` },
-    { name: 'Bing',   url: `https://www.bing.com/ping?sitemap=${SITEMAP_URL}` },
-  ];
-
-  for (const engine of engines) {
-    try {
-      const res = await fetch(engine.url);
-      console.log(`✅ ${engine.name}: ${res.status} ${res.statusText}`);
-    } catch (err) {
-      console.log(`❌ ${engine.name}: ${err.message}`);
-    }
+  // ✅ Bing ping — still works
+  try {
+    const res = await fetch(`https://www.bing.com/ping?sitemap=${SITEMAP_URL}`);
+    console.log(`✅ Bing: ${res.status} ${res.statusText}`);
+  } catch (err) {
+    console.log(`❌ Bing: ${err.message}`);
   }
 
-  console.log('\n📌 Sitemap ping complete! Google typically takes 2-7 days to crawl new URLs.');
-  
-  // Bonus: Hit your own revalidation endpoint
-  try {
-    const res = await fetch('https://finnotia.com/api/revalidate-sitemap');
-    console.log(`✅ Self-ping: ${res.status}`);
-  } catch {}
+  // ❌ Google ping REMOVED — deprecated since March 2023
+  // Use Google Search Console to submit sitemap instead:
+  // https://search.google.com/search-console → Sitemaps → Submit
+
+  console.log('\n📌 Done! Submit sitemap manually in Google Search Console for fastest indexing.');
+  console.log('   → https://search.google.com/search-console/sitemaps');
 }
 
 ping();

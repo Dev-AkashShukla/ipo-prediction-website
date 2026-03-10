@@ -1,149 +1,105 @@
-// src/app/api/stories/route.js
-// Reads directly from content/articles/*.md — no Azure API needed
-// Returns same shape as before so StoriesSection works without changes
+// src/app/sitemap-stories.xml/route.js
+// Google News Sitemap — reads directly from content/articles/*.md
+// NO Azure API dependency — same source as /api/stories/route.js
 
-import fs     from 'fs';
-import path   from 'path';
+import fs   from 'fs';
+import path from 'path';
 import matter from 'gray-matter';
-import { NextResponse } from 'next/server';
 
-function makeSlug(title, filename) {
-  // Use frontmatter slug if available, else derive from filename
-  if (title) {
-    return title
-      .toLowerCase()
-      .replace(/[^a-z0-9\s-]/g, '')
-      .trim()
-      .replace(/\s+/g, '-')
-      .slice(0, 60);
+function escapeXml(str = '') {
+  return str
+    .replace(/&/g,  '&amp;')
+    .replace(/</g,  '&lt;')
+    .replace(/>/g,  '&gt;')
+    .replace(/"/g,  '&quot;')
+    .replace(/'/g,  '&apos;');
+}
+
+function readArticles() {
+  const dir = path.join(process.cwd(), 'content', 'articles');
+
+  if (!fs.existsSync(dir)) return [];
+
+  const files = fs
+    .readdirSync(dir)
+    .filter(f => f.endsWith('.md') && f !== '.gitkeep');
+
+  const items = [];
+
+  for (const filename of files) {
+    try {
+      const raw        = fs.readFileSync(path.join(dir, filename), 'utf8');
+      const { data: fm } = matter(raw);
+
+      // Skip if no title or date — useless in a news sitemap
+      if (!fm.title || !fm.date) continue;
+
+      // Resolve slug — frontmatter slug preferred, else filename
+      const slug = fm.slug || filename.replace(/\.md$/, '');
+
+      // Parse date — must be a valid ISO date
+      const pubDate = new Date(fm.date);
+      if (isNaN(pubDate.getTime())) continue;
+
+      // Google News sitemap only indexes articles published within last 2 days
+      // But we include all so Google can decide — no harm in older ones
+      items.push({
+        slug,
+        title:     fm.title,
+        pubDate:   pubDate.toISOString(),
+        // Tags as comma-separated keywords — skip if empty array
+        keywords:  Array.isArray(fm.tags) && fm.tags.length > 0
+                     ? fm.tags.join(', ')
+                     : null,
+      });
+    } catch {
+      // Skip malformed files silently
+    }
   }
-  return filename.replace(/\.md$/, '');
-}
 
-function inferSentiment(fm) {
-  // Derive from frontmatter sentiment field or bull/bear case
-  const s = (fm.sentiment || '').toUpperCase();
-  if (['BULLISH', 'POSITIVE'].includes(s)) return 'POSITIVE';
-  if (['BEARISH', 'NEGATIVE'].includes(s)) return 'NEGATIVE';
-  if (s === 'MIXED')                        return 'MIXED';
-  if (fm.bull_case_summary && !fm.bear_case_summary) return 'POSITIVE';
-  if (fm.bear_case_summary && !fm.bull_case_summary) return 'NEGATIVE';
-  return 'NEUTRAL';
-}
-
-function inferImportance(fm) {
-  // Use frontmatter importance if set, else map from category
-  if (fm.importance) return fm.importance.toUpperCase();
-  const catMap = {
-    geopolitics: 'CRITICAL',
-    economy:     'HIGH',
-    markets:     'HIGH',
-    ipo:         'HIGH',
-    commodities: 'MEDIUM',
-    tech:        'MEDIUM',
-    policy:      'HIGH',
-    'mutual-funds': 'MEDIUM',
-    crypto:      'MEDIUM',
-    investing:   'MEDIUM',
-    tax:         'MEDIUM',
-    corporate:   'MEDIUM',
-  };
-  return catMap[(fm.category || '').toLowerCase()] || 'MEDIUM';
-}
-
-function fmtTime(dateStr) {
-  if (!dateStr) return 'Today';
-  try {
-    return new Date(dateStr).toLocaleTimeString('en-IN', {
-      hour: '2-digit', minute: '2-digit', hour12: true,
-    });
-  } catch {
-    return 'Today';
-  }
+  // Newest first
+  return items.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
 }
 
 export async function GET() {
   try {
-    const dir = path.join(process.cwd(), 'content', 'articles');
+    const articles = readArticles();
 
-    // If no articles dir yet, return empty
-    if (!fs.existsSync(dir)) {
-      return NextResponse.json({ items: [], date: new Date().toISOString().split('T')[0] });
-    }
+    const urlEntries = articles.map(item => `  <url>
+    <loc>https://finnotia.com/blog/${escapeXml(item.slug)}</loc>
+    <lastmod>${item.pubDate}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <news:news>
+      <news:publication>
+        <news:name>FINNOTIA</news:name>
+        <news:language>en</news:language>
+      </news:publication>
+      <news:publication_date>${item.pubDate}</news:publication_date>
+      <news:title>${escapeXml(item.title)}</news:title>
+      ${item.keywords ? `<news:keywords>${escapeXml(item.keywords)}</news:keywords>` : ''}
+    </news:news>
+  </url>`).join('\n');
 
-    const files = fs
-      .readdirSync(dir)
-      .filter(f => f.endsWith('.md') && f !== '.gitkeep');
+    const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
+${urlEntries}
+</urlset>`;
 
-    if (files.length === 0) {
-      return NextResponse.json({ items: [], date: new Date().toISOString().split('T')[0] });
-    }
-
-    const items = files
-      .map(filename => {
-        try {
-          const raw        = fs.readFileSync(path.join(dir, filename), 'utf8');
-          const { data: fm } = matter(raw);
-
-          const slug = fm.slug || makeSlug(fm.title, filename);
-
-          return {
-            slug,
-
-            // Core content
-            headline:        fm.title         || 'Untitled',
-            quick_summary:   fm.excerpt        || '',
-            detailed_summary: fm.excerpt       || '',
-            what_it_means:   fm.bull_case_summary || fm.thesis_statement || '',
-            context:         fm.bear_case_summary || '',
-            key_points:      fm.key_facts      || [],
-
-            // Meta
-            importance:      inferImportance(fm),
-            sentiment:       inferSentiment(fm),
-            category:        fm.category       || 'Markets',
-            tags:            fm.tags           || [],
-            published_time:  fmtTime(fm.date),
-            date:            fm.date           || '',
-
-            // Source — articles are by Finnotia
-            source: {
-              name: 'Finnotia Research',
-              url:  `https://finnotia.com/blog/${slug}`,
-            },
-
-            // Image for story viewer
-            image_url_og: fm.image_url || '',
-          };
-        } catch {
-          // Skip malformed files silently
-          return null;
-        }
-      })
-      .filter(Boolean)                                      // remove nulls
-      .filter(item => item.headline !== 'Untitled' || item.quick_summary) // skip empty
-      .sort((a, b) => new Date(b.date) - new Date(a.date)); // newest first
-
-    return NextResponse.json(
-      {
-        items,
-        date:  new Date().toISOString().split('T')[0],
-        total: items.length,
-        source: 'articles',
+    return new Response(xml, {
+      headers: {
+        'Content-Type': 'application/xml; charset=utf-8',
+        // Revalidate every 30 min — matches article publish frequency
+        'Cache-Control': 'public, max-age=1800, stale-while-revalidate=3600',
       },
-      {
-        headers: {
-          'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600',
-        },
-      }
-    );
+    });
 
   } catch (err) {
-    console.error('[/api/stories]', err.message);
-    // Never return 500 — return empty array so UI doesn't break
-    return NextResponse.json(
-      { items: [], date: new Date().toISOString().split('T')[0], error: err.message },
-      { status: 200 }
+    // Always return valid XML — never break Google's crawler
+    return new Response(
+      '<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"></urlset>',
+      { headers: { 'Content-Type': 'application/xml; charset=utf-8' } }
     );
   }
 }

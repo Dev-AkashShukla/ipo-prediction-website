@@ -1,5 +1,8 @@
 'use client';
 // src/app/blog/[slug]/ArticleClient.jsx
+// FIX #6C APPLIED:
+//   - relatedPosts prop added to function signature (default [])
+//   - Related Articles section added after Author Box
 
 import { useState, useEffect } from 'react';
 import {
@@ -34,7 +37,8 @@ function authorToSlug(name) {
   return (name || '').toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
 }
 
-export default function ArticleClient({ frontmatter: fm, htmlContent }) {
+// FIX #6C CHANGE 1: Added relatedPosts = [] to function signature
+export default function ArticleClient({ frontmatter: fm, htmlContent, relatedPosts = [] }) {
   const [progress, setProgress] = useState(0);
   const [showToc, setShowToc]   = useState(false);
   const [copied, setCopied]     = useState(false);
@@ -354,6 +358,44 @@ export default function ArticleClient({ frontmatter: fm, htmlContent }) {
             </div>
           </div>
         </div>
+
+        {/* ── Related Articles ── FIX #6C CHANGE 2 ── */}
+        {relatedPosts && relatedPosts.length > 0 && (
+          <div className="mb-8" style={{ fontFamily: 'system-ui, sans-serif' }}>
+            <h3 className="text-[14px] font-bold text-gray-900 mb-3">More in {fm.category}</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+              {relatedPosts.map((post) => (
+                <a
+                  key={post.slug}
+                  href={`/blog/${post.slug}`}
+                  className="group bg-white rounded-xl border border-gray-100 overflow-hidden hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 no-underline"
+                >
+                  {post.image_url ? (
+                    <img
+                      src={post.image_url}
+                      alt={post.title}
+                      className="w-full aspect-video object-cover"
+                      loading="lazy"
+                    />
+                  ) : (
+                    <div className="w-full aspect-video bg-[#0c1e35] flex items-center justify-center">
+                      <span className="text-white/10 text-2xl">📊</span>
+                    </div>
+                  )}
+                  <div className="p-2.5">
+                    <h4 className="text-[12px] font-semibold text-gray-900 leading-snug line-clamp-2 group-hover:text-[#c8421e] transition-colors">
+                      {post.title}
+                    </h4>
+                    <div className="flex items-center gap-1.5 mt-1.5 text-[10px] text-gray-400">
+                      <span>{post.readTime}m read</span>
+                    </div>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
+
       </div>
 
       {/* ── TOC floating button ── */}

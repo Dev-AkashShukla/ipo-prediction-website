@@ -4,6 +4,7 @@ Allow: /
 Disallow: /api/
 Disallow: /_next/
 Disallow: /holi
+Disallow: /delete-account
 
 # Host
 Host: https://finnotia.com

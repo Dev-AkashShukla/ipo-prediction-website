@@ -1,9 +1,11 @@
 // src/lib/constants.js
 // ── FINNOTIA Design Tokens ──────────────────────────────────────
 // Primary: #0B0F19 | Accent: #2563EB | Background: #F8FAFC
+// FIX #3A APPLIED: APP_DESCRIPTION updated (removed "AI-Powered")
 
 export const APP_NAME = 'FINNOTIA';
-export const APP_DESCRIPTION = 'AI-Powered IPO Tracker & Market Data Platform';
+// FIX #3A: was 'AI-Powered IPO Tracker & Market Data Platform'
+export const APP_DESCRIPTION = 'IPO Tracker & Market Data Platform for Indian Investors';
 
 // ── Download Links ──────────────────────────────────────────────
 export const PLAY_STORE_URL =
@@ -66,7 +68,7 @@ export const SAFE_TERMS = {
 };
 
 export const FEATURES_LIST = [
-  'AI-Powered IPO Tracking',
+  'IPO Tracking & GMP Data',
   'Stock Market Updates',
   'Real-Time Market News',
   'Mutual Fund Information',

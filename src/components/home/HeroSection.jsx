@@ -1,6 +1,10 @@
 'use client';
 // src/components/home/HeroSection.jsx
 // ── Mobile-first hero — market insights + app as product ─────────
+// FIXES APPLIED:
+//   1. Badge: "AI-Powered Market Information" → "Real-Time Market Intelligence"
+//   2. Heading: "AI-Curated Data" → "Smart Market Data"
+//   3. Description: "structured AI-curated information" → "structured, verified information"
 
 import { motion } from 'framer-motion';
 import { TrendingUp, Zap, Shield, BookOpen, Download } from 'lucide-react';
@@ -52,7 +56,8 @@ export default function HeroSection() {
               className="w-1.5 h-1.5 rounded-full bg-cyan-400 flex-shrink-0"
               style={{ boxShadow: '0 0 6px #22D3EE', animation: 'pulse 2s infinite' }}
             />
-            AI-Powered Market Information
+            {/* FIX #1: was "AI-Powered Market Information" */}
+            Real-Time Market Intelligence
           </motion.div>
 
           {/* Heading */}
@@ -65,7 +70,8 @@ export default function HeroSection() {
           >
             Master Financial Markets{' '}
             <span className="block sm:inline">
-              with <GradientText>AI-Curated Data</GradientText>
+              {/* FIX #2: was "AI-Curated Data" */}
+              with <GradientText>Smart Market Data</GradientText>
             </span>
           </motion.h1>
 
@@ -77,8 +83,9 @@ export default function HeroSection() {
             className="text-[12px] sm:text-[14px] md:text-[15px] text-[#BAD0EB]/70
                        leading-[1.6] sm:leading-relaxed max-w-[520px] px-2 sm:px-0"
           >
+            {/* FIX #3: was "structured AI-curated information" */}
             Track IPOs, stocks, mutual funds, and market news using real-time
-            data and structured AI-curated information — built to help you
+            data and structured, verified information — built to help you
             understand market trends clearly and confidently.
           </motion.p>
 

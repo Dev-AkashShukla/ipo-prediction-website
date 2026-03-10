@@ -305,7 +305,7 @@ export const legalContent = {
       {
         num: 11, title: 'Governing Law',
         items: [
-          { type: 'text', body: 'Governing Law: These terms are governed by Indian laws. Jurisdiction: Disputes subject to exclusive jurisdiction of Mumbai, Maharashtra courts. Dispute Resolution: Parties agree to negotiate in good faith for 30 days before legal action.' },
+          { type: 'text', body: 'Governing Law: These terms are governed by Indian laws. Jurisdiction: Disputes subject to exclusive jurisdiction of Kolkata, Maharashtra courts. Dispute Resolution: Parties agree to negotiate in good faith for 30 days before legal action.' },
         ],
       },
       {

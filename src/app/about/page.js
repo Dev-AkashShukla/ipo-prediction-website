@@ -1,5 +1,6 @@
 // FILE: app/about/page.js
 // Route: finnotia.com/about
+// FIX #4 APPLIED: All "AI-powered/AI-curated/AI-First" references removed or replaced
 
 import { pageMetadata, seoConfig } from '../../lib/seo-metadata';
 import { APP_NAME, GRADIENTS } from '../../lib/constants';
@@ -25,7 +26,7 @@ export const metadata = {
 
 // ── Static Data ───────────────────────────────────────────────
 const stats = [
-  { value: 'AI',   label: 'Powered Platform' },
+  { value: '📊',   label: 'Market Data' },
   { value: '5+',   label: 'Market Categories' },
   { value: '2025', label: 'Founded' },
   { value: '🇮🇳',  label: 'Built for India' },
@@ -42,7 +43,8 @@ const offerings = [
     ),
     iconBg: 'bg-gradient-to-br from-blue-500 to-blue-700',
     title: 'IPO Tracking',
-    description: 'AI-curated IPO data using GMP, subscription status & market conditions with listing performance tracking.',
+    // FIX #4 CHANGE 4: was 'AI-curated IPO data using GMP...'
+    description: 'Comprehensive IPO data including GMP, subscription status & market conditions with listing performance tracking.',
   },
   {
     icon: (
@@ -65,7 +67,8 @@ const offerings = [
     ),
     iconBg: 'bg-gradient-to-br from-violet-500 to-violet-700',
     title: 'Mutual Funds',
-    description: 'AI-curated mutual fund info across equity, debt & hybrid categories with clear insights.',
+    // FIX #4 CHANGE 5: was 'AI-curated mutual fund info...'
+    description: 'Curated mutual fund info across equity, debt & hybrid categories with clear insights.',
   },
   {
     icon: (
@@ -77,14 +80,16 @@ const offerings = [
     ),
     iconBg: 'bg-gradient-to-br from-amber-500 to-orange-600',
     title: 'Market News',
-    description: 'Verified financial news with AI-curated alerts and notifications — no hype, no rumours.',
+    // FIX #4 CHANGE 6: was 'Verified financial news with AI-curated alerts...'
+    description: 'Verified financial news with curated alerts and notifications — no hype, no rumours.',
   },
 ];
 
 const values = [
-  { icon: Target,     iconColor: '#2563EB', iconBg: '#dbeafe', title: 'Clarity Over Noise',  description: 'Complex market data presented in simple, structured formats that anyone can understand.' },
-  { icon: ShieldCheck, iconColor: '#059669', iconBg: '#d1fae5', title: 'Verified Data',       description: 'All information sourced from verified data providers with defined market logic.' },
-  { icon: Sparkles,   iconColor: '#7c3aed', iconBg: '#ede9fe', title: 'AI-First Approach',   description: 'Machine learning and AI continuously improve data accuracy and insight quality.' },
+  { icon: Target,      iconColor: '#2563EB', iconBg: '#dbeafe', title: 'Clarity Over Noise',  description: 'Complex market data presented in simple, structured formats that anyone can understand.' },
+  { icon: ShieldCheck, iconColor: '#059669', iconBg: '#d1fae5', title: 'Verified Data',        description: 'All information sourced from verified data providers with defined market logic.' },
+  // FIX #4 CHANGE 7: was title: 'AI-First Approach', description: 'Machine learning and AI continuously...'
+  { icon: Sparkles,    iconColor: '#7c3aed', iconBg: '#ede9fe', title: 'Data-First Approach',  description: 'Advanced systems continuously improve data accuracy and insight quality.' },
 ];
 
 export default function AboutPage() {
@@ -94,7 +99,8 @@ export default function AboutPage() {
     mainEntity: {
       '@type': 'Organization',
       name: APP_NAME,
-      description: 'AI-powered Indian market information platform for IPOs, stocks, mutual funds, and verified financial news.',
+      // FIX #4 CHANGE 8: was 'AI-powered Indian market information platform...'
+      description: 'Indian market information platform for IPOs, stocks, mutual funds, and verified financial news.',
       foundingDate: '2025',
       url: seoConfig.siteUrl,
       logo: `${seoConfig.siteUrl}/finnotia-logo.png`,
@@ -126,7 +132,8 @@ export default function AboutPage() {
           <div className="max-w-3xl mx-auto relative z-10 text-center">
             <div className="inline-flex items-center gap-1.5 bg-white/5 border border-white/10 rounded-lg px-2.5 py-1 mb-3">
               <span className="w-1.5 h-1.5 rounded-full bg-[#60A5FA] animate-pulse" />
-              <span className="text-white/50 text-[9px] font-bold tracking-widest uppercase">AI-Powered Financial Platform</span>
+              {/* FIX #4 CHANGE 1: was "AI-Powered Financial Platform" */}
+              <span className="text-white/50 text-[9px] font-bold tracking-widest uppercase">Financial Data Platform</span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-black text-white leading-tight mb-2">
               About{' '}
@@ -137,8 +144,9 @@ export default function AboutPage() {
                 {APP_NAME}
               </span>
             </h1>
+            {/* FIX #4 CHANGE 2: was "An AI-powered Indian market information platform..." */}
             <p className="text-white/40 text-xs sm:text-sm max-w-sm mx-auto leading-relaxed">
-              An AI-powered Indian market information platform — track IPOs, stocks, mutual funds,
+              An Indian market information platform — track IPOs, stocks, mutual funds,
               and financial news with clarity and zero hype.
             </p>
 
@@ -161,8 +169,9 @@ export default function AboutPage() {
             {/* Mission text */}
             <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-4">
               <h2 className="text-sm font-bold text-gray-900 mb-2">Our Mission</h2>
+              {/* FIX #4 CHANGE 3: was "...simplify complex market data using AI and present..." */}
               <p className="text-xs text-gray-600 leading-relaxed text-justify">
-                Our mission is to simplify complex market data using AI and present clear, unbiased,
+                Our mission is to simplify complex market data and present clear, unbiased,
                 and structured information — so every Indian investor can understand market behavior
                 without hype, rumours, or misleading tips.
               </p>

@@ -31,11 +31,10 @@ const footerLinks = {
   ],
 };
 
-// ── Social Icons (inline SVG — no extra dep) ─────────────────────
 const socials = [
   {
     name: 'Instagram',
-    href: 'https://instagram.com/finnotia',   // ← apna handle daal
+    href: 'https://instagram.com/finnotia',
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
         <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
@@ -46,7 +45,7 @@ const socials = [
   },
   {
     name: 'LinkedIn',
-    href: 'https://linkedin.com/company/finnotia', // ← apna handle daal
+    href: 'https://linkedin.com/company/finnotia',
     icon: (
       <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
         <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>
@@ -57,7 +56,7 @@ const socials = [
   },
   {
     name: 'X / Twitter',
-    href: 'https://x.com/finnotia',              // ← apna handle daal
+    href: 'https://x.com/finnotia',
     icon: (
       <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
         <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
@@ -66,7 +65,7 @@ const socials = [
   },
   {
     name: 'YouTube',
-    href: 'https://youtube.com/@finnotia',        // ← apna handle daal
+    href: 'https://youtube.com/@finnotia',
     icon: (
       <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
         <path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 0 0 1.46 6.42 29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58 2.78 2.78 0 0 0 1.95 1.96C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/>
@@ -90,7 +89,6 @@ export default function Footer() {
 
         {/* Top: Logo + Socials */}
         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-7">
-          {/* Logo + tagline */}
           <div>
             <Link href="/" className="flex items-center gap-2 mb-2.5 group">
               <div className="w-8 h-8 relative flex-shrink-0">
@@ -104,12 +102,12 @@ export default function Footer() {
               </div>
               <span className="text-lg font-bold">{APP_NAME}</span>
             </Link>
+            {/* ✅ FIX: "AI-powered" hataya */}
             <p className="text-xs text-gray-400 max-w-xs leading-relaxed">
-              AI-powered IPO tracking and stock market information platform for educational purposes.
+              IPO tracking and stock market information platform for educational purposes.
             </p>
           </div>
 
-          {/* Social icons */}
           <div className="flex items-center gap-2">
             {socials.map((s) => (
               <a
@@ -198,7 +196,6 @@ export default function Footer() {
 
         {/* Divider */}
         <div className="border-t border-gray-800 pt-5">
-          {/* SEBI Disclaimer */}
           <div className="p-3 mb-4 rounded-xl bg-yellow-500/5 border border-yellow-500/10">
             <div className="flex items-start gap-2 mb-1.5">
               <AlertTriangle className="w-3.5 h-3.5 text-yellow-500 flex-shrink-0 mt-0.5" />
@@ -211,7 +208,6 @@ export default function Footer() {
             </p>
           </div>
 
-          {/* Copyright */}
           <div className="flex flex-col sm:flex-row items-center justify-between gap-2">
             <p className="text-gray-500 text-[11px] text-center sm:text-left">
               © {year} {APP_NAME}. All rights reserved.

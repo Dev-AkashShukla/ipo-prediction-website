@@ -1,5 +1,6 @@
 /** @type {import('next-sitemap').IConfig} */
 // next-sitemap.config.js — UPDATED with editorial-policy, sitemap page, category & author pages
+// FIX #6A APPLIED: Empty/thin category pages excluded, /delete-account excluded, /holi excluded
 
 module.exports = {
   siteUrl: 'https://finnotia.com',
@@ -7,14 +8,30 @@ module.exports = {
   changefreq: 'weekly',
   priority: 0.7,
   sitemapSize: 5000,
-  exclude: ['/api/*', '/_next/*', '/holi'],
+
+  // FIX #6A: was just ['/api/*', '/_next/*', '/holi']
+  exclude: [
+    '/api/*',
+    '/_next/*',
+    '/holi',           // seasonal page — unnecessary for AdSense review
+    '/delete-account', // utility page — not for indexing
+    // Empty/thin categories — add back when 5+ articles exist
+    '/category/crypto',
+    '/category/geopolitics',
+    '/category/tax',
+    '/category/tech',
+    '/category/investing',
+    '/category/ipo',
+    '/category/mutual-funds',
+    '/category/markets',
+  ],
 
   robotsTxtOptions: {
     policies: [
       {
         userAgent: '*',
         allow: '/',
-        disallow: ['/api/', '/_next/', '/holi'],
+        disallow: ['/api/', '/_next/', '/holi', '/delete-account'],
       },
     ],
     additionalSitemaps: [
@@ -48,7 +65,7 @@ module.exports = {
       return { loc: path, changefreq: 'monthly', priority: 0.7, lastmod: new Date().toISOString() };
     }
 
-    // Category pages
+    // Category pages (only non-excluded ones reach here)
     if (path.startsWith('/category/')) {
       return { loc: path, changefreq: 'daily', priority: 0.8, lastmod: new Date().toISOString() };
     }

@@ -23,7 +23,8 @@ export const metadata = {
   
   description: seoConfig.defaultDescription,
   keywords: seoConfig.defaultKeywords,
-  authors: [{ name: 'FINNOTIA Team' }],
+  // ✅ FIX: Real person name for E-E-A-T
+  authors: [{ name: 'Akash Shukla', url: 'https://finnotia.com/founder' }],
   creator: 'FINNOTIA',
   publisher: 'FINNOTIA',
   
@@ -45,7 +46,7 @@ export const metadata = {
         url: '/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'FINNOTIA - AI-Powered IPO Tracker & Market Data',
+        alt: 'FINNOTIA - IPO Tracker & Market Data Platform',
       },
     ],
   },
@@ -85,8 +86,6 @@ export const metadata = {
   category: 'finance',
 };
 
-// ✅ YAHI MISSING THA — viewport alag export karna padta hai Next.js 14 App Router mein
-// Bina iske mobile browser 980px desktop width assume karta hai → sab unstyled dikhta hai
 export const viewport = {
   width: 'device-width',
   initialScale: 1,
@@ -137,6 +136,7 @@ export default function RootLayout({ children }) {
       </head>
       <body className={inter.className}>
         
+        {/* Google Analytics */}
         <Script
           strategy="afterInteractive"
           src="https://www.googletagmanager.com/gtag/js?id=G-DCP4LJJF64"
@@ -149,6 +149,14 @@ export default function RootLayout({ children }) {
             gtag('config', 'G-DCP4LJJF64');
           `}
         </Script>
+
+        {/* ✅ Google AdSense — pub-2959591975768653 */}
+        <Script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2959591975768653"
+          crossOrigin="anonymous"
+          strategy="afterInteractive"
+        />
 
         <Header />
         <main className="min-h-fitcontent pt-16" style={{ fontFamily: 'system-ui, sans-serif' }}>

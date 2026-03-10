@@ -85,7 +85,7 @@ export default function ContactPage() {
             {[
               { icon: Clock,      label: 'Replies in 24h'   },
               { icon: Headphones, label: 'Active Support'   },
-              { icon: MapPin,     label: 'Mumbai, India 🇮🇳' },
+              { icon: MapPin,     label: 'Kolkata, India 🇮🇳' },
             ].map(({ icon: Icon, label }) => (
               <div key={label} className="inline-flex items-center gap-1.5 bg-white/5 border border-white/10 rounded-full px-2.5 py-1">
                 <Icon className="w-3 h-3 text-[#60A5FA]" strokeWidth={2} />
@@ -204,7 +204,7 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <p className="text-[10px] font-bold text-gray-500 uppercase tracking-wide mb-0.5">Based In</p>
-                    <p className="text-xs text-gray-700">Mumbai, India 🇮🇳</p>
+                    <p className="text-xs text-gray-700">Kolkata, India 🇮🇳</p>
                   </div>
                 </div>
 

@@ -9,7 +9,7 @@ tags:
   - "Axel Springer"
   - "UK Media"
   - "Acquisitions"
-author: "Finnotia Editorial"
+author: "Akash Shukla"
 date: "2026-03-08"
 readTime: "5"
 seo_title: "Axel Springer Buys Telegraph for £575m Explained"

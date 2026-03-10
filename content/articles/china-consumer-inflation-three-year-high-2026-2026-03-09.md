@@ -8,7 +8,7 @@ tags:
   - "Inflation"
   - "Global Markets"
   - "Commodities"
-author: "Finnotia Editorial"
+author: "Akash Shukla"
 date: "2026-03-09"
 readTime: "6"
 seo_title: "China Inflation 3-Year High: Global Market Impact 2026"

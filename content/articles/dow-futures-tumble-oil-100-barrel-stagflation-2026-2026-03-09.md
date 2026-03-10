@@ -9,7 +9,7 @@ tags:
   - "Stagflation"
   - "Iran War"
   - "Federal Reserve"
-author: "Finnotia Editorial"
+author: "Akash Shukla"
 date: "2026-03-09"
 readTime: "7"
 seo_title: "Oil $100, Dow -800: Stagflation Risk Explained"

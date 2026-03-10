@@ -9,7 +9,7 @@ tags:
   - "White Collar Risk"
   - "Automation"
   - "US Economy"
-author: "Finnotia Editorial"
+author: "Akash Shukla"
 date: "2026-03-08"
 readTime: "7"
 seo_title: "Anthropic AI Jobs Report: Safe Careers vs At-Risk Roles"

@@ -9,7 +9,7 @@ tags:
   - "Nifty"
   - "Sensex"
   - "Geopolitics"
-author: "Finnotia Editorial"
+author: "Akash Shukla"
 date: "2026-03-08"
 readTime: "6"
 seo_title: "5 Triggers Shaking Indian Markets This Week"

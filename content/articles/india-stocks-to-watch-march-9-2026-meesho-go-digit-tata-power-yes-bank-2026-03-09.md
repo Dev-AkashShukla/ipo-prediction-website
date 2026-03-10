@@ -9,7 +9,7 @@ tags:
   - "Tata Power"
   - "Yes Bank"
   - "Nifty50"
-author: "Finnotia Editorial"
+author: "Akash Shukla"
 date: "2026-03-09"
 readTime: "6"
 seo_title: "Stocks to Watch March 9: Meesho, Go Digit, Yes Bank"

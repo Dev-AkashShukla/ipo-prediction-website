@@ -9,7 +9,7 @@ tags:
   - "Alternative Assets"
   - "Liquidity Risk"
   - "Institutional Investing"
-author: "Finnotia Editorial"
+author: "Akash Shukla"
 date: "2026-03-08"
 readTime: "6"
 seo_title: "BlackRock $26B Private Credit Fund Limits Withdrawals"

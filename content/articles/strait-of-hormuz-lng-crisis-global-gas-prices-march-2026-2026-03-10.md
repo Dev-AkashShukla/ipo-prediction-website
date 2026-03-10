@@ -9,7 +9,7 @@ tags:
   - "Qatar Energy"
   - "Natural Gas Prices"
   - "Global Energy Crisis"
-author: "Finnotia Editorial"
+author: "Akash Shukla"
 date: "2026-03-10"
 readTime: "7"
 seo_title: "Hormuz LNG Crisis: TTF Up 76%, Qatar Halt Explained"

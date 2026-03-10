@@ -9,7 +9,7 @@ tags:
   - "Commodities"
   - "Emerging Markets"
   - "Fuel Policy"
-author: "Finnotia Editorial"
+author: "Akash Shukla"
 date: "2026-03-08"
 readTime: "7"
 seo_title: "India Fuel Price Freeze: Energy Market Impact 2026"

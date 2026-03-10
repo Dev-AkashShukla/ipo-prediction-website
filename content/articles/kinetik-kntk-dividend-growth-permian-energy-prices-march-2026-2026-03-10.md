@@ -9,7 +9,7 @@ tags:
   - "Midstream Energy"
   - "Dividend Stocks"
   - "Permian Basin"
-author: "Finnotia Editorial"
+author: "Akash Shukla"
 date: "2026-03-10"
 readTime: "6"
 seo_title: "Kinetik KNTK: 7.1% Dividend & $104 Oil — What's Next?"

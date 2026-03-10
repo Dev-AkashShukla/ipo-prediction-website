@@ -9,7 +9,7 @@ tags:
   - "Bitcoin"
   - "US Markets"
   - "Stock Analysis"
-author: "Finnotia Editorial"
+author: "Akash Shukla"
 date: "2026-03-09"
 readTime: "7"
 seo_title: "Coinbase Stock 2026: Trump Crypto Policy Impact"

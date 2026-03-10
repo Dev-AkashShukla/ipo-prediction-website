@@ -9,7 +9,7 @@ tags:
   - "Defense Tech"
   - "Anthropic"
   - "US Tech Regulation"
-author: "Finnotia Editorial"
+author: "Akash Shukla"
 date: "2026-03-09"
 readTime: "7"
 seo_title: "OpenAI Pentagon Deal: $200M Contract, 295% Uninstall Spike"

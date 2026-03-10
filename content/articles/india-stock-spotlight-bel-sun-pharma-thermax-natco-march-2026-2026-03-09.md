@@ -9,7 +9,7 @@ tags:
   - "Indian Markets"
   - "Thermax"
   - "Natco Pharma"
-author: "Finnotia Editorial"
+author: "Akash Shukla"
 date: "2026-03-09"
 readTime: "7"
 seo_title: "BEL, Sun Pharma, Thermax Stock Analysis March 2026"

@@ -9,7 +9,7 @@ tags:
   - "Housing Market"
   - "Oil Prices"
   - "US Equities"
-author: "Finnotia Editorial"
+author: "Akash Shukla"
 date: "2026-03-08"
 readTime: "7"
 seo_title: "Builders FirstSource: Oversold Stock Amid Oil Shock"

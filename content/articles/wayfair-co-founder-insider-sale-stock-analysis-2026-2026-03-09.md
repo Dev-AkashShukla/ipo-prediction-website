@@ -9,7 +9,7 @@ tags:
   - "E-Commerce Stocks"
   - "Consumer Discretionary"
   - "US Equities"
-author: "Finnotia Editorial"
+author: "Akash Shukla"
 date: "2026-03-09"
 readTime: "6"
 seo_title: "Wayfair Insider Sells $2.1M: Stock Data Analysis 2026"

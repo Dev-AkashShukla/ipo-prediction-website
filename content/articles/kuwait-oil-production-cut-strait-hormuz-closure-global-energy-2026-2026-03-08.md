@@ -9,7 +9,7 @@ tags:
   - "Kuwait"
   - "Energy Markets"
   - "Brent Crude"
-author: "Finnotia Editorial"
+author: "Akash Shukla"
 date: "2026-03-08"
 readTime: "7"
 seo_title: "Kuwait Oil Cuts & Hormuz Closure: $100 Brent Risk"

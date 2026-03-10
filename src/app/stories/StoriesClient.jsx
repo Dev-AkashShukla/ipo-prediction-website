@@ -3,12 +3,12 @@
 // Client Component — accepts stories + date as props from server
 // NO fetch, NO useEffect for data — data comes from page.js (server)
 
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import {
-  X, Share2, ChevronLeft, ChevronRight,
+  Share2, ChevronLeft, ChevronRight,
   Link2, Check, MessageCircle,
   TrendingUp, TrendingDown, Minus, Activity,
-  Pause,
+  Pause, X,
 } from 'lucide-react';
 import { usePagination } from '../../hooks/usePagination';
 import Pagination from '../../components/ui/Pagination';
@@ -196,7 +196,7 @@ function SlideContent({ slide }) {
         <p className="text-white/50 text-[15px] leading-relaxed mb-8 max-w-xs">
           Read the full story with detailed analysis on FINNOTIA.
         </p>
-        <a href={story.source?.url || `/blog/${story.slug}`}
+        <a href={`/blog/${story.slug}`}
           className="inline-block px-8 py-3.5 rounded-full text-white font-bold text-[15px] mb-4"
           style={{ background: imp.color }}>
           Read Full Article
@@ -212,7 +212,7 @@ function SlideContent({ slide }) {
 // ── Share Sheet ──────────────────────────────────────────────────
 function ShareSheet({ story, onClose }) {
   const [copied, setCopied] = useState(false);
-  const url = `https://finnotia.com/blog/${story.slug}`;
+  const url = `https://finnotia.com/stories/${story.slug}`;
 
   const shareWhatsApp = () =>
     window.open(`https://wa.me/?text=${encodeURIComponent(story.headline + '\n\n' + url)}`);
@@ -427,15 +427,15 @@ function StoryViewer({ stories, initialIndex, onClose }) {
 }
 
 // ── Story Card ───────────────────────────────────────────────────
-function StoryCard({ story, onClick }) {
+function StoryCard({ story }) {
   const imp      = IMPORTANCE_CONFIG[story.importance] || IMPORTANCE_CONFIG.HIGH;
   const sent     = SENTIMENT_CONFIG[story.sentiment]   || SENTIMENT_CONFIG.NEUTRAL;
   const SentIcon = sent.icon;
   const slideCount = Math.min(buildSlides(story).length, 7);
 
   return (
-    <button onClick={onClick}
-      className="group w-full text-left rounded-2xl overflow-hidden transition-all duration-200 hover:scale-[1.02] hover:shadow-xl active:scale-[0.98]"
+    <a href={`/stories/${story.slug}`}
+      className="group w-full text-left rounded-2xl overflow-hidden transition-all duration-200 hover:scale-[1.02] hover:shadow-xl active:scale-[0.98] block"
       style={{ background: '#ffffff', border: `1px solid ${imp.color}20`, boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
       <div className="h-1 w-full" style={{ background: `linear-gradient(90deg, ${imp.color}, ${imp.color}60)` }} />
       <div className="p-4 sm:p-5">
@@ -486,20 +486,13 @@ function StoryCard({ story, onClick }) {
           </span>
         </div>
       </div>
-    </button>
+    </a>
   );
 }
 
 // ── Main Client Component ────────────────────────────────────────
 export default function StoriesClient({ stories = [], date = '' }) {
-  const [filter, setFilter]           = useState('ALL');
-  const [activeStory, setActiveStory] = useState(null);
-
-  // Lock scroll when viewer open
-  useEffect(() => {
-    document.body.style.overflow = activeStory !== null ? 'hidden' : '';
-    return () => { document.body.style.overflow = ''; };
-  }, [activeStory]);
+  const [filter, setFilter] = useState('ALL');
 
   const FILTERS  = ['ALL', 'CRITICAL', 'HIGH', 'MEDIUM'];
   const filtered = filter === 'ALL' ? stories : stories.filter(s => s.importance === filter);
@@ -601,8 +594,7 @@ export default function StoriesClient({ stories = [], date = '' }) {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               {pagination.currentItems.map((story, i) => (
-                <StoryCard key={story.slug || i} story={story}
-                  onClick={() => setActiveStory(filtered.indexOf(story))} />
+                <StoryCard key={story.slug || i} story={story} />
               ))}
             </div>
           )}
@@ -624,11 +616,6 @@ export default function StoriesClient({ stories = [], date = '' }) {
           )}
         </div>
       </div>
-
-      {/* Viewer */}
-      {activeStory !== null && filtered.length > 0 && (
-        <StoryViewer stories={filtered} initialIndex={activeStory} onClose={() => setActiveStory(null)} />
-      )}
     </>
   );
 }

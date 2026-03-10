@@ -10,6 +10,8 @@ import {
   TrendingUp, TrendingDown, Minus, Activity,
   Pause,
 } from 'lucide-react';
+import { usePagination } from '../../hooks/usePagination';
+import Pagination from '../../components/ui/Pagination';
 
 // ── Constants ────────────────────────────────────────────────────
 const SLIDE_DURATION = 7000;
@@ -488,52 +490,10 @@ function StoryCard({ story, onClick }) {
   );
 }
 
-// ── Pagination ───────────────────────────────────────────────────
-function Pagination({ currentPage, totalPages, onPageChange }) {
-  if (totalPages <= 1) return null;
-  const pages = [];
-  if (totalPages <= 5) {
-    for (let i = 1; i <= totalPages; i++) pages.push(i);
-  } else {
-    pages.push(1);
-    if (currentPage > 3) pages.push('...');
-    for (let i = Math.max(2, currentPage - 1); i <= Math.min(totalPages - 1, currentPage + 1); i++) pages.push(i);
-    if (currentPage < totalPages - 2) pages.push('...');
-    pages.push(totalPages);
-  }
-  return (
-    <div className="flex items-center justify-center gap-1.5">
-      <button onClick={() => onPageChange(currentPage - 1)} disabled={currentPage === 1}
-        className="w-8 h-8 rounded-full flex items-center justify-center disabled:opacity-30"
-        style={{ border: '1px solid #E2E8F0' }}>
-        <ChevronLeft className="w-4 h-4 text-gray-600" />
-      </button>
-      {pages.map((p, i) => (
-        <button key={i} onClick={() => typeof p === 'number' && onPageChange(p)}
-          className="w-8 h-8 rounded-full text-sm font-medium flex items-center justify-center transition-all"
-          style={{
-            background: p === currentPage ? '#2563EB' : '#fff',
-            color:      p === currentPage ? '#fff' : '#64748B',
-            border:     `1px solid ${p === currentPage ? '#2563EB' : '#E2E8F0'}`,
-            cursor:     typeof p !== 'number' ? 'default' : 'pointer',
-          }}>
-          {p}
-        </button>
-      ))}
-      <button onClick={() => onPageChange(currentPage + 1)} disabled={currentPage === totalPages}
-        className="w-8 h-8 rounded-full flex items-center justify-center disabled:opacity-30"
-        style={{ border: '1px solid #E2E8F0' }}>
-        <ChevronRight className="w-4 h-4 text-gray-600" />
-      </button>
-    </div>
-  );
-}
-
 // ── Main Client Component ────────────────────────────────────────
 export default function StoriesClient({ stories = [], date = '' }) {
-  const [filter, setFilter]         = useState('ALL');
+  const [filter, setFilter]           = useState('ALL');
   const [activeStory, setActiveStory] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1);
 
   // Lock scroll when viewer open
   useEffect(() => {
@@ -543,10 +503,12 @@ export default function StoriesClient({ stories = [], date = '' }) {
 
   const FILTERS  = ['ALL', 'CRITICAL', 'HIGH', 'MEDIUM'];
   const filtered = filter === 'ALL' ? stories : stories.filter(s => s.importance === filter);
-  const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
-  const currentItems = filtered.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
 
-  useEffect(() => { setCurrentPage(1); }, [filter]);
+  // usePagination hook — same as blog page
+  const pagination = usePagination(filtered, ITEMS_PER_PAGE);
+
+  // Reset to page 1 when filter changes
+  useEffect(() => { pagination.goTo(1); }, [filter]); // eslint-disable-line
 
   const fmtDate = (d) => d
     ? new Date(d).toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short' })
@@ -625,8 +587,8 @@ export default function StoriesClient({ stories = [], date = '' }) {
           {/* Count */}
           {filtered.length > 0 && (
             <p className="text-xs text-gray-400 mb-4">
-              Showing {(currentPage - 1) * ITEMS_PER_PAGE + 1}–{Math.min(currentPage * ITEMS_PER_PAGE, filtered.length)} of {filtered.length} stories
-              {totalPages > 1 && ` · Page ${currentPage} of ${totalPages}`}
+              Showing {(pagination.currentPage - 1) * ITEMS_PER_PAGE + 1}–{Math.min(pagination.currentPage * ITEMS_PER_PAGE, filtered.length)} of {filtered.length} stories
+              {pagination.totalPages > 1 && ` · Page ${pagination.currentPage} of ${pagination.totalPages}`}
             </p>
           )}
 
@@ -638,17 +600,20 @@ export default function StoriesClient({ stories = [], date = '' }) {
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-              {currentItems.map((story, i) => (
+              {pagination.currentItems.map((story, i) => (
                 <StoryCard key={story.slug || i} story={story}
                   onClick={() => setActiveStory(filtered.indexOf(story))} />
               ))}
             </div>
           )}
 
-          {/* Pagination */}
           {filtered.length > ITEMS_PER_PAGE && (
-            <div className="mt-8 pb-4">
-              <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
+            <div className="mt-8 pb-4" id="stories-grid">
+              <Pagination
+                currentPage={pagination.currentPage}
+                totalPages={pagination.totalPages}
+                onPageChange={pagination.goTo}
+              />
             </div>
           )}
 

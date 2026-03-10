@@ -70,8 +70,7 @@ function SlideContent({ slide }) {
           style={{ fontFamily: 'Georgia, serif' }}>{story.headline}</h2>
         <div className="flex items-center gap-3 text-white/40 text-xs">
           <span>{story.source?.name || 'Market Update'}</span>
-          <span>·</span>
-          <span>{story.published_time || 'Today'}</span>
+          {story.date_display && <><span>·</span><span>{story.date_display}</span></>}
         </div>
       </div>
     </div>
@@ -169,7 +168,6 @@ function SlideContent({ slide }) {
         <p className="text-white/50 text-[15px] leading-relaxed mb-8 max-w-xs">
           Read the full story with detailed analysis on FINNOTIA.
         </p>
-        {/* ✅ FIXED: points to /blog/slug — the full article */}
         <a href={`/blog/${story.slug}`}
           className="inline-block px-8 py-3.5 rounded-full text-white font-bold text-[15px] mb-4"
           style={{ background: imp.color }}>
@@ -186,7 +184,6 @@ function SlideContent({ slide }) {
 // ── Share Sheet ───────────────────────────────────────────────────
 function ShareSheet({ story, onClose }) {
   const [copied, setCopied] = useState(false);
-  // ✅ FIXED: Share URL is /stories/slug — NOT /blog/slug
   const url = `https://finnotia.com/stories/${story.slug}`;
 
   const shareWhatsApp = () =>
@@ -213,7 +210,6 @@ function ShareSheet({ story, onClose }) {
         <div className="w-10 h-1 bg-white/20 rounded-full mx-auto mb-6" />
         <h3 className="text-white font-bold text-lg mb-1">Share Story</h3>
         <p className="text-white/40 text-sm mb-2 line-clamp-1">{story.headline}</p>
-        {/* Show the share URL so user can see it's /stories/ */}
         <p className="text-white/20 text-[10px] mb-6 font-mono truncate">{url}</p>
         <div className="flex flex-col gap-3">
           <button onClick={shareWhatsApp}
@@ -263,7 +259,6 @@ export default function StoryPageClient({ story }) {
   const totalSlides = slides.length;
   const imp         = IMPORTANCE_CONFIG[story.importance] || IMPORTANCE_CONFIG.HIGH;
 
-  // Lock scroll
   useEffect(() => {
     document.body.style.overflow = 'hidden';
     return () => { document.body.style.overflow = ''; };
@@ -277,7 +272,7 @@ export default function StoryPageClient({ story }) {
   const goNext = useCallback(() => {
     clearTimers(); elapsedRef.current = 0;
     if (slideIdx < totalSlides - 1) setSlideIdx(s => s + 1);
-    else router.push('/stories'); // end of story → back to listing
+    else router.push('/stories');
   }, [slideIdx, totalSlides, router, clearTimers]);
 
   const goPrev = useCallback(() => {
@@ -364,7 +359,6 @@ export default function StoryPageClient({ story }) {
             style={{ background: 'rgba(0,0,0,0.5)' }}>
             <Share2 className="w-4 h-4 text-white" />
           </button>
-          {/* Close → goes back to /stories listing */}
           <button onClick={() => router.push('/stories')}
             className="w-9 h-9 rounded-full flex items-center justify-center"
             style={{ background: 'rgba(0,0,0,0.5)' }}>

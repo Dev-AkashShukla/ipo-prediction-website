@@ -30,13 +30,14 @@ export function inferImportance(fm) {
   return catMap[(fm.category || '').toLowerCase()] || 'MEDIUM';
 }
 
-export function fmtTime(dateStr) {
-  if (!dateStr) return 'Today';
+// ── fmtDate — human-readable date (no time) ──────────────────────
+export function fmtDate(dateStr) {
+  if (!dateStr) return '';
   try {
-    return new Date(dateStr).toLocaleTimeString('en-IN', {
-      hour: '2-digit', minute: '2-digit', hour12: true,
+    return new Date(dateStr).toLocaleDateString('en-IN', {
+      day: 'numeric', month: 'short', year: 'numeric',
     });
-  } catch { return 'Today'; }
+  } catch { return ''; }
 }
 
 function buildStory(fm, slug) {
@@ -52,8 +53,8 @@ function buildStory(fm, slug) {
     sentiment:        inferSentiment(fm),
     category:         fm.category          || 'Markets',
     tags:             fm.tags              || [],
-    published_time:   fmtTime(fm.date),
     date:             fm.date              || '',
+    date_display:     fmtDate(fm.date),
     source: {
       name: 'Finnotia Research',
       url:  `https://finnotia.com/blog/${slug}`,

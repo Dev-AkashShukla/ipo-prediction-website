@@ -3,7 +3,7 @@
 // Client Component — accepts stories + date as props from server
 // NO fetch, NO useEffect for data — data comes from page.js (server)
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import {
   Share2, ChevronLeft, ChevronRight,
   Link2, Check, MessageCircle,
@@ -72,8 +72,7 @@ function SlideContent({ slide }) {
         style={{ fontFamily: 'Georgia, serif' }}>{story.headline}</h2>
       <div className="flex items-center gap-3 text-white/40 text-xs">
         <span>{story.source?.name || 'Market Update'}</span>
-        <span>·</span>
-        <span>{story.published_time || 'Today'}</span>
+        {story.date_display && <><span>·</span><span>{story.date_display}</span></>}
       </div>
     </div>
   );
@@ -449,7 +448,9 @@ function StoryCard({ story }) {
               {sent.label}
             </span>
           </div>
-          <span className="text-[10px] font-medium text-gray-400">{story.published_time || 'Today'}</span>
+          {story.date_display && (
+            <span className="text-[10px] font-medium text-gray-400">{story.date_display}</span>
+          )}
         </div>
         <h3 className="text-gray-900 text-sm sm:text-[15px] font-bold leading-snug mb-3 line-clamp-3 group-hover:text-[#2563EB] transition-colors duration-200"
           style={{ fontFamily: 'Georgia, serif' }}>{story.headline}</h3>
@@ -497,10 +498,8 @@ export default function StoriesClient({ stories = [], date = '' }) {
   const FILTERS  = ['ALL', 'CRITICAL', 'HIGH', 'MEDIUM'];
   const filtered = filter === 'ALL' ? stories : stories.filter(s => s.importance === filter);
 
-  // usePagination hook — same as blog page
   const pagination = usePagination(filtered, ITEMS_PER_PAGE);
 
-  // Reset to page 1 when filter changes
   useEffect(() => { pagination.goTo(1); }, [filter]); // eslint-disable-line
 
   const fmtDate = (d) => d

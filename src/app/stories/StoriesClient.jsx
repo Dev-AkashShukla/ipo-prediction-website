@@ -600,7 +600,7 @@ export default function StoriesClient({ stories = [], date = '' }) {
           )}
 
           {filtered.length > ITEMS_PER_PAGE && (
-            <div className="mt-8 pb-4" id="stories-grid">
+            <div className="mt-8 pb-4">
               <Pagination
                 currentPage={pagination.currentPage}
                 totalPages={pagination.totalPages}

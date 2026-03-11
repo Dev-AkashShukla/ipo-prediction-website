@@ -138,6 +138,28 @@ const nextConfig = {
   experimental: {
     optimizePackageImports: ['lucide-react', 'framer-motion'],
   },
+
+  async redirects() {
+  return [
+    // ✅ Vercel default URL → finnotia.com
+    {
+      source: '/:path*',
+      has: [{ type: 'host', value: 'ipo-prediction-website-9cr2p9pwr.vercel.app' }],
+      destination: 'https://finnotia.com/:path*',
+      permanent: true,
+    },
+    // ✅ www → non-www (Search Console errors bhi fix honge)
+    {
+      source: '/:path*',
+      has: [{ type: 'host', value: 'www.finnotia.com' }],
+      destination: 'https://finnotia.com/:path*',
+      permanent: true,
+    },
+  ];
+},
+
 };
+
+
 
 module.exports = withPWA(nextConfig);

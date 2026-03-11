@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "postbuild": "next-sitemap && node scripts/ping-search-engines.js"
+    "postbuild": "next-sitemap && node scripts/ping-search-engines.js && node scripts/notify-indexing.js"
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",

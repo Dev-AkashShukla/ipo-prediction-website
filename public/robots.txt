@@ -12,3 +12,4 @@ Host: https://finnotia.com
 # Sitemaps
 Sitemap: https://finnotia.com/sitemap.xml
 Sitemap: https://finnotia.com/sitemap-stories.xml
+Sitemap: https://finnotia.com/sitemap-news.xml

@@ -24,7 +24,8 @@ module.exports = {
       },
     ],
     additionalSitemaps: [
-      'https://finnotia.com/sitemap-stories.xml',
+      'https://finnotia.com/sitemap-stories.xml',  // Web Stories
+      'https://finnotia.com/sitemap-news.xml',     // ✅ Regular articles for Google News
     ],
   },
 

@@ -78,7 +78,11 @@ export default function FounderPage() {
               {/* Avatar */}
               <div className="relative flex-shrink-0">
                 <div className="w-24 h-24 sm:w-32 sm:h-32 md:w-36 md:h-36 rounded-2xl overflow-hidden border-2 border-white/20 shadow-xl">
-                  <img src="/akash-shukla.png" alt="Akash Shukla - Founder of Finnotia" className="w-full h-full object-cover" />
+                 <img 
+  src="https://res.cloudinary.com/dy2ckihxj/image/upload/w_300,h_300,c_fill,f_auto,q_auto/v1773204265/ldjo3jgpipbcvru1c8iy.png" 
+  alt="Akash Shukla - Founder of Finnotia" 
+  className="w-full h-full object-cover" 
+/>
                 </div>
                 <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-[#2563EB] text-white px-2.5 py-0.5 rounded-full text-[10px] font-bold shadow-md whitespace-nowrap">
                   ✓ Founder

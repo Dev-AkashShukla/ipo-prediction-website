@@ -97,14 +97,13 @@ export default function DownloadPage() {
               >
                 <div className="w-full h-full relative overflow-hidden rounded-[30px] sm:rounded-[32px]">
                   <Image
-                    src="/finnotia-app-download.png"
-                    alt="Finnotia App Interface"
-                    fill
-                    sizes="(max-width: 640px) 240px, 280px"
-                    className="object-cover object-center"
-                    priority
-                    quality={85}
-                  />
+  src="https://res.cloudinary.com/dy2ckihxj/image/upload/w_600,f_auto,q_auto/v1773204277/hkmpf0lfycpl1bze4k2g.png"
+  alt="Finnotia App Interface"
+  fill
+  sizes="(max-width: 640px) 240px, 280px"
+  className="object-cover object-center"
+  priority
+/>
                 </div>
               </div>
             </motion.div>

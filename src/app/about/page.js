@@ -223,7 +223,7 @@ export default function AboutPage() {
                 <div className="relative flex-shrink-0">
                   <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl overflow-hidden border-2 border-gray-100 shadow-sm">
                     <img
-                      src="/akash-shukla.png"
+                      src="https://res.cloudinary.com/dy2ckihxj/image/upload/v1773204265/ldjo3jgpipbcvru1c8iy.png"
                       alt="Akash Shukla - Founder of Finnotia"
                       className="w-full h-full object-cover"
                     />

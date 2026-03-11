@@ -1,26 +1,16 @@
 // src/components/home/LatestArticles.jsx
-// Homepage pe latest blog articles dikhata hai — AdSense ke liye content-heavy homepage
+// Homepage pe latest blog articles dikhata hai
+// SERVER COMPONENT — 'use client' nahi hai, isliye @/lib/articleUtils se import karo
 
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
 import Link from 'next/link';
-import { ArrowRight, BarChart2, Clock } from 'lucide-react';
+import { ArrowRight, BarChart2 } from 'lucide-react';
 
-const CAT_STYLES = {
-  commodities:    { bg: '#fef3c7', text: '#92400e' },
-  markets:        { bg: '#d1fae5', text: '#065f46' },
-  economy:        { bg: '#dbeafe', text: '#1e40af' },
-  tech:           { bg: '#ede9fe', text: '#5b21b6' },
-  crypto:         { bg: '#fce7f3', text: '#9d174d' },
-  ipo:            { bg: '#fef3c7', text: '#92400e' },
-  'mutual-funds': { bg: '#dbeafe', text: '#1e40af' },
-  geopolitics:    { bg: '#fee2e2', text: '#991b1b' },
-  tax:            { bg: '#e0e7ff', text: '#3730a3' },
-  investing:      { bg: '#d1fae5', text: '#065f46' },
-  policy:         { bg: '#e0e7ff', text: '#3730a3' },
-  corporate:      { bg: '#f3f4f6', text: '#374151' },
-};
+// ✅ Shared lib se import — client component se NAHI
+// (client component ke named exports server component mein undefined ho jaate hain)
+import { CAT_STYLES, cloudinaryOptimize, fmtDate } from '../../lib/articleUtils';
 
 function getLatestArticles(limit = 6) {
   const dir = path.join(process.cwd(), 'content', 'articles');
@@ -44,12 +34,6 @@ function getLatestArticles(limit = 6) {
     })
     .sort((a, b) => new Date(b.date) - new Date(a.date))
     .slice(0, limit);
-}
-
-function fmtDate(d) {
-  return d
-    ? new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
-    : '';
 }
 
 export default function LatestArticles() {
@@ -81,7 +65,7 @@ export default function LatestArticles() {
           </Link>
         </div>
 
-        {/* Layout: featured (large) + cards */}
+        {/* Layout: featured (large) + side cards */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
 
           {/* ── Featured article ── */}
@@ -91,9 +75,11 @@ export default function LatestArticles() {
           >
             {featured.image_url ? (
               <img
-                src={featured.image_url}
+                src={cloudinaryOptimize(featured.image_url, 'w_800,h_450,c_fill,f_auto,q_auto')}
                 alt={featured.title}
                 className="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:opacity-50 transition-opacity duration-300"
+                loading="eager"
+                fetchpriority="high"
               />
             ) : (
               <div className="absolute inset-0 flex items-center justify-center">
@@ -112,7 +98,9 @@ export default function LatestArticles() {
               <h3 className="text-white font-serif text-base sm:text-lg leading-snug mb-1.5 group-hover:text-[#f8a07a] transition-colors line-clamp-2">
                 {featured.title}
               </h3>
-              <p className="text-white/50 text-[12px] line-clamp-2 mb-2.5 hidden sm:block">{featured.excerpt}</p>
+              <p className="text-white/50 text-[12px] line-clamp-2 mb-2.5 hidden sm:block">
+                {featured.excerpt}
+              </p>
               <div className="flex items-center justify-between">
                 <span className="text-white/30 text-[10px]">{fmtDate(featured.date)}</span>
                 <span className="flex items-center gap-1 text-[11px] font-semibold text-[#c8421e]">
@@ -122,7 +110,7 @@ export default function LatestArticles() {
             </div>
           </Link>
 
-          {/* ── Smaller cards ── */}
+          {/* ── Smaller side cards ── */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-2.5">
             {rest.slice(0, 4).map((post) => {
               const cs = CAT_STYLES[post.category?.toLowerCase()] || { bg: '#f3f4f6', text: '#374151' };
@@ -132,10 +120,15 @@ export default function LatestArticles() {
                   href={`/blog/${post.slug}`}
                   className="group bg-white rounded-xl border border-gray-100 p-3 flex gap-2.5 no-underline hover:shadow-md hover:-translate-y-0.5 transition-all duration-200"
                 >
-                  {/* Thumbnail */}
                   <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-lg overflow-hidden flex-shrink-0 bg-[#0c1e35] flex items-center justify-center">
                     {post.image_url ? (
-                      <img src={post.image_url} alt={post.title} className="w-full h-full object-cover" />
+                      <img
+                        src={cloudinaryOptimize(post.image_url, 'w_120,h_120,c_fill,f_auto,q_auto')}
+                        alt={post.title}
+                        className="w-full h-full object-cover"
+                        loading="lazy"
+                        decoding="async"
+                      />
                     ) : (
                       <BarChart2 className="w-5 h-5 text-white/10" strokeWidth={1} />
                     )}
@@ -152,7 +145,6 @@ export default function LatestArticles() {
                       {post.title}
                     </h3>
                     <div className="flex items-center gap-1.5 mt-1 text-[10px] text-gray-400">
-                      <Clock className="w-2.5 h-2.5" strokeWidth={2} />
                       {post.readTime}m · {fmtDate(post.date)}
                     </div>
                   </div>
@@ -162,7 +154,7 @@ export default function LatestArticles() {
           </div>
         </div>
 
-        {/* Mobile view all */}
+        {/* Mobile — view all */}
         <div className="mt-4 text-center sm:hidden">
           <Link
             href="/blog"

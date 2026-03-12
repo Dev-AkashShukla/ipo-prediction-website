@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState, memo } from 'react';
+import { useState, memo } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { TrendingUp, BarChart3, Newspaper, PieChart } from 'lucide-react';
 import SectionHeader from '../ui/SectionHeader';
@@ -9,7 +9,6 @@ const screenshots = [
     title: 'Live Dashboard',
     description: 'Market Activity Scanner',
     icon: BarChart3,
-    // ✅ Cloudinary: w_400 = resize, f_auto = WebP/AVIF auto, q_auto = smart compress
     image: 'https://res.cloudinary.com/dy2ckihxj/image/upload/w_400,f_auto,q_auto/v1773203874/gtywmvezz88bz4hcbcpe.png',
     gradient: 'from-blue-500 via-blue-600 to-indigo-600',
     tilt: 'rotateY(18deg) rotateX(5deg) rotateZ(-2deg)',
@@ -47,11 +46,8 @@ const screenshots = [
 const PhoneMockup = memo(function PhoneMockup({ screen, index, reduceMotion }) {
   const [isHovered, setIsHovered] = useState(false);
 
-  const currentTilt = reduceMotion
-    ? 'none'
-    : isHovered
-      ? screen.hoverTilt
-      : screen.tilt;
+  // SSR pe tilt nahi — hydration mismatch avoid karne ke liye
+  const currentTilt = reduceMotion ? 'none' : isHovered ? screen.hoverTilt : screen.tilt;
 
   return (
     <motion.div
@@ -82,8 +78,6 @@ const PhoneMockup = memo(function PhoneMockup({ screen, index, reduceMotion }) {
 
         {/* Phone Device */}
         <div className="relative w-[120px] sm:w-[140px] md:w-[155px] lg:w-[165px]">
-
-          {/* Frame */}
           <div
             className="relative rounded-[1.6rem] sm:rounded-[1.8rem] p-[2.5px] shadow-xl transition-shadow duration-500"
             style={{
@@ -116,93 +110,61 @@ const PhoneMockup = memo(function PhoneMockup({ screen, index, reduceMotion }) {
                   decoding="async"
                 />
 
-                {/* Glass Reflection */}
                 <div
                   className="absolute inset-0 pointer-events-none"
                   style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 50%)' }}
                 />
-
-                {/* Hover wash */}
                 <div
                   className={`absolute inset-0 bg-gradient-to-t ${screen.gradient} pointer-events-none transition-opacity duration-500`}
                   style={{ opacity: isHovered ? 0.1 : 0 }}
                 />
-
                 <div className={`absolute inset-0 bg-gradient-to-br ${screen.gradient} -z-10`} />
               </div>
             </div>
           </div>
 
-          {/* Buttons */}
-          <div
-            className="absolute top-[22%] -right-[2px] w-[2.5px] h-8 rounded-l-sm"
-            style={{ background: 'linear-gradient(180deg, #555 0%, #333 50%, #555 100%)' }}
-          />
-          <div
-            className="absolute top-[15%] -left-[2px] w-[2.5px] h-5 rounded-r-sm"
-            style={{ background: 'linear-gradient(180deg, #555 0%, #333 50%, #555 100%)' }}
-          />
-          <div
-            className="absolute top-[26%] -left-[2px] w-[2.5px] h-9 rounded-r-sm"
-            style={{ background: 'linear-gradient(180deg, #555 0%, #333 50%, #555 100%)' }}
-          />
+          {/* Side Buttons */}
+          <div className="absolute top-[22%] -right-[2px] w-[2.5px] h-8 rounded-l-sm"
+            style={{ background: 'linear-gradient(180deg, #555 0%, #333 50%, #555 100%)' }} />
+          <div className="absolute top-[15%] -left-[2px] w-[2.5px] h-5 rounded-r-sm"
+            style={{ background: 'linear-gradient(180deg, #555 0%, #333 50%, #555 100%)' }} />
+          <div className="absolute top-[26%] -left-[2px] w-[2.5px] h-9 rounded-r-sm"
+            style={{ background: 'linear-gradient(180deg, #555 0%, #333 50%, #555 100%)' }} />
         </div>
       </div>
 
       {/* Feature Info */}
-      <motion.div
-        className="mt-4 sm:mt-5 text-center"
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{ delay: index * 0.1 + 0.4 }}
-      >
+      <div className="mt-4 sm:mt-5 text-center">
         <div
           className={`inline-flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-br ${screen.gradient} text-white mb-2 shadow-md transition-transform duration-300`}
           style={{ transform: isHovered ? 'scale(1.08)' : 'scale(1)' }}
         >
-          <screen.icon className="w-4 h-4 sm:w-4.5 sm:h-4.5" strokeWidth={1.8} />
+          <screen.icon className="w-4 h-4" strokeWidth={1.8} />
         </div>
-
         <h3 className="text-xs sm:text-sm font-bold text-gray-900 mb-0.5 tracking-tight">
           {screen.title}
         </h3>
         <p className="text-[10px] sm:text-[11px] text-gray-500 font-medium leading-tight">
           {screen.description}
         </p>
-      </motion.div>
+      </div>
     </motion.div>
   );
 });
 
+// ✅ mounted check HATAYA — blank box gone
+// ✅ useEffect HATAYA — SSR pe directly render hoga
+// ✅ useReducedMotion SSR-safe hai — hydration mismatch nahi hoga
 export default function AppScreenshots() {
   const prefersReducedMotion = useReducedMotion();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => { setMounted(true); }, []);
-
-  if (!mounted) {
-    return (
-      <section className="py-10 sm:py-14 bg-slate-50">
-        <div className="container mx-auto px-4">
-          <div className="h-[400px]" />
-        </div>
-      </section>
-    );
-  }
 
   return (
     <section className="relative py-10 sm:py-14 lg:py-18 overflow-hidden">
-      {/* Background */}
       <div className="absolute inset-0 bg-gradient-to-b from-slate-50 via-blue-50/30 to-slate-100" />
-
-      {/* Decorative blurs — smaller & subtler */}
       <div className="absolute top-20 -left-16 w-56 h-56 bg-blue-300/20 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-20 -right-16 w-64 h-64 bg-purple-300/20 rounded-full blur-3xl pointer-events-none" />
 
       <div className="container relative mx-auto px-4 sm:px-6 lg:px-8">
-
-        {/* Header */}
         <SectionHeader
           badge="App Preview"
           title="Beautiful &"
@@ -211,7 +173,6 @@ export default function AppScreenshots() {
           className="mb-8 sm:mb-12 lg:mb-16"
         />
 
-        {/* Phone Grid */}
         <div
           className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5 lg:gap-6 max-w-4xl mx-auto"
           style={{ perspective: '2000px', perspectiveOrigin: '50% 50%' }}

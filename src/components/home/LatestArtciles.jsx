@@ -79,7 +79,7 @@ export default function LatestArticles() {
                 alt={featured.title}
                 className="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:opacity-50 transition-opacity duration-300"
                 loading="eager"
-                fetchpriority="high"
+                fetchPriority="high"
               />
             ) : (
               <div className="absolute inset-0 flex items-center justify-center">

@@ -2,10 +2,13 @@
 // src/app/blog/BlogClient.jsx
 
 import { useState, useEffect, useRef } from 'react';
-import { Search, BookOpen, Clock, BarChart2, FileText, ChevronDown, X, SlidersHorizontal } from 'lucide-react';
+import { Search, BookOpen, BarChart2, FileText, ChevronDown, X, SlidersHorizontal } from 'lucide-react';
 import Pagination from '../../components/ui/Pagination';
 import { usePagination } from '../../hooks/usePagination';
 import ArticleCard from '../../components/ui/ArticleCard';
+import PageHero from '../../components/shared/PageHero';
+import { FilterChip } from '../../components/ui/FilterChip';
+import { ResultCount } from '../../components/ui/ResultCount';
 
 const ITEMS_PER_PAGE = 9;
 
@@ -29,7 +32,6 @@ export default function BlogClient({ articles }) {
 
   const { currentItems: pagedItems, currentPage, totalPages, goTo } = usePagination(filtered, ITEMS_PER_PAGE);
 
-  // Reset to page 1 when filter/search changes
   useEffect(() => { goTo(1); }, [filter, search]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handlePageChange = (page) => {
@@ -37,7 +39,6 @@ export default function BlogClient({ articles }) {
     gridRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
-  // Intersection observer for fade-in cards
   useEffect(() => {
     observerRef.current?.disconnect();
     observerRef.current = new IntersectionObserver(
@@ -50,7 +51,6 @@ export default function BlogClient({ articles }) {
     return () => observerRef.current?.disconnect();
   }, [filter, search, currentPage]);
 
-  // Category filter setup
   const PRIORITY = ['ALL', 'markets', 'ipo', 'economy', 'mutual-funds', 'investing'];
   const TOP_N = 5;
   const sorted = [...categories].sort((a, b) => {
@@ -68,35 +68,22 @@ export default function BlogClient({ articles }) {
   return (
     <div className="min-h-screen bg-[#f8f7f4] font-sans">
 
-      {/* ── HERO ── */}
-      <div className="bg-[#0c1e35] px-3 pt-5 pb-14 relative overflow-hidden">
-        <div
-          className="absolute top-0 right-0 w-[400px] h-[400px] rounded-full opacity-[0.06] pointer-events-none"
-          style={{ background: 'radial-gradient(circle, #c8421e 0%, transparent 70%)', transform: 'translate(35%, -35%)' }}
-        />
-        <div className="absolute bottom-0 left-0 right-0 h-5 bg-[#f8f7f4] rounded-t-3xl" />
-
-        <div className="max-w-4xl mx-auto relative z-10">
-          <div className="inline-flex items-center gap-1.5 bg-white/5 border border-white/10 rounded-lg px-2.5 py-1 mb-4">
-            <BookOpen className="w-3 h-3 text-white/50" strokeWidth={2} />
-            <span className="text-white/50 text-[9px] font-bold tracking-widest uppercase">Finnotia Research</span>
-          </div>
-
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-serif text-white leading-tight mb-2">
-            Financial Analysis,<br />
-            <em className="text-[#c8421e] not-italic font-serif italic">Without the Noise.</em>
-          </h1>
-
-          <p className="text-white/35 text-xs sm:text-sm max-w-md leading-relaxed">
-            Data-driven coverage across markets, macroeconomics, commodities, and corporate finance.
-          </p>
-
-          <div className="mt-4 flex items-center gap-1.5 text-white/25 text-xs">
+      {/* ── HERO — reusable PageHero ── */}
+      <PageHero
+        badge="Finnotia Research"
+        badgeIcon={<BookOpen className="w-3 h-3" strokeWidth={2} />}
+        title="Financial Analysis,"
+        titleHighlight="Without the Noise."
+        titleStyle="serif-italic"
+        accentColor="#c8421e"
+        subtitle="Data-driven coverage across markets, macroeconomics, commodities, and corporate finance."
+        meta={
+          <>
             <BarChart2 className="w-3 h-3" strokeWidth={2} />
             <span>{articles.length} article{articles.length !== 1 ? 's' : ''} published</span>
-          </div>
-        </div>
-      </div>
+          </>
+        }
+      />
 
       {/* ── SEARCH ── */}
       <div className="max-w-4xl mx-auto px-4 sm:px-5 -mt-3.5 relative z-10">
@@ -116,29 +103,20 @@ export default function BlogClient({ articles }) {
       <div className="max-w-4xl mx-auto px-4 sm:px-5 mt-3">
         <div className="flex items-center gap-1.5">
 
-          {/* Top chips */}
+          {/* Top chips — FilterChip reusable */}
           <div className="flex gap-1.5 flex-1 overflow-x-auto" style={{ scrollbarWidth: 'none' }}>
-            {topCats.map((c) => {
-              const count    = c === 'ALL' ? articles.length : articles.filter(a => a.category === c).length;
-              const isActive = filter === c;
-              return (
-                <button
-                  key={c}
-                  onClick={() => setFilter(c)}
-                  className={`flex items-center gap-1 px-3 py-1 rounded-full border text-[11px] font-semibold whitespace-nowrap flex-shrink-0 transition-all capitalize
-                    ${isActive
-                      ? 'bg-[#0c1e35] text-white border-[#0c1e35]'
-                      : 'bg-white text-gray-500 border-gray-200 hover:border-gray-400 hover:text-gray-700'
-                    }`}
-                >
-                  {c === 'ALL' ? 'All' : c}
-                  <span className="opacity-40 text-[9px]">({count})</span>
-                </button>
-              );
-            })}
+            {topCats.map((c) => (
+              <FilterChip
+                key={c}
+                label={c}
+                count={c === 'ALL' ? articles.length : articles.filter(a => a.category === c).length}
+                isActive={filter === c}
+                onClick={() => setFilter(c)}
+              />
+            ))}
           </div>
 
-          {/* More button */}
+          {/* More button — custom because it has bottom sheet + dot indicator */}
           {moreCats.length > 0 && (
             <button
               onClick={() => setShowMore(true)}
@@ -194,15 +172,9 @@ export default function BlogClient({ articles }) {
         )}
       </div>
 
-      {/* ── RESULT COUNT ── */}
+      {/* ── RESULT COUNT — reusable ResultCount ── */}
       <div className="max-w-4xl mx-auto px-4 sm:px-5 mt-2">
-        <p className="text-[11px] text-gray-400">
-          Showing{' '}
-          <span className="font-semibold text-gray-600">
-            {Math.min((currentPage - 1) * ITEMS_PER_PAGE + 1, filtered.length)}–{Math.min(currentPage * ITEMS_PER_PAGE, filtered.length)}
-          </span>{' '}
-          of {filtered.length} articles
-        </p>
+        <ResultCount currentPage={currentPage} perPage={ITEMS_PER_PAGE} total={filtered.length} noun="articles" />
       </div>
 
       {/* ── GRID ── */}

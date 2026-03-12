@@ -11,7 +11,7 @@ const navLinks = [
   { name: 'Home', href: '/' },
   { name: 'Features', href: '/#features' },
   { name: 'How It Works', href: '/#how' },
-  { name: 'Stories', href: '/stories' },   // ← ADDED
+  { name: 'Stories', href: '/stories' },
   { name: 'Blog', href: '/blog' },
   { name: 'About Us', href: '/about' },
   { name: 'Contact', href: '/contact' },
@@ -19,10 +19,24 @@ const navLinks = [
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isVisible, setIsVisible] = useState(false); // animation ke liye
   const [scrolled, setScrolled] = useState(false);
   const [showDownload, setShowDownload] = useState(false);
 
   const pathname = usePathname();
+
+  // Smooth open/close toggle
+  const toggleMenu = (val) => {
+    if (val) {
+      setIsOpen(true);
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => setIsVisible(true));
+      });
+    } else {
+      setIsVisible(false);
+      setTimeout(() => setIsOpen(false), 250);
+    }
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -48,10 +62,13 @@ export default function Header() {
 
   return (
     <>
+      {/* Overlay - smooth fade */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 md:hidden"
-          onClick={() => setIsOpen(false)}
+          className={`fixed inset-0 bg-black/50 backdrop-blur-sm z-40 md:hidden
+            transition-opacity duration-[250ms] ease-in-out
+            ${isVisible ? 'opacity-100' : 'opacity-0'}`}
+          onClick={() => toggleMenu(false)}
         />
       )}
 
@@ -62,6 +79,7 @@ export default function Header() {
       >
         <nav className="container mx-auto px-3 py-1">
           <div className="flex items-center justify-between">
+
             {/* Logo */}
             <Link href="/" className="flex items-center gap-2 group flex-shrink-0">
               <div className="w-10 h-10 relative">
@@ -151,16 +169,20 @@ export default function Header() {
 
             {/* Mobile Menu Button */}
             <button
-              onClick={() => setIsOpen(!isOpen)}
+              onClick={() => toggleMenu(!isOpen)}
               className="md:hidden p-2 text-gray-700 hover:text-[#2E5CB8] transition-colors duration-200 relative z-50"
             >
               {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
           </div>
 
-          {/* Mobile Menu */}
+          {/* Mobile Menu - smooth slide + fade */}
           {isOpen && (
-            <div className="md:hidden mt-4 pb-4 space-y-1 relative z-50">
+            <div
+              className={`md:hidden mt-4 pb-4 space-y-1 relative z-50
+                transition-all duration-[250ms] ease-out
+                ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-3'}`}
+            >
               {navLinks.map((link) => {
                 const isActive =
                   link.href !== '/' &&
@@ -170,7 +192,7 @@ export default function Header() {
                   <Link
                     key={link.name}
                     href={link.href}
-                    onClick={() => setIsOpen(false)}
+                    onClick={() => toggleMenu(false)}
                     className={`block text-sm font-medium py-2.5 px-2 rounded-lg transition-colors duration-200
                       ${isActive
                         ? 'text-[#2E5CB8] bg-blue-50'
@@ -189,7 +211,7 @@ export default function Header() {
                   target="_blank"
                   rel="noopener noreferrer"
                   className={`flex items-center gap-3 bg-gradient-to-r ${GRADIENTS.primary} text-white px-4 py-3 rounded-lg font-semibold hover:shadow-lg transition-all duration-300`}
-                  onClick={() => setIsOpen(false)}
+                  onClick={() => toggleMenu(false)}
                 >
                   <AndroidIcon className="w-6 h-6" />
                   <div className="flex-1 text-left">
@@ -200,7 +222,7 @@ export default function Header() {
                 <Link
                   href={APP_STORE_URL}
                   className="flex items-center gap-3 bg-white text-gray-700 px-4 py-3 rounded-lg font-semibold border-2 border-gray-200 hover:bg-gray-50 transition-all duration-300"
-                  onClick={() => setIsOpen(false)}
+                  onClick={() => toggleMenu(false)}
                 >
                   <AppleIcon className="w-6 h-6 text-gray-700" />
                   <div className="flex-1 text-left">

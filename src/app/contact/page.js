@@ -1,19 +1,21 @@
-// src/app/contact/page.js
 'use client';
+// src/app/contact/page.js
+
 import { useState } from 'react';
-import { Mail, Send, Loader2, MessageSquare, Clock, MapPin, Headphones } from 'lucide-react';
-import { PLAY_STORE_URL, CONTACT_INFO, GRADIENTS } from '../../lib/constants';
+import { Mail, Send, Loader2, Clock, MapPin, Headphones } from 'lucide-react';
+import { PLAY_STORE_URL, CONTACT_INFO } from '../../lib/constants';
 import AndroidIcon from '../../components/ui/AndroidIcon';
 import { useRecaptcha, useWeb3Forms } from '../../hooks';
 import { FormStatusMessage, RecaptchaNotice } from '../../components/forms';
+import PageHero from '../../components/shared/PageHero';
 
 const initialFormData = { name: '', email: '', subject: '', message: '' };
 
 export default function ContactPage() {
-  const [formData, setFormData]             = useState(initialFormData);
+  const [formData, setFormData]               = useState(initialFormData);
   const [validationError, setValidationError] = useState(null);
 
-  const { isLoaded: recaptchaLoaded, verify }      = useRecaptcha();
+  const { isLoaded: recaptchaLoaded, verify }       = useRecaptcha();
   const { submit, isSubmitting, status, resetStatus } = useWeb3Forms();
 
   const handleSubmit = async () => {
@@ -46,54 +48,26 @@ export default function ContactPage() {
     <div className="min-h-screen bg-[#f8f7f4]" style={{ fontFamily: 'system-ui, sans-serif' }}>
 
       {/* ── Hero ── */}
-      <div className="bg-[#0c1e35] px-4 pt-8 pb-12 relative overflow-hidden">
-        {/* Glow blobs */}
-        <div
-          className="absolute top-0 right-0 w-[280px] h-[280px] rounded-full opacity-[0.07] pointer-events-none"
-          style={{ background: 'radial-gradient(circle, #4A90E2 0%, transparent 70%)', transform: 'translate(30%, -30%)' }}
-        />
-        <div
-          className="absolute bottom-0 left-0 w-[200px] h-[200px] rounded-full opacity-[0.04] pointer-events-none"
-          style={{ background: 'radial-gradient(circle, #60A5FA 0%, transparent 70%)', transform: 'translate(-30%, 40%)' }}
-        />
-        <div className="absolute bottom-0 left-0 right-0 h-5 bg-[#f8f7f4] rounded-t-3xl" />
-
-        <div className="max-w-5xl mx-auto relative z-10 text-center">
-          {/* Icon badge */}
-          <div className="inline-flex items-center gap-1.5 bg-white/5 border border-white/10 rounded-lg px-2.5 py-1 mb-3">
-            <MessageSquare className="w-3 h-3 text-white/50" strokeWidth={2} />
-            <span className="text-white/50 text-[9px] font-bold tracking-widest uppercase">Contact Us</span>
-          </div>
-
-          {/* Heading */}
-          <h1 className="text-2xl sm:text-3xl font-black text-white leading-tight mb-2">
-            Get in{' '}
-            <span
-              className="text-transparent bg-clip-text"
-              style={{ backgroundImage: 'linear-gradient(135deg, #60A5FA 0%, #2563EB 100%)' }}
-            >
-              Touch
-            </span>
-          </h1>
-          <p className="text-white/40 text-xs sm:text-sm max-w-xs mx-auto">
-            Have questions, feedback, or need support? We'd love to hear from you.
-          </p>
-
-          {/* Quick info pills */}
-          <div className="flex flex-wrap items-center justify-center gap-2 mt-4">
-            {[
-              { icon: Clock,      label: 'Replies in 24h'   },
-              { icon: Headphones, label: 'Active Support'   },
-              { icon: MapPin,     label: 'Kolkata, India 🇮🇳' },
-            ].map(({ icon: Icon, label }) => (
-              <div key={label} className="inline-flex items-center gap-1.5 bg-white/5 border border-white/10 rounded-full px-2.5 py-1">
-                <Icon className="w-3 h-3 text-[#60A5FA]" strokeWidth={2} />
-                <span className="text-white/60 text-[10px] font-medium">{label}</span>
-              </div>
-            ))}
-          </div>
+      <PageHero
+        badge="Contact Us"
+        title="Get in"
+        titleHighlight="Touch"
+        subtitle="Have questions, feedback, or need support? We'd love to hear from you."
+      >
+        {/* Quick info pills */}
+        <div className="flex flex-wrap pt-3 gap-3">
+          {[
+            { icon: Clock,      label: 'Replies in 24h'    },
+            { icon: Headphones, label: 'Active Support'    },
+            { icon: MapPin,     label: 'Kolkata, India 🇮🇳' },
+          ].map(({ icon: Icon, label }) => (
+            <div key={label} className="inline-flex items-center gap-1.5 bg-white/5 border border-white/10 rounded-full px-2.5 py-1">
+              <Icon className="w-3 h-3 text-[#60A5FA]" strokeWidth={2} />
+              <span className="text-white/60 text-[10px] font-medium">{label}</span>
+            </div>
+          ))}
         </div>
-      </div>
+      </PageHero>
 
       {/* ── Body ── */}
       <div className="max-w-5xl mx-auto px-4 py-6 sm:py-8">
@@ -123,8 +97,8 @@ export default function ContactPage() {
                 onClick={handleSubmit}
                 disabled={isDisabled}
                 className="w-full bg-[#0c1e35] hover:bg-[#142840] text-white px-4 py-2.5 rounded-lg font-bold text-xs
-                  hover:shadow-lg hover:scale-[1.02] active:scale-[0.98] transition-all duration-200
-                  flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                           hover:shadow-lg hover:scale-[1.02] active:scale-[0.98] transition-all duration-200
+                           flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
               >
                 {isSubmitting ? (
                   <><Loader2 className="w-3.5 h-3.5 animate-spin" /><span>Sending...</span></>
@@ -150,7 +124,7 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <h3 className="text-sm font-bold mb-0.5">Get FINNOTIA App</h3>
-                  <p className="text-[11px] opacity-85 leading-snug">Real-time IPO alerts & AI analysis</p>
+                  <p className="text-[11px] opacity-85 leading-snug">Real-time IPO alerts & market data</p>
                 </div>
               </div>
               <a
@@ -169,23 +143,19 @@ export default function ContactPage() {
               <h2 className="text-sm font-bold text-gray-900 mb-3">Contact Info</h2>
               <div className="space-y-2.5">
 
-                {/* Email */}
                 <div className="flex items-start gap-2.5">
                   <div className="w-7 h-7 bg-blue-50 rounded-lg flex items-center justify-center flex-shrink-0">
                     <Mail className="w-3.5 h-3.5 text-[#4A90E2]" strokeWidth={2} />
                   </div>
                   <div className="min-w-0">
                     <p className="text-[10px] font-bold text-gray-500 uppercase tracking-wide mb-0.5">Email</p>
-                    <a
-                      href={`mailto:${CONTACT_INFO.contactEmail}`}
-                      className="text-xs text-gray-700 hover:text-[#4A90E2] transition-colors truncate block"
-                    >
+                    <a href={`mailto:${CONTACT_INFO.contactEmail}`}
+                      className="text-xs text-gray-700 hover:text-[#4A90E2] transition-colors truncate block">
                       {CONTACT_INFO.contactEmail}
                     </a>
                   </div>
                 </div>
 
-                {/* Response */}
                 <div className="flex items-start gap-2.5">
                   <div className="w-7 h-7 bg-green-50 rounded-lg flex items-center justify-center flex-shrink-0">
                     <Clock className="w-3.5 h-3.5 text-green-600" strokeWidth={2} />
@@ -196,7 +166,6 @@ export default function ContactPage() {
                   </div>
                 </div>
 
-                {/* Location */}
                 <div className="flex items-start gap-2.5">
                   <div className="w-7 h-7 bg-orange-50 rounded-lg flex items-center justify-center flex-shrink-0">
                     <MapPin className="w-3.5 h-3.5 text-orange-500" strokeWidth={2} />
@@ -207,7 +176,6 @@ export default function ContactPage() {
                   </div>
                 </div>
 
-                {/* Live badge */}
                 <div className="bg-green-50 border border-green-200 rounded-lg px-3 py-2 flex items-center gap-2">
                   <span className="relative flex h-1.5 w-1.5 flex-shrink-0">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
@@ -217,7 +185,6 @@ export default function ContactPage() {
                 </div>
               </div>
             </div>
-
           </aside>
         </div>
 
@@ -229,7 +196,6 @@ export default function ContactPage() {
   );
 }
 
-// ── Reusable form fields ─────────────────────────────────────────
 function FormInput({ id, type = 'text', label, value, onChange, disabled, placeholder }) {
   return (
     <div>

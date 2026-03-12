@@ -1,7 +1,6 @@
 'use client';
-// src/components/home/HeroBg.jsx
-// ── TradingView-style Full Canvas Candlestick Background ──
-// Large candles filling the full viewport height, scrolling left like a live chart
+// src/components/ui/HeroBg.jsx
+// Canvas starts AFTER mount — no SSR mismatch, no blank flash
 
 import { useEffect, useRef } from 'react';
 
@@ -17,31 +16,27 @@ export default function HeroBg() {
     let raf = null;
     let running = true;
 
-    // ── Config ─────────────────────────────────────────────────────
-    const CANDLE_W    = 14;      // body width  (px, logical)
-    const WICK_W      = 1.5;     // wick stroke width
-    const GAP         = 6;       // gap between candles
-    const STEP        = CANDLE_W + GAP;
-    const SCROLL_SPD  = 0.55;    // px per frame
-    const VOL_ZONE    = 0.15;    // bottom 15% = volume bars
-    const CHART_PAD_T = 0.08;    // top padding fraction
-    const CHART_PAD_B = 0.06;    // bottom padding (above volume) fraction
-    const VOLATILITY  = 0.0045;
-    const BASE_PRICE  = 263000;
+    const CANDLE_W   = 14;
+    const WICK_W     = 1.5;
+    const GAP        = 6;
+    const STEP       = CANDLE_W + GAP;
+    const SCROLL_SPD = 0.55;
+    const VOL_ZONE   = 0.15;
+    const CHART_PAD_T = 0.08;
+    const CHART_PAD_B = 0.06;
+    const VOLATILITY = 0.0045;
+    const BASE_PRICE = 263000;
 
-    // Bull / Bear colors matching the screenshot (green / red)
-    const BULL_BODY  = '#26a69a';   // teal-green
-    const BEAR_BODY  = '#ef5350';   // red
-    const BULL_VOL   = '#26a69a44';
-    const BEAR_VOL   = '#ef535044';
+    const BULL_BODY = '#26a69a';
+    const BEAR_BODY = '#ef5350';
+    const BULL_VOL  = '#26a69a44';
+    const BEAR_VOL  = '#ef535044';
     const GRID_COLOR = '#e2e8f0';
     const LINE_COLOR = '#2563eb';
 
-    // ── State ──────────────────────────────────────────────────────
     let candles = [];
     let scrollOffset = 0;
 
-    // ── OHLC generator (random walk) ──────────────────────────────
     function genCandle(prevClose) {
       const maxMove = prevClose * VOLATILITY;
       const move    = (Math.random() * 2 - 1) * maxMove;
@@ -65,13 +60,11 @@ export default function HeroBg() {
       scrollOffset = 0;
     }
 
-    // ── Price → pixel Y ───────────────────────────────────────────
     function toY(price, minP, maxP, chartTop, chartH) {
       if (maxP === minP) return chartTop + chartH / 2;
       return chartTop + chartH - ((price - minP) / (maxP - minP)) * chartH;
     }
 
-    // ── Draw ───────────────────────────────────────────────────────
     function draw() {
       ctx.clearRect(0, 0, W, H);
 
@@ -80,7 +73,6 @@ export default function HeroBg() {
       const chartTop = H * CHART_PAD_T;
       const volTop  = chartTop + chartH + H * CHART_PAD_B;
 
-      // Price range across visible candles
       let minP = Infinity, maxP = -Infinity, maxVol = 0;
       candles.forEach(c => {
         if (c.low  < minP) minP = c.low;
@@ -88,33 +80,22 @@ export default function HeroBg() {
         const v = Math.abs(c.close - c.open);
         if (v > maxVol) maxVol = v;
       });
-      // Tiny padding so candles don't touch edges
       const priceRange = maxP - minP || 1;
       minP -= priceRange * 0.05;
       maxP += priceRange * 0.05;
 
-      // ── Grid lines ──────────────────────────────────────────────
       ctx.save();
       ctx.strokeStyle = GRID_COLOR;
       ctx.lineWidth   = 0.6;
       ctx.globalAlpha = 0.6;
-      const gridLines = 6;
-      for (let g = 0; g <= gridLines; g++) {
-        const y = chartTop + (g / gridLines) * chartH;
-        ctx.beginPath();
-        ctx.moveTo(0, y);
-        ctx.lineTo(W, y);
-        ctx.stroke();
+      for (let g = 0; g <= 6; g++) {
+        const y = chartTop + (g / 6) * chartH;
+        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
       }
-      // Volume separator line
       ctx.globalAlpha = 0.3;
-      ctx.beginPath();
-      ctx.moveTo(0, volTop);
-      ctx.lineTo(W, volTop);
-      ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(0, volTop); ctx.lineTo(W, volTop); ctx.stroke();
       ctx.restore();
 
-      // ── Close-price line (subtle glow) ──────────────────────────
       ctx.save();
       ctx.strokeStyle = LINE_COLOR;
       ctx.lineWidth   = 1.5;
@@ -133,14 +114,13 @@ export default function HeroBg() {
       ctx.stroke();
       ctx.restore();
 
-      // ── Candles + Volume bars ────────────────────────────────────
       candles.forEach((c, i) => {
         const x = i * STEP - scrollOffset + CANDLE_W / 2;
         if (x < -STEP * 2 || x > W + STEP * 2) return;
 
-        const bull     = c.close >= c.open;
-        const bodyCol  = bull ? BULL_BODY : BEAR_BODY;
-        const volCol   = bull ? BULL_VOL  : BEAR_VOL;
+        const bull    = c.close >= c.open;
+        const bodyCol = bull ? BULL_BODY : BEAR_BODY;
+        const volCol  = bull ? BULL_VOL  : BEAR_VOL;
 
         const oY = toY(c.open,  minP, maxP, chartTop, chartH);
         const cY = toY(c.close, minP, maxP, chartTop, chartH);
@@ -150,94 +130,86 @@ export default function HeroBg() {
         const bodyTop = Math.min(oY, cY);
         const bodyH   = Math.max(Math.abs(cY - oY), 1.5);
 
-        // Edge fade (left & right margins)
-        const fadeW  = W * 0.07;
-        const fadeL  = Math.min(1, x / fadeW);
-        const fadeR  = Math.min(1, (W - x) / fadeW);
-        const alpha  = Math.max(0, Math.min(fadeL, fadeR));
+        const fadeW = W * 0.07;
+        const fadeL = Math.min(1, x / fadeW);
+        const fadeR = Math.min(1, (W - x) / fadeW);
+        const alpha = Math.max(0, Math.min(fadeL, fadeR));
 
         ctx.save();
         ctx.globalAlpha = alpha;
-
-        // Wick
         ctx.beginPath();
         ctx.strokeStyle = bodyCol;
         ctx.lineWidth   = WICK_W;
-        ctx.moveTo(x, hY);
-        ctx.lineTo(x, lY);
-        ctx.stroke();
-
-        // Body (filled for bull, outlined-ish for bear — like TradingView default)
-        if (bull) {
-          ctx.fillStyle = bodyCol;
-          ctx.fillRect(x - CANDLE_W / 2, bodyTop, CANDLE_W, bodyH);
-        } else {
-          // Bear: solid fill slightly transparent
-          ctx.fillStyle = bodyCol;
-          ctx.fillRect(x - CANDLE_W / 2, bodyTop, CANDLE_W, bodyH);
-        }
-
-        // Volume bar
+        ctx.moveTo(x, hY); ctx.lineTo(x, lY); ctx.stroke();
+        ctx.fillStyle = bodyCol;
+        ctx.fillRect(x - CANDLE_W / 2, bodyTop, CANDLE_W, bodyH);
         const volFrac = maxVol > 0 ? Math.abs(c.close - c.open) / maxVol : 0;
         const barH    = Math.max(2, volFrac * volH * 0.88);
         ctx.fillStyle = volCol;
         ctx.globalAlpha = alpha * 0.85;
         ctx.fillRect(x - CANDLE_W / 2, volTop + volH - barH, CANDLE_W, barH);
-
         ctx.restore();
       });
     }
 
-    // ── Animation loop ─────────────────────────────────────────────
     function frame() {
       if (!running) return;
-
       scrollOffset += SCROLL_SPD;
-
-      // Recycle candles: shift left when first candle scrolls out
       if (scrollOffset >= STEP) {
         scrollOffset -= STEP;
         candles.shift();
-        const last = candles[candles.length - 1].close;
-        candles.push(genCandle(last));
+        candles.push(genCandle(candles[candles.length - 1].close));
       }
-
       draw();
       raf = requestAnimationFrame(frame);
     }
 
-    // ── Resize ─────────────────────────────────────────────────────
     function resize() {
-      dpr    = Math.min(window.devicePixelRatio || 1, 2);
-      W      = canvas.offsetWidth;
-      H      = canvas.offsetHeight;
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      W   = canvas.offsetWidth;
+      H   = canvas.offsetHeight;
       canvas.width  = W * dpr;
       canvas.height = H * dpr;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       initCandles();
     }
 
-    // ── Pause on hidden tab ────────────────────────────────────────
     const onVisibility = () => {
-      if (document.hidden) {
+      if (document.hidden) { cancelAnimationFrame(raf); }
+      else { raf = requestAnimationFrame(frame); }
+    };
+
+    // ✅ requestIdleCallback — canvas starts after critical content renders
+    const startCanvas = () => {
+      resize();
+      const ro = new ResizeObserver(resize);
+      ro.observe(canvas);
+      document.addEventListener('visibilitychange', onVisibility);
+      raf = requestAnimationFrame(frame);
+      return ro;
+    };
+
+    let ro;
+    if ('requestIdleCallback' in window) {
+      const id = requestIdleCallback(() => { ro = startCanvas(); });
+      return () => {
+        running = false;
+        cancelIdleCallback(id);
         cancelAnimationFrame(raf);
-      } else {
-        raf = requestAnimationFrame(frame);
-      }
-    };
-
-    resize();
-    const ro = new ResizeObserver(resize);
-    ro.observe(canvas);
-    document.addEventListener('visibilitychange', onVisibility);
-    raf = requestAnimationFrame(frame);
-
-    return () => {
-      running = false;
-      cancelAnimationFrame(raf);
-      ro.disconnect();
-      document.removeEventListener('visibilitychange', onVisibility);
-    };
+        ro?.disconnect();
+        document.removeEventListener('visibilitychange', onVisibility);
+      };
+    } else {
+      // Fallback for Safari
+      const t = setTimeout(() => { ro = startCanvas(); }, 100);
+      return () => {
+        running = false;
+        clearTimeout(t);
+        cancelAnimationFrame(raf);
+        ro?.disconnect();
+        document.removeEventListener('visibilitychange', onVisibility);
+      };
+    }
   }, []);
 
   return (

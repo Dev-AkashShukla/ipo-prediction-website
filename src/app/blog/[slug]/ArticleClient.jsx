@@ -2,12 +2,11 @@
 // src/app/blog/[slug]/ArticleClient.jsx
 
 import { useState, useEffect } from 'react';
-import {
-  Share2, Twitter, MessageCircle, Link2, Check,
-  List, X, Clock, Calendar, TrendingUp, TrendingDown,
-  Minus, Activity, BarChart2, User,
-} from 'lucide-react';
+import { List, X, Clock, Calendar, BarChart2, User, TrendingUp, TrendingDown } from 'lucide-react';
 import ArticleCard, { cloudinaryOptimize } from '../../../components/ui/ArticleCard';
+import { ShareBar } from '../../../components/ui/ShareBar';
+import { TagPill } from '../../../components/ui/TagPill';
+import { getSentiment } from '../../../lib/sentimentConfig';
 
 const CAT_STYLES = {
   commodities:    { bg: '#fef3c7', text: '#92400e' },
@@ -24,13 +23,6 @@ const CAT_STYLES = {
   corporate:      { bg: '#f3f4f6', text: '#374151' },
 };
 
-const SENT_CONFIG = {
-  BULLISH: { bg: '#dcfce7', text: '#15803d', border: '#86efac', icon: TrendingUp,   label: 'Bullish' },
-  BEARISH: { bg: '#fee2e2', text: '#dc2626', border: '#fca5a5', icon: TrendingDown, label: 'Bearish' },
-  NEUTRAL: { bg: '#f1f5f9', text: '#475569', border: '#cbd5e1', icon: Minus,        label: 'Neutral' },
-  MIXED:   { bg: '#fefce8', text: '#a16207', border: '#fde047', icon: Activity,     label: 'Mixed'   },
-};
-
 function authorToSlug(name) {
   return (name || '').toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
 }
@@ -38,7 +30,6 @@ function authorToSlug(name) {
 export default function ArticleClient({ frontmatter: fm, htmlContent, relatedPosts = [] }) {
   const [progress, setProgress] = useState(0);
   const [showToc, setShowToc]   = useState(false);
-  const [copied, setCopied]     = useState(false);
   const [headings, setHeadings] = useState([]);
   const [activeH, setActiveH]   = useState(null);
 
@@ -67,52 +58,24 @@ export default function ArticleClient({ frontmatter: fm, htmlContent, relatedPos
   const fmtDate  = (d) =>
     d ? new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : '';
 
-  const catStyle = CAT_STYLES[fm.category?.toLowerCase()] || { bg: '#f1f5f9', text: '#475569' };
-  const sentConf = SENT_CONFIG[fm.sentiment?.toUpperCase()] || null;
-  const SentIcon = sentConf?.icon || null;
+  const catStyle  = CAT_STYLES[fm.category?.toLowerCase()] || { bg: '#f1f5f9', text: '#475569' };
+  // ✅ getSentiment replaces local SENT_CONFIG — works with BULLISH/BEARISH/NEUTRAL/MIXED
+  const sentConf  = getSentiment(fm.sentiment);
+  const SentIcon  = sentConf?.icon || null;
+  // Don't show badge for NEUTRAL if no explicit sentiment set
+  const showSent  = fm.sentiment && fm.sentiment.toUpperCase() !== 'NEUTRAL';
 
   const authorName = fm.author || 'Finnotia Research';
   const authorSlug = authorToSlug(authorName);
   const authorHref = `/author/${authorSlug}`;
-
-  const handleCopy = () => {
-    const copy = () => {
-      try {
-        const ta = document.createElement('textarea');
-        ta.value = window.location.href;
-        ta.style.cssText = 'position:fixed;opacity:0';
-        document.body.appendChild(ta);
-        ta.select();
-        document.execCommand('copy');
-        document.body.removeChild(ta);
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
-      } catch {}
-    };
-    if (navigator.clipboard) {
-      navigator.clipboard.writeText(window.location.href).then(() => {
-        setCopied(true); setTimeout(() => setCopied(false), 2000);
-      }).catch(copy);
-    } else copy();
-  };
-
-  const handleShare = (platform) => {
-    const url   = encodeURIComponent(window.location.href);
-    const title = encodeURIComponent(fm.title || '');
-    if (platform === 'whatsapp') window.open(`https://wa.me/?text=${title}%20${url}`);
-    if (platform === 'twitter')  window.open(`https://twitter.com/intent/tweet?text=${title}&url=${url}`);
-  };
+  const readTime   = parseInt(String(fm.readTime || '').replace(/\D/g, ''), 10) || null;
+  const heroImageUrl = cloudinaryOptimize(fm.image_url, 'w_1200,f_auto,q_auto');
 
   const scrollToHeading = (text) => {
     setShowToc(false);
     const target = Array.from(document.querySelectorAll('h2')).find((el) => el.textContent === text);
     target?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
-
-  const readTime = parseInt(String(fm.readTime || '').replace(/\D/g, ''), 10) || null;
-
-  // Hero image — large, use w_1200 for quality at full width
-  const heroImageUrl = cloudinaryOptimize(fm.image_url, 'w_1200,f_auto,q_auto');
 
   return (
     <div className="min-h-screen bg-white" style={{ fontFamily: "'Georgia', 'Times New Roman', serif" }}>
@@ -157,7 +120,7 @@ export default function ArticleClient({ frontmatter: fm, htmlContent, relatedPos
 
         <div className="absolute bottom-0 left-0 right-0 px-4 pb-5 sm:px-6 sm:pb-6">
           <div className="max-w-2xl mx-auto">
-            {sentConf && (
+            {showSent && (
               <div className="flex items-center gap-2 mb-2">
                 <span
                   className="inline-flex items-center gap-1 text-[10px] font-bold tracking-wide uppercase px-2.5 py-0.5 rounded-full"
@@ -183,66 +146,25 @@ export default function ArticleClient({ frontmatter: fm, htmlContent, relatedPos
       </div>
 
       {/* ── Article body ── */}
-      <div className="max-w-2xl mx-auto px-4 sm:px-5">
+      <div className="max-w-2xl mx-auto px-4 sm:px-6 py-6" style={{ fontFamily: 'system-ui, sans-serif' }}>
 
-        {/* Excerpt */}
-        {fm.excerpt && (
-          <p
-            className="mt-5 text-[15px] leading-relaxed text-gray-500 border-l-4 pl-4"
-            style={{ borderColor: '#c8421e', fontFamily: "'Georgia', serif", fontStyle: 'italic' }}
-          >
-            {fm.excerpt}
-          </p>
-        )}
-
-        {/* Key facts */}
-        {fm.key_facts?.length > 0 && (
-          <div className="mt-4 grid grid-cols-3 gap-2">
-            {fm.key_facts.map((fact, i) => (
-              <div key={i} className="rounded-xl px-2.5 py-2.5 text-center" style={{ backgroundColor: '#0c1e35' }}>
-                <p className="text-white/75 text-[10px] sm:text-[11px] leading-snug font-medium" style={{ fontFamily: 'system-ui, sans-serif' }}>
-                  {fact}
-                </p>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* ── Meta row ── */}
-        <div
-          className="mt-4 flex items-center gap-2.5 py-3 border-t border-b border-gray-100"
-          style={{ fontFamily: 'system-ui, sans-serif' }}
-        >
-          <a href={authorHref} className="flex-shrink-0">
-            <div className="w-8 h-8 rounded-full flex items-center justify-center hover:opacity-80 transition-opacity" style={{ backgroundColor: '#fef3f0' }}>
-              <User size={14} color="#c8421e" strokeWidth={2} />
-            </div>
-          </a>
-          <div className="flex-1 min-w-0">
-            <a href={authorHref} className="text-[12px] font-semibold text-gray-800 hover:text-[#c8421e] transition-colors">
-              {authorName}
-            </a>
-            <div className="text-[10px] text-gray-400">Finnotia Research</div>
-          </div>
-          <div className="flex items-center gap-2 text-[11px] text-gray-400 flex-shrink-0">
-            {fm.date && (
-              <span className="flex items-center gap-0.5">
-                <Calendar size={11} strokeWidth={2} />
-                {fmtDate(fm.date)}
-              </span>
-            )}
-            {readTime && (
-              <span className="flex items-center gap-0.5">
-                <Clock size={11} strokeWidth={2} />
-                {readTime} min
-              </span>
-            )}
-          </div>
+        {/* Meta row */}
+        <div className="flex flex-wrap items-center gap-3 mb-5 pb-4 border-b border-gray-100 text-[11px] text-gray-400">
+          {fm.date && (
+            <span className="flex items-center gap-1">
+              <Calendar size={11} strokeWidth={2} /> {fmtDate(fm.date)}
+            </span>
+          )}
+          {readTime && (
+            <span className="flex items-center gap-1">
+              <Clock size={11} strokeWidth={2} /> {readTime} min read
+            </span>
+          )}
         </div>
 
         {/* Bull / Bear */}
         {(fm.bull_case_summary || fm.bear_case_summary) && (
-          <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2.5" style={{ fontFamily: 'system-ui, sans-serif' }}>
+          <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2.5">
             {fm.bull_case_summary && (
               <div className="rounded-xl p-3.5 border" style={{ backgroundColor: '#f0fdf4', borderColor: '#bbf7d0' }}>
                 <div className="flex items-center gap-1.5 mb-1.5">
@@ -268,7 +190,7 @@ export default function ArticleClient({ frontmatter: fm, htmlContent, relatedPos
         {fm.thesis_statement && (
           <div
             className="mt-4 rounded-xl px-4 py-3.5"
-            style={{ background: 'linear-gradient(135deg, #0c1e35, #1a3355)', fontFamily: 'system-ui, sans-serif' }}
+            style={{ background: 'linear-gradient(135deg, #0c1e35, #1a3355)' }}
           >
             <div className="text-[9px] font-bold tracking-widest uppercase text-white/40 mb-1.5">Thesis</div>
             <p className="text-white/90 text-[13px] leading-relaxed italic">"{fm.thesis_statement}"</p>
@@ -288,47 +210,18 @@ export default function ArticleClient({ frontmatter: fm, htmlContent, relatedPos
           />
         </div>
 
-        {/* ── Share ── */}
-        <div
-          className="py-4 border-t border-gray-100 flex items-center gap-2 flex-wrap"
-          style={{ fontFamily: 'system-ui, sans-serif' }}
-        >
-          <span className="text-[11px] font-semibold text-gray-400 flex items-center gap-1">
-            <Share2 size={13} strokeWidth={2} /> Share
-          </span>
-          <button
-            onClick={() => handleShare('whatsapp')}
-            className="flex items-center gap-1 px-3 py-1.5 rounded-full border border-gray-200 text-[11px] font-medium text-gray-600 hover:border-green-400 hover:text-green-600 transition-all"
-          >
-            <MessageCircle size={12} strokeWidth={2} /> WhatsApp
-          </button>
-          <button
-            onClick={() => handleShare('twitter')}
-            className="flex items-center gap-1 px-3 py-1.5 rounded-full border border-gray-200 text-[11px] font-medium text-gray-600 hover:border-blue-400 hover:text-blue-600 transition-all"
-          >
-            <Twitter size={12} strokeWidth={2} /> X / Twitter
-          </button>
-          <button
-            onClick={handleCopy}
-            className="ml-auto flex items-center gap-1 px-3 py-1.5 rounded-full border border-gray-200 text-[11px] font-medium text-gray-600 hover:border-gray-400 transition-all"
-          >
-            {copied
-              ? <><Check size={12} strokeWidth={2} color="#16a34a" /> Copied!</>
-              : <><Link2 size={12} strokeWidth={2} /> Copy link</>
-            }
-          </button>
-        </div>
+        {/* ── Share bar — reusable ShareBar ── */}
+        <ShareBar
+          url={typeof window !== 'undefined' ? window.location.href : ''}
+          title={fm.title}
+          className="py-4 border-t border-gray-100"
+        />
 
-        {/* ── Tags ── */}
+        {/* ── Tags — reusable TagPill ── */}
         {fm.tags?.length > 0 && (
-          <div className="pb-5 flex gap-1.5 flex-wrap" style={{ fontFamily: 'system-ui, sans-serif' }}>
+          <div className="pb-5 flex gap-1.5 flex-wrap">
             {fm.tags.map((tag) => (
-              <span
-                key={tag}
-                className="text-[10px] text-gray-500 bg-gray-50 border border-gray-200 px-3 py-1 rounded-full font-medium"
-              >
-                #{tag}
-              </span>
+              <TagPill key={tag} tag={tag} />
             ))}
           </div>
         )}
@@ -336,7 +229,7 @@ export default function ArticleClient({ frontmatter: fm, htmlContent, relatedPos
         {/* ── Author Box ── */}
         <div
           className="mb-6 rounded-xl border border-gray-100 p-4"
-          style={{ fontFamily: 'system-ui, sans-serif', backgroundColor: '#fafafa' }}
+          style={{ backgroundColor: '#fafafa' }}
         >
           <div className="flex items-start gap-3">
             <a href={authorHref} className="flex-shrink-0">
@@ -361,7 +254,7 @@ export default function ArticleClient({ frontmatter: fm, htmlContent, relatedPos
 
         {/* ── Related Articles ── */}
         {relatedPosts.length > 0 && (
-          <div className="mb-8" style={{ fontFamily: 'system-ui, sans-serif' }}>
+          <div className="mb-8">
             <h3 className="text-[14px] font-bold text-gray-900 mb-3">More in {fm.category}</h3>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
               {relatedPosts.map((post) => (

@@ -82,7 +82,7 @@ export default function ArticleCard({ post, variant = 'grid', visible = true, in
           className="w-full aspect-video object-cover border-b border-gray-100"
           loading={isFirst ? 'eager' : 'lazy'}
           decoding={isFirst ? 'sync' : 'async'}
-          fetchpriority={isFirst ? 'high' : 'auto'}
+          fetchPriority={isFirst ? 'high' : 'auto'}
         />
       ) : (
         <div className="w-full aspect-video bg-gradient-to-br from-[#0c1e35] to-[#1a3355] flex items-center justify-center border-b border-gray-100">

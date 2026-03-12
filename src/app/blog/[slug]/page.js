@@ -84,10 +84,10 @@ export async function generateMetadata({ params }) {
 
   const { frontmatter: fm } = article;
   const slug  = params.slug;
-  const url   = `https://finnotia.com/blog/${slug}`;
+  const url   = `https://www.finnotia.com/blog/${slug}`;
   const title = fm.seo_title        || fm.title;
   const desc  = fm.seo_description  || fm.excerpt || '';
-  const image = fm.image_url        || 'https://finnotia.com/og-image.png';
+  const image = fm.image_url        || 'https://www.finnotia.com/og-image.png';
   const tags  = fm.tags             || [];
 
   return {
@@ -105,7 +105,7 @@ export async function generateMetadata({ params }) {
       images: [{ url: image, width: 1200, height: 630, alt: title }],
       publishedTime: fm.date      || undefined,
       modifiedTime:  fm.updatedAt || fm.date || undefined,
-      authors: ['https://finnotia.com'],
+      authors: ['https://www.finnotia.com'],
       section: fm.category || 'Finance',
       tags,
     },
@@ -149,9 +149,9 @@ export default async function ArticlePage({ params }) {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Home',  item: 'https://finnotia.com' },
-      { '@type': 'ListItem', position: 2, name: 'Blog',  item: 'https://finnotia.com/blog' },
-      { '@type': 'ListItem', position: 3, name: fm.title, item: `https://finnotia.com/blog/${slug}` },
+      { '@type': 'ListItem', position: 1, name: 'Home',  item: 'https://www.finnotia.com' },
+      { '@type': 'ListItem', position: 2, name: 'Blog',  item: 'https://www.finnotia.com/blog' },
+      { '@type': 'ListItem', position: 3, name: fm.title, item: `https://www.finnotia.com/blog/${slug}` },
     ],
   };
 

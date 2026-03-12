@@ -1,6 +1,5 @@
-'use client';
 // src/app/contact/page.js
-
+'use client';
 import { useState } from 'react';
 import { Mail, Send, Loader2, MessageSquare, Clock, MapPin, Headphones } from 'lucide-react';
 import { PLAY_STORE_URL, CONTACT_INFO, GRADIENTS } from '../../lib/constants';

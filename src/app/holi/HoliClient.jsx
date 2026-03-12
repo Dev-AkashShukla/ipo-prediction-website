@@ -107,7 +107,7 @@ export default function HoliClient() {
 
   const generateLink = () => {
     if (!senderName.trim() || !receiverName.trim()) return '';
-    const base = typeof window !== 'undefined' ? window.location.origin : 'https://finnotia.com';
+    const base = typeof window !== 'undefined' ? window.location.origin : 'https://www.finnotia.com';
     return `${base}/holi?w=${encodeURIComponent(encodeNames(receiverName.trim(), senderName.trim()))}`;
   };
 

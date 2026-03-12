@@ -3,7 +3,7 @@
 
 export const seoConfig = {
   siteName: 'FINNOTIA',
-  siteUrl: 'https://finnotia.com',
+  siteUrl: 'https://www.finnotia.com',
   defaultTitle: 'FINNOTIA - Stock Market, IPO & Mutual Fund Tracker',
   defaultDescription:
     'Track Indian Stock Market, IPO GMP, Mutual Funds & Indices. AI-powered financial data platform for smart market insights. 100% Free, No Registration.',
@@ -28,8 +28,8 @@ export const seoConfig = {
   twitterHandle: '@finnotia',
   organization: {
     name: 'FINNOTIA',
-    url: 'https://finnotia.com',
-    logo: 'https://finnotia.com/finnotia-logo.png',
+    url: 'https://www.finnotia.com',
+    logo: 'https://www.finnotia.com/finnotia-logo.png',
     foundingDate: '2024',
     description:
       'Comprehensive financial data platform for tracking Stocks, IPOs, and Mutual Funds in India. Educational tool for market enthusiasts.',
@@ -157,8 +157,8 @@ export const structuredData = {
     '@context': 'https://schema.org',
     '@type': 'Organization',
     name: 'FINNOTIA',
-    url: 'https://finnotia.com',
-    logo: 'https://finnotia.com/finnotia-logo.png',
+    url: 'https://www.finnotia.com',
+    logo: 'https://www.finnotia.com/finnotia-logo.png',
     description:
       'AI-powered platform for tracking Indian Stock Market, IPOs, and Mutual Funds.',
     foundingDate: '2024',
@@ -189,7 +189,7 @@ export const structuredData = {
     founder: {
       '@type': 'Person',
       name: 'Akash Shukla',
-      url: 'https://finnotia.com/founder',
+      url: 'https://www.finnotia.com/founder',
     },
   },
 
@@ -206,7 +206,7 @@ export const structuredData = {
     },
     description:
       'Comprehensive market tracking app. Features include Live Stock Updates, IPO GMP, Mutual Fund Data, and Market News. Free to use, no registration needed.',
-    screenshot: 'https://finnotia.com/app-screenshot.png',
+    screenshot: 'https://www.finnotia.com/app-screenshot.png',
     softwareVersion: '1.0.0',
     datePublished: '2024-01-01',
     author: {
@@ -222,13 +222,13 @@ export const structuredData = {
     name: 'FINNOTIA Research',
     description:
       'Data-driven financial analysis covering global markets, IPOs, macroeconomics, commodities, and corporate finance.',
-    url: 'https://finnotia.com/blog',
+    url: 'https://www.finnotia.com/blog',
     publisher: {
       '@type': 'Organization',
       name: 'FINNOTIA',
       logo: {
         '@type': 'ImageObject',
-        url: 'https://finnotia.com/finnotia-logo.png',
+        url: 'https://www.finnotia.com/finnotia-logo.png',
       },
     },
     inLanguage: 'en',
@@ -283,34 +283,34 @@ export function generateArticleSchema(fm, slug) {
     description: fm.excerpt || fm.seo_description || '',
     image: fm.image_url
       ? [fm.image_url]
-      : ['https://finnotia.com/og-image.png'],
+      : ['https://www.finnotia.com/og-image.png'],
     datePublished: fm.date || '',
     dateModified: fm.updatedAt || fm.date || '',
     author: {
       '@type': 'Organization',
       name: fm.author || 'Finnotia Research',
-      url: 'https://finnotia.com',
+      url: 'https://www.finnotia.com',
     },
     publisher: {
       '@type': 'Organization',
       name: 'FINNOTIA',
       logo: {
         '@type': 'ImageObject',
-        url: 'https://finnotia.com/finnotia-logo.png',
+        url: 'https://www.finnotia.com/finnotia-logo.png',
       },
     },
     mainEntityOfPage: {
       '@type': 'WebPage',
-      '@id': `https://finnotia.com/blog/${slug}`,
+      '@id': `https://www.finnotia.com/blog/${slug}`,
     },
-    url: `https://finnotia.com/blog/${slug}`,
+    url: `https://www.finnotia.com/blog/${slug}`,
     keywords: (fm.tags || []).join(', '),
     articleSection: fm.category || 'Finance',
     inLanguage: 'en',
     isPartOf: {
       '@type': 'Blog',
       name: 'FINNOTIA Research',
-      url: 'https://finnotia.com/blog',
+      url: 'https://www.finnotia.com/blog',
     },
   };
 }
@@ -332,7 +332,7 @@ export function generateMetadata(page) {
       locale: 'en_US',
       images: [
         {
-          url: 'https://finnotia.com/og-image.png',
+          url: 'https://www.finnotia.com/og-image.png',
           width: 1200,
           height: 630,
           alt: meta.title,

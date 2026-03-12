@@ -5,7 +5,7 @@ import { Trash2, ShieldCheck, Mail, ArrowRight } from 'lucide-react';
 export const metadata = {
   title: 'Delete Account | FINNOTIA',
   description: 'Learn how to permanently delete your FINNOTIA account and all associated data.',
-  alternates: { canonical: 'https://finnotia.com/delete-account' },
+  alternates: { canonical: 'https://www.finnotia.com/delete-account' },
 };
 
 const steps = [

@@ -70,11 +70,11 @@ export async function generateMetadata({ params }) {
   return {
     title: `${meta.label} News & Analysis | FINNOTIA Research`,
     description: meta.desc,
-    alternates: { canonical: `https://finnotia.com/category/${cat}` },
+    alternates: { canonical: `https://www.finnotia.com/category/${cat}` },
     openGraph: {
       title: `${meta.label} News & Analysis | FINNOTIA`,
       description: meta.desc,
-      url: `https://finnotia.com/category/${cat}`,
+      url: `https://www.finnotia.com/category/${cat}`,
       siteName: 'FINNOTIA',
       type: 'website',
     },
@@ -105,11 +105,11 @@ export default function CategoryPage({ params }) {
     '@type': 'CollectionPage',
     name: `${meta.label} - FINNOTIA Research`,
     description: meta.desc,
-    url: `https://finnotia.com/category/${cat}`,
+    url: `https://www.finnotia.com/category/${cat}`,
     publisher: {
       '@type': 'Organization',
       name: 'FINNOTIA',
-      url: 'https://finnotia.com',
+      url: 'https://www.finnotia.com',
     },
   };
 

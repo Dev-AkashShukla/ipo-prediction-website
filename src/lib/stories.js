@@ -57,7 +57,7 @@ function buildStory(fm, slug) {
     date_display:     fmtDate(fm.date),
     source: {
       name: 'Finnotia Research',
-      url:  `https://finnotia.com/blog/${slug}`,
+      url:  `https://www.finnotia.com/blog/${slug}`,
     },
     image_url_og: fm.image_url || '',
   };

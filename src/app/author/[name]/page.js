@@ -30,7 +30,7 @@ const AUTHORS = {
     social: {
       youtube: 'https://youtube.com',
       linkedin: 'https://linkedin.com',
-      website: 'https://finnotia.com/founder',
+      website: 'https://www.finnotia.com/founder',
     },
   },
 };
@@ -74,11 +74,11 @@ export async function generateMetadata({ params }) {
   return {
     title: `${author.name} — ${author.title} | FINNOTIA`,
     description: `Research and analysis by ${author.name}, ${author.title}. ${author.bio.slice(0, 120)}...`,
-    alternates: { canonical: `https://finnotia.com/author/${params.name}` },
+    alternates: { canonical: `https://www.finnotia.com/author/${params.name}` },
     openGraph: {
       title: `${author.name} | FINNOTIA Research`,
       description: author.bio.slice(0, 150),
-      url: `https://finnotia.com/author/${params.name}`,
+      url: `https://www.finnotia.com/author/${params.name}`,
       siteName: 'FINNOTIA',
       type: 'profile',
     },
@@ -100,11 +100,11 @@ export default function AuthorPage({ params }) {
     '@type': 'Person',
     name: author.name,
     jobTitle: author.title,
-    url: `https://finnotia.com/author/${params.name}`,
+    url: `https://www.finnotia.com/author/${params.name}`,
     worksFor: {
       '@type': 'Organization',
       name: 'FINNOTIA',
-      url: 'https://finnotia.com',
+      url: 'https://www.finnotia.com',
     },
     sameAs: Object.values(author.social).filter(Boolean),
   };

@@ -49,7 +49,7 @@ export const SOCIAL_LINKS = {
   instagram: 'https://instagram.com/finnotia',
 };
 
-export const SITE_URL = 'https://finnotia.com';
+export const SITE_URL = 'https://www.finnotia.com';
 export const RECAPTCHA_SITE_KEY = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || '';
 
 // ── SEBI Disclaimer ──────────────────────────────────────────────

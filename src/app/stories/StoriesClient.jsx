@@ -211,7 +211,7 @@ function SlideContent({ slide }) {
 // ── Share Sheet ──────────────────────────────────────────────────
 function ShareSheet({ story, onClose }) {
   const [copied, setCopied] = useState(false);
-  const url = `https://finnotia.com/stories/${story.slug}`;
+  const url = `https://www.finnotia.com/stories/${story.slug}`;
 
   const shareWhatsApp = () =>
     window.open(`https://wa.me/?text=${encodeURIComponent(story.headline + '\n\n' + url)}`);

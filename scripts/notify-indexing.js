@@ -15,7 +15,7 @@ if (fs.existsSync(envFile)) {
   });
 }
 
-const SITE_URL = 'https://finnotia.com';
+const SITE_URL = 'https://www.finnotia.com';
 
 function getRecentSlugs(max = 10) {
   const dir = path.join(process.cwd(), 'content', 'articles');

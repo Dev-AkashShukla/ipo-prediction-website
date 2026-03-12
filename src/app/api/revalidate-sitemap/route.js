@@ -8,7 +8,7 @@ export async function GET() {
   try {
     // ✅ Bing ping — still works
     const bingPing = await fetch(
-      'https://www.bing.com/ping?sitemap=https://finnotia.com/sitemap.xml'
+      'https://www.bing.com/ping?sitemap=https://www.finnotia.com/sitemap.xml'
     );
 
     // ❌ Google ping REMOVED — deprecated March 2023

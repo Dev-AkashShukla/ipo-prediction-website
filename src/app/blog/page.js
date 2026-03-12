@@ -27,19 +27,19 @@ export const metadata = {
     'Corporate finance news',
   ].join(', '),
   alternates: {
-    canonical: 'https://finnotia.com/blog',
+    canonical: 'https://www.finnotia.com/blog',
   },
   openGraph: {
     title: 'Finance Blog - Market Analysis, IPO & Economy | FINNOTIA Research',
     description:
       'Data-driven financial analysis covering global markets, IPOs, macroeconomics, commodities, and corporate finance.',
-    url: 'https://finnotia.com/blog',
+    url: 'https://www.finnotia.com/blog',
     siteName: 'FINNOTIA',
     type: 'website',
     locale: 'en_US',
     images: [
       {
-        url: 'https://finnotia.com/og-image.png',
+        url: 'https://www.finnotia.com/og-image.png',
         width: 1200,
         height: 630,
         alt: 'FINNOTIA Research - Finance Blog',
@@ -105,9 +105,9 @@ export default function BlogPage() {
       '@type': 'BlogPosting',
       headline: a.title,
       description: a.excerpt,
-      url: `https://finnotia.com/blog/${a.slug}`,
+      url: `https://www.finnotia.com/blog/${a.slug}`,
       datePublished: a.date,
-      image: a.image_url || 'https://finnotia.com/og-image.png',
+      image: a.image_url || 'https://www.finnotia.com/og-image.png',
       articleSection: a.category,
       keywords: (a.tags || []).join(', '),
     })),

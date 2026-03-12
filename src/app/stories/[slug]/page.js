@@ -9,7 +9,7 @@ export async function generateMetadata({ params }) {
 
   const ogImage = story.image_url_og
     ? [{ url: story.image_url_og, width: 1200, height: 630 }]
-    : [{ url: 'https://finnotia.com/og-image.png', width: 1200, height: 630 }];
+    : [{ url: 'https://www.finnotia.com/og-image.png', width: 1200, height: 630 }];
 
   return {
     title: `${story.headline} | FINNOTIA`,
@@ -21,15 +21,15 @@ export async function generateMetadata({ params }) {
       'financial news India',
       'FINNOTIA',
     ].filter(Boolean),
-    alternates: { canonical: `https://finnotia.com/stories/${params.slug}` },
+    alternates: { canonical: `https://www.finnotia.com/stories/${params.slug}` },
     openGraph: {
       title: story.headline,
       description: story.quick_summary || story.headline,
-      url: `https://finnotia.com/stories/${params.slug}`,
+      url: `https://www.finnotia.com/stories/${params.slug}`,
       siteName: 'FINNOTIA',
       type: 'article',
       publishedTime: story.date || undefined,
-      authors: ['https://finnotia.com'],
+      authors: ['https://www.finnotia.com'],
       tags: story.tags || [],
       images: ogImage,
     },
@@ -55,29 +55,29 @@ export default function StoryPage({ params }) {
     '@type': 'NewsArticle',
     headline: story.headline,
     description: story.quick_summary || story.headline,
-    url: `https://finnotia.com/stories/${story.slug}`,
+    url: `https://www.finnotia.com/stories/${story.slug}`,
     datePublished: story.date || undefined,
     dateModified: story.date || undefined,
     image: story.image_url_og
       ? [story.image_url_og]
-      : ['https://finnotia.com/og-image.png'],
+      : ['https://www.finnotia.com/og-image.png'],
     author: {
       '@type': 'Organization',
       name: 'FINNOTIA',
-      url: 'https://finnotia.com',
+      url: 'https://www.finnotia.com',
     },
     publisher: {
       '@type': 'Organization',
       name: 'FINNOTIA',
-      url: 'https://finnotia.com',
+      url: 'https://www.finnotia.com',
       logo: {
         '@type': 'ImageObject',
-        url: 'https://finnotia.com/logo.png',
+        url: 'https://www.finnotia.com/logo.png',
       },
     },
     mainEntityOfPage: {
       '@type': 'WebPage',
-      '@id': `https://finnotia.com/stories/${story.slug}`,
+      '@id': `https://www.finnotia.com/stories/${story.slug}`,
     },
     keywords: (story.tags || []).join(', '),
     articleSection: story.category || 'Markets',

@@ -24,7 +24,7 @@ export const metadata = {
   description: seoConfig.defaultDescription,
   keywords: seoConfig.defaultKeywords,
   // ✅ FIX: Real person name for E-E-A-T
-  authors: [{ name: 'Akash Shukla', url: 'https://finnotia.com/founder' }],
+  authors: [{ name: 'Akash Shukla', url: 'https://www.finnotia.com/founder' }],
   creator: 'FINNOTIA',
   publisher: 'FINNOTIA',
   

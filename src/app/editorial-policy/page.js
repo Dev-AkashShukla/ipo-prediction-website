@@ -5,7 +5,7 @@ import { BookOpen, CheckCircle, ShieldCheck, AlertTriangle, RefreshCw, Users } f
 export const metadata = {
   title: 'Editorial Policy | FINNOTIA',
   description: 'Learn how FINNOTIA researches, writes, and reviews financial content. Our editorial standards ensure accuracy, transparency, and SEBI compliance.',
-  alternates: { canonical: 'https://finnotia.com/editorial-policy' },
+  alternates: { canonical: 'https://www.finnotia.com/editorial-policy' },
   robots: { index: true, follow: true },
 };
 

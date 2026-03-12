@@ -5,7 +5,7 @@ import { legalContent } from '../../lib/legalContent';
 export const metadata = {
   title: 'Privacy Policy | FINNOTIA',
   description: 'Learn how FINNOTIA collects, uses, and protects your data including Google AdSense and AdMob advertising.',
-  alternates: { canonical: 'https://finnotia.com/privacy' },
+  alternates: { canonical: 'https://www.finnotia.com/privacy' },
 };
 
 export default function PrivacyPage() {

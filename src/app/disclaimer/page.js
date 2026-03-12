@@ -5,7 +5,7 @@ import { legalContent } from '../../lib/legalContent';
 export const metadata = {
   title: 'Disclaimer & Risk | FINNOTIA',
   description: 'FINNOTIA disclaimer: not SEBI registered, not financial advice. For educational purposes only.',
-  alternates: { canonical: 'https://finnotia.com/disclaimer' },
+  alternates: { canonical: 'https://www.finnotia.com/disclaimer' },
 };
 
 export default function DisclaimerPage() {

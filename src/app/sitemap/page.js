@@ -7,7 +7,7 @@ import { Map, FileText, Scale, Building2, BookOpen } from 'lucide-react';
 export const metadata = {
   title: 'Sitemap | FINNOTIA',
   description: 'Complete sitemap of Finnotia — navigate all pages including research articles, legal pages, and platform features.',
-  alternates: { canonical: 'https://finnotia.com/sitemap' },
+  alternates: { canonical: 'https://www.finnotia.com/sitemap' },
   robots: { index: true, follow: true },
 };
 

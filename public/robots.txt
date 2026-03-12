@@ -7,9 +7,9 @@ Disallow: /holi
 Disallow: /delete-account
 
 # Host
-Host: https://finnotia.com
+Host: https://www.finnotia.com
 
 # Sitemaps
-Sitemap: https://finnotia.com/sitemap.xml
-Sitemap: https://finnotia.com/sitemap-stories.xml
-Sitemap: https://finnotia.com/sitemap-news.xml
+Sitemap: https://www.finnotia.com/sitemap.xml
+Sitemap: https://www.finnotia.com/sitemap-stories.xml
+Sitemap: https://www.finnotia.com/sitemap-news.xml

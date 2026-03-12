@@ -2,7 +2,7 @@
 // next-sitemap.config.js
 
 module.exports = {
-  siteUrl: 'https://finnotia.com',
+  siteUrl: 'https://www.finnotia.com',
   generateRobotsTxt: true,
   changefreq: 'weekly',
   priority: 0.7,
@@ -24,8 +24,8 @@ module.exports = {
       },
     ],
     additionalSitemaps: [
-      'https://finnotia.com/sitemap-stories.xml',  // Web Stories
-      'https://finnotia.com/sitemap-news.xml',     // ✅ Regular articles for Google News
+      'https://www.finnotia.com/sitemap-stories.xml',  // Web Stories
+      'https://www.finnotia.com/sitemap-news.xml',     // ✅ Regular articles for Google News
     ],
   },
 

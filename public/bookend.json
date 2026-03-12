@@ -11,7 +11,7 @@
       "links": [
         {
           "text": "More Market Stories",
-          "url": "https://finnotia.com/stories"
+          "url": "https://www.finnotia.com/stories"
         },
         {
           "text": "Download FINNOTIA App",
@@ -26,8 +26,8 @@
     {
       "type": "small",
       "title": "Track IPOs, Stocks & Mutual Funds",
-      "url": "https://finnotia.com",
-      "image": "https://finnotia.com/og-image.png"
+      "url": "https://www.finnotia.com",
+      "image": "https://www.finnotia.com/og-image.png"
     }
   ]
 }

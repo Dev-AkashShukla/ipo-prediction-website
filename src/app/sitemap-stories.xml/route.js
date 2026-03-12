@@ -54,7 +54,7 @@ export async function GET() {
     const articles = readArticles();
 
     const urlEntries = articles.map(item => `  <url>
-    <loc>https://finnotia.com/blog/${escapeXml(item.slug)}/story</loc>
+    <loc>https://www.finnotia.com/blog/${escapeXml(item.slug)}/story</loc>
     <lastmod>${item.pubDate}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>

@@ -79,7 +79,7 @@ function StoryCard({ story }) {
       {/* Logo */}
       <div className="absolute top-7 left-3 flex items-center gap-1.5 z-10">
         <div className="w-5 h-5 rounded-full overflow-hidden bg-white flex items-center justify-center flex-shrink-0">
-          <img src="/logo.png" alt="FINNOTIA" className="w-full h-full object-contain" />
+          <img src="/finnotia-logo.png" alt="FINNOTIA" className="w-full h-full object-contain" />
         </div>
         <span className="text-[10px] font-bold tracking-wide" style={{ color: 'rgba(255,255,255,0.65)' }}>
           FINNOTIA

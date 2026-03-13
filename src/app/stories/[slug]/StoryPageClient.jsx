@@ -259,6 +259,7 @@ export default function StoryPageClient({ story }) {
   const totalSlides = slides.length;
   const imp         = IMPORTANCE_CONFIG[story.importance] || IMPORTANCE_CONFIG.HIGH;
 
+
   useEffect(() => {
     document.body.style.overflow = 'hidden';
     return () => { document.body.style.overflow = ''; };
@@ -338,9 +339,10 @@ export default function StoryPageClient({ story }) {
         {/* Header */}
         <div className="absolute top-8 left-0 right-0 z-20 flex items-center justify-between px-4 pointer-events-none">
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-full flex items-center justify-center" style={{ background: imp.color }}>
-              <span className="text-white text-[10px] font-black">F</span>
+            <div className="w-7 h-7 rounded-full flex items-center justify-center bg-white">
+             <img src="/finnotia-logo.png" alt="Logo" className="w-4 h-4" />
             </div>
+
             <span className="text-white text-sm font-semibold">FINNOTIA</span>
             <span className="text-white/40 text-xs">{slideIdx + 1}/{totalSlides}</span>
           </div>

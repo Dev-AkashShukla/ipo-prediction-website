@@ -1,25 +1,12 @@
 // src/components/home/StoriesSection.jsx
-// Server Component — reads stories directly from content/articles/
-// Same pattern as LatestArticles.jsx — zero API call, zero useEffect, instant load
+// Server Component — same pattern as original, zero API call, instant load
 
 import Link from 'next/link';
 import { getStories } from '../../lib/stories';
+import StoriesScrollStrip from './StoriesScrollStrip';
 
-const IMPORTANCE_DOT = {
-  CRITICAL: '#dc2626', HIGH: '#2563EB', MEDIUM: '#22c55e', LOW: '#9ca3af',
-};
-
-const IMPORTANCE_CONFIG = {
-  CRITICAL: { color: '#dc2626', bg: '#fef2f2', border: '#fecaca' },
-  HIGH:     { color: '#2563EB', bg: '#eff6ff', border: '#bfdbfe' },
-  MEDIUM:   { color: '#16a34a', bg: '#f0fdf4', border: '#bbf7d0' },
-  LOW:      { color: '#6b7280', bg: '#f9fafb', border: '#e5e7eb' },
-};
-
-const SENTIMENT_ICON = { POSITIVE: '📈', NEGATIVE: '📉', NEUTRAL: '➡️', MIXED: '↔️' };
-
-export default function StoriesSection() {
-  const stories = getStories().slice(0, 6);
+export default async  function StoriesSection() {
+  const stories = getStories().slice(0, 8);
   if (stories.length === 0) return null;
 
   return (
@@ -27,139 +14,42 @@ export default function StoriesSection() {
       <div className="container mx-auto px-4 max-w-5xl">
 
         {/* Header */}
-        <div className="flex items-center justify-between mb-4 sm:mb-5">
+        <div className="flex items-center justify-between mb-5">
           <div>
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 bg-blue-50 text-[#2563EB] rounded-full text-[10px] font-semibold mb-1.5">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full mb-2"
+              style={{ background: 'rgba(37,99,235,0.08)', border: '1px solid rgba(37,99,235,0.2)' }}>
               <span className="relative flex h-1.5 w-1.5">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75" />
-                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-blue-500" />
+                <span className="animate-ping absolute inset-0 rounded-full opacity-60" style={{ background: '#2563EB' }} />
+                <span className="relative rounded-full h-1.5 w-1.5" style={{ background: '#2563EB' }} />
               </span>
-              Market Updates
+              <span className="text-[10px] font-bold tracking-widest uppercase" style={{ color: '#2563EB' }}>
+                Market Updates
+              </span>
             </div>
-            <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 leading-tight">
+            <h2 className="text-lg sm:text-xl lg:text-2xl font-black text-gray-900 leading-tight"
+              style={{ fontFamily: 'Georgia, serif' }}>
               Market{' '}
-              <span className="bg-gradient-to-r from-[#2563EB] to-[#1E3A8A] bg-clip-text text-transparent">
-                Stories
-              </span>
+              <span style={{ color: '#2563EB' }}>Stories</span>
             </h2>
           </div>
-          <Link
-            href="/stories"
-            className="text-[12px] font-semibold text-[#2563EB] hover:text-[#1D4ED8] transition-colors flex items-center gap-0.5"
-          >
-            View All <span className="text-sm">→</span>
+          <Link href="/stories"
+            className="text-[12px] font-bold flex items-center gap-0.5 no-underline"
+            style={{ color: '#2563EB' }}>
+            View All →
           </Link>
         </div>
 
-        {/* Mobile scroll */}
-        <div className="flex gap-2.5 overflow-x-auto pb-2.5 sm:hidden" style={{ scrollbarWidth: 'none' }}>
-          {stories.map((story) => (
-            <MobileCard key={story.slug} story={story} />
-          ))}
-          <Link
-            href="/stories"
-            style={{ minWidth: '130px' }}
-            className="flex-shrink-0 flex flex-col items-center justify-center
-                       bg-gradient-to-br from-[#2563EB] to-[#1E3A8A]
-                       rounded-xl p-3.5 text-white text-center"
-          >
-            <span className="text-xl mb-1.5">📊</span>
-            <span className="text-[11px] font-bold">View All</span>
-            <span className="text-[10px] opacity-75 mt-0.5">{stories.length}+ today</span>
-          </Link>
-        </div>
+        {/* Client strip — handles scroll + arrows */}
+        <StoriesScrollStrip stories={stories} />
 
-        {/* Desktop grid */}
-        <div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
-          {stories.map((story) => (
-            <DesktopCard key={story.slug} story={story} />
-          ))}
-        </div>
-
-        {/* Bottom CTA */}
-        <div className="text-center mt-4 sm:mt-5">
-          <Link
-            href="/stories"
-            className="inline-flex items-center gap-1.5 bg-gradient-to-r from-[#2563EB] to-[#1D4ED8]
-                       text-white px-5 py-2 rounded-xl font-semibold text-[13px]
-                       hover:shadow-lg hover:scale-105 active:scale-95 transition-all duration-200"
-          >
-            📰 View All Market Stories
-          </Link>
-          <p className="text-[10px] text-gray-400 mt-1.5">
-            Updated regularly · Market insights for informational purposes
-          </p>
-        </div>
+        <p className="text-center text-[11px] text-gray-400 mt-2 sm:hidden">
+          Swipe to explore · Tap to read
+        </p>
+        <p className="text-center text-[11px] text-gray-400 mt-3 hidden sm:block">
+          Updated regularly · Market insights for informational purposes
+        </p>
 
       </div>
     </section>
-  );
-}
-
-function MobileCard({ story }) {
-  const dot  = IMPORTANCE_DOT[story.importance] || '#2563EB';
-  const icon = SENTIMENT_ICON[story.sentiment]  || '➡️';
-  return (
-    <a
-      href={`/stories/${story.slug}`}
-      style={{ minWidth: '220px', maxWidth: '220px' }}
-      className="flex-shrink-0 block bg-white border border-gray-100 rounded-xl p-3.5
-                 hover:border-blue-200 hover:shadow-md transition-all active:scale-95"
-    >
-      <div className="flex items-center gap-1.5 mb-2.5">
-        <div style={{ width: 6, height: 6, borderRadius: '50%', background: dot, flexShrink: 0 }} />
-        <span className="text-[10px] font-semibold text-gray-500 truncate">{story.importance}</span>
-        <span className="ml-auto text-xs">{icon}</span>
-      </div>
-      <h3
-        className="text-[12px] font-bold text-gray-900 leading-snug mb-2 line-clamp-3"
-        style={{ fontFamily: 'Georgia, serif' }}
-      >
-        {story.headline}
-      </h3>
-      <div className="flex items-center justify-between pt-2 border-t border-gray-50">
-        <span className="text-[10px] text-gray-400">{story.date_display || 'Finnotia'}</span>
-        <span className="text-[10px] font-semibold text-[#2563EB]">Read →</span>
-      </div>
-    </a>
-  );
-}
-
-function DesktopCard({ story }) {
-  const imp  = IMPORTANCE_CONFIG[story.importance] || IMPORTANCE_CONFIG.HIGH;
-  const icon = SENTIMENT_ICON[story.sentiment]     || '➡️';
-  return (
-    <a
-      href={`/stories/${story.slug}`}
-      className="group block bg-white border border-gray-100 rounded-xl p-3.5
-                 hover:border-blue-200 hover:shadow-lg transition-all duration-200"
-      style={{ borderLeft: `3px solid ${imp.color}` }}
-    >
-      <div className="flex items-center gap-1.5 mb-2.5">
-        <span style={{
-          padding: '1.5px 7px', background: imp.bg, border: `1px solid ${imp.border}`,
-          color: imp.color, fontSize: '9px', fontWeight: 700, borderRadius: '20px',
-        }}>
-          {story.importance}
-        </span>
-        <span className="text-xs">{icon}</span>
-        {story.date_display && (
-          <span className="ml-auto text-[10px] text-gray-400">{story.date_display}</span>
-        )}
-      </div>
-      <h3
-        className="text-[12px] font-bold text-gray-900 leading-snug mb-1.5 group-hover:text-[#2563EB] transition-colors"
-        style={{ fontFamily: 'Georgia, serif' }}
-      >
-        {story.headline}
-      </h3>
-      <p className="text-[11px] text-gray-500 leading-relaxed mb-2.5 line-clamp-2">{story.quick_summary}</p>
-      <div className="flex items-center justify-between pt-2 border-t border-gray-50">
-        <span className="text-[10px] text-gray-400">{story.source?.name || 'Finnotia'}</span>
-        <span className="text-[10px] font-semibold text-[#2563EB] group-hover:translate-x-1 transition-transform inline-block">
-          Read Story →
-        </span>
-      </div>
-    </a>
   );
 }

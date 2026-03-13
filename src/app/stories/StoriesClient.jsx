@@ -169,7 +169,7 @@ export default function StoriesClient({ stories = [], date = '' }) {
       </PageHero>
 
       {/* Content */}
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8" style={{ background: '#F8FAFC' }}>
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* ── FILTERS — reusable FilterChip with importance colors ── */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mt-5 mb-4">
